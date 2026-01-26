@@ -1,0 +1,21 @@
+basePath: /api/v1
+host: localhost:8001
+info:
+  contact:
+    email: support@stockvision.com
+    name: API Support
+  description: Authentication and authorization service for StockVision platform
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: StockVision Auth Service API
+  version: "1.0"
+paths: {}
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer" followed by a space and JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
