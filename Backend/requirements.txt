@@ -1,5 +1,0 @@
-fastapi
-sqlmodel
-asyncpg
-uvicorn[standard]
-python-dotenv
