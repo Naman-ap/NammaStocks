@@ -9,7 +9,7 @@ const AskBoltModal = () => {
     {
       id: 1,
       type: 'bot',
-      content: 'Hi! I\'m Bolt, your AI stock analysis assistant. How can I help you today?',
+      content: 'Hi! I\'m  your AI stock analysis assistant. How can I help you today?',
       timestamp: new Date(),
     }
   ]);
@@ -87,7 +87,7 @@ const AskBoltModal = () => {
                 <Zap className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h2 className="text-xl font-semibold text-white">Ask Bolt</h2>
+                <h2 className="text-xl font-semibold text-white">Ask Agent</h2>
                 <p className="text-sm text-gray-400">AI Stock Analysis Assistant</p>
               </div>
             </div>
@@ -116,7 +116,7 @@ const AskBoltModal = () => {
                   {msg.type === 'bot' && (
                     <div className="flex items-center space-x-2 mb-2">
                       <Sparkles className="w-4 h-4 text-green-400" />
-                      <span className="text-xs font-medium text-green-400">Bolt AI</span>
+                      <span className="text-xs font-medium text-green-400">Agent</span>
                     </div>
                   )}
                   <p className="text-sm">{msg.content}</p>
@@ -136,7 +136,7 @@ const AskBoltModal = () => {
                 <div className="bg-gray-700 px-4 py-3 rounded-2xl">
                   <div className="flex items-center space-x-2">
                     <Sparkles className="w-4 h-4 text-green-400" />
-                    <span className="text-xs font-medium text-green-400">Bolt AI</span>
+                    <span className="text-xs font-medium text-green-400">Agent</span>
                   </div>
                   <div className="flex items-center space-x-1 mt-2">
                     <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />

@@ -8,8 +8,6 @@ import {
   Users, 
   FileText, 
   ExternalLink,
-  ChevronDown,
-  ChevronRight,
   Share2,
   Mail,
   Download,

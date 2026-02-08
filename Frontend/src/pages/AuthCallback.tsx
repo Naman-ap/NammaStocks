@@ -50,7 +50,7 @@ const AuthCallback: React.FC = () => {
           <div className="p-2 bg-blue-600 rounded-lg">
             <TrendingUp className="w-8 h-8 text-white" />
           </div>
-          <span className="text-2xl font-bold text-white">StockVision</span>
+          <span className="text-2xl font-bold text-white">NammaStocks</span>
         </div>
 
         {status === 'processing' && (

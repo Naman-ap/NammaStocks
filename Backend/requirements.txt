@@ -1,6 +1,7 @@
 fastapi
 sqlmodel
 asyncpg
+greenlet
 uvicorn[standard]
 python-dotenv
 pydantic-settings

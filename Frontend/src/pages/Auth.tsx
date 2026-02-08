@@ -75,7 +75,7 @@ const Auth: React.FC = () => {
             <div className="p-2 bg-white/10 rounded-lg">
               <TrendingUp className="w-8 h-8 text-white" />
             </div>
-            <span className="text-2xl font-bold text-white">StockVision</span>
+            <span className="text-2xl font-bold text-white">NammaStocks</span>
           </div>
         </div>
         
@@ -85,10 +85,10 @@ const Auth: React.FC = () => {
             Invest Smarter
           </h1>
           <p className="text-blue-100 text-lg max-w-md">
-            Get real-time market insights, advanced analytics, and personalized recommendations to make informed investment decisions.
+            Get real-time market insights and  advanced analytics to make informed investment decisions.
           </p>
           
-          <div className="flex gap-8 pt-4">
+          {/* <div className="flex gap-8 pt-4">
             <div>
               <div className="text-3xl font-bold text-white">50K+</div>
               <div className="text-blue-200 text-sm">Active Users</div>
@@ -101,11 +101,11 @@ const Auth: React.FC = () => {
               <div className="text-3xl font-bold text-white">99.9%</div>
               <div className="text-blue-200 text-sm">Uptime</div>
             </div>
-          </div>
+          </div> */}
         </div>
 
         <div className="text-blue-200 text-sm">
-          © 2026 StockVision. All rights reserved.
+          © 2026 NammaStocks. All rights reserved.
         </div>
       </div>
 
@@ -117,7 +117,7 @@ const Auth: React.FC = () => {
             <div className="p-2 bg-blue-600 rounded-lg">
               <TrendingUp className="w-6 h-6 text-white" />
             </div>
-            <span className="text-xl font-bold text-white">StockVision</span>
+            <span className="text-xl font-bold text-white">NammaStocks</span>
           </div>
 
           {/* Header */}

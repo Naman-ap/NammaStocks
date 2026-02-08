@@ -9,7 +9,8 @@ import {
   MessageCircle, 
   Menu, 
   X,
-  Factory
+  Factory,
+  TrendingUp
 } from 'lucide-react';
 
 const Navbar = () => {
@@ -19,7 +20,7 @@ const Navbar = () => {
   const navItems = [
     { path: '/dashboard', icon: BarChart3, label: 'Dashboard' },
     { path: '/screener', icon: Search, label: 'Screener' },
-    { path: '/textile-insights', icon: Factory, label: 'Textile Insights' },
+    { path: '/commodities-insights', icon: TrendingUp, label: 'Commodities' },
     { path: '/blog', icon: BookOpen, label: 'Blog' },
   ];
 
@@ -64,7 +65,7 @@ const Navbar = () => {
               onClick={() => document.dispatchEvent(new CustomEvent('openAskBolt'))}
             >
               <MessageCircle className="w-5 h-5" />
-              <span className="font-medium">Ask Bolt</span>
+              <span className="font-medium">Ask Agent</span>
             </button>
           </div>
 
@@ -109,7 +110,7 @@ const Navbar = () => {
                 }}
               >
                 <MessageCircle className="w-5 h-5" />
-                <span className="font-medium">Ask Bolt</span>
+                <span className="font-medium">Ask Agent</span>
               </button>
             </div>
           </motion.div>

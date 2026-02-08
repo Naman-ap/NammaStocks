@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str = "postgresql+asyncpg://namanchawla:naman@localhost:5432/postgres"
     
     # API
-    API_V1_PREFIX: str = "/api/v1"
+    API_V1_PREFIX: str = "/v1"
     PROJECT_NAME: str = "FastAPI Application"
     VERSION: str = "1.0.0"
     
@@ -17,6 +17,7 @@ class Settings(BaseSettings):
     
     # External APIs
     FINNHUB_API_KEY: str = ""
+    ALPHA_VANTAGE_API_KEY: str = ""
     
     class Config:
         env_file = ".env"

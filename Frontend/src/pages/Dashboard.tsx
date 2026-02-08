@@ -1,12 +1,30 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown, Activity, DollarSign } from 'lucide-react';
 import Heatmap from '../components/Heatmap';
 import TopMovers from '../components/TopMovers';
 import RealTimeTickerTape from '../components/RealTimeTickerTape';
 import MarketOverview from '../components/MarketOverview';
+import { useNewsSentimentFinnhub, useTopGainersLosers, useCompanyOverview } from '../hooks/useDashboard';
 
 const Dashboard = () => {
+  // Fetch dashboard data
+  // const gainersLosers = useTopGainersLosers();
+  // const newsSentiment = useNewsSentimentFinnhub('AAPL');
+  // const companyOverview = useCompanyOverview('AAPL');
+
+  // // Log data for debugging
+  // useEffect(() => {
+  //   console.log('Top Gainers/Losers:', gainersLosers);
+  // }, [gainersLosers]);
+
+  // useEffect(() => {
+  //   console.log('News Sentiment:', newsSentiment);
+  // }, [newsSentiment]);
+
+  // useEffect(() => {
+  //   console.log('Company Overview:', companyOverview);
+  // }, [companyOverview]);
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {

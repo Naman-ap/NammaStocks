@@ -10,6 +10,7 @@ import StockDetail from './pages/StockDetail';
 import Blog from './pages/Blog';
 import ArticleForm from './pages/ArticleForm';
 import TextileInsights from './pages/TextileInsights';
+import CommoditiesInsights from './pages/CommoditiesInsights';
 import AskBoltModal from './components/AskBoltModal';
 
 function AppContent() {
@@ -20,12 +21,12 @@ function AppContent() {
     <div className="min-h-screen bg-gray-900 text-white">
       {!isAuthPage && <Navbar />}
       <Routes>
-        {/* <Route path="/" element={<Auth />} />
-        <Route path="/auth/callback" element={<AuthCallback />} /> */}
+        <Route path="/" element={<Auth />} />
+        <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/screener" element={<Screener />} />
         <Route path="/stock/:symbol" element={<StockDetail />} />
-        <Route path="/textile-insights" element={<TextileInsights />} />
+        /<Route path="/commodities-insights" element={<CommoditiesInsights />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/new" element={<ArticleForm />} />
       </Routes>
