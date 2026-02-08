@@ -47,6 +47,28 @@ A data-driven platform that connects real-world events to commodity market movem
 
 ---
 
+## Screenshots & Demos
+
+### User Flow
+
+#### 1. Login Page
+![Login Page](./docs/screenshots/login-page.png)
+*Secure authentication to access market insights*
+
+#### 2. Dashboard Overview
+![Dashboard](./docs/screenshots/dashboard.png)
+*Real-time Stock prices, News and market overview*
+
+#### 3. Commodities Insights
+![Commodities Insights](./docs/screenshots/commodities-insights.png)
+*Deep-dive analysis for individual commodities with driver attribution*
+
+#### 4. AI Agent Assistant
+![AI Agent](./docs/screenshots/ai-agent.png)
+*Interactive AI assistant for market questions and scenario analysis*
+
+---
+
 ## Platform Pages
 
 ### Dashboard
@@ -132,28 +154,6 @@ A data-driven platform that connects real-world events to commodity market movem
 
 
 
-
-## Screenshots & Demos
-
-### User Flow
-
-#### 1. Login Page
-![Login Page](./docs/screenshots/login-page.png)
-*Secure authentication to access market insights*
-
-#### 2. Dashboard Overview
-![Dashboard](./docs/screenshots/dashboard.png)
-*Real-time commodity prices, risk indicators, and market overview*
-
-#### 3. Commodities Insights
-![Commodities Insights](./docs/screenshots/commodities-insights.png)
-*Deep-dive analysis for individual commodities with driver attribution*
-
-#### 4. AI Agent Assistant
-![AI Agent](./docs/screenshots/ai-agent.png)
-*Interactive AI assistant for market questions and scenario analysis*
-
----
 
 ## Support & Feedback
 
