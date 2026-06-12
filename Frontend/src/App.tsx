@@ -6,6 +6,7 @@ import Auth from './pages/Auth';
 import AuthCallback from './pages/AuthCallback';
 import Dashboard from './pages/Dashboard';
 import Screener from './pages/Screener';
+import ScreenerCompare from './pages/ScreenerCompare';
 import StockDetail from './pages/StockDetail';
 import Blog from './pages/Blog';
 import ArticleForm from './pages/ArticleForm';
@@ -25,8 +26,9 @@ function AppContent() {
         <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/screener" element={<Screener />} />
+        <Route path="/screener/compare" element={<ScreenerCompare />} />
         <Route path="/stock/:symbol" element={<StockDetail />} />
-        /<Route path="/commodities-insights" element={<CommoditiesInsights />} />
+        <Route path="/commodities-insights" element={<CommoditiesInsights />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/new" element={<ArticleForm />} />
       </Routes>
