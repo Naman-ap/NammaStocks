@@ -58,16 +58,7 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* Ask Bolt Button */}
-          <div className="hidden md:flex items-center space-x-4">
-            <button 
-              className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl hover:from-green-600 hover:to-emerald-600 transition-all hover:scale-105 hover:shadow-lg hover:shadow-green-500/25"
-              onClick={() => document.dispatchEvent(new CustomEvent('openAskBolt'))}
-            >
-              <MessageCircle className="w-5 h-5" />
-              <span className="font-medium">Ask Agent</span>
-            </button>
-          </div>
+
 
           {/* Mobile menu button */}
           <button
@@ -102,16 +93,7 @@ const Navbar = () => {
                   <span>{item.label}</span>
                 </Link>
               ))}
-              <button 
-                className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl hover:from-green-600 hover:to-emerald-600 transition-all mt-2"
-                onClick={() => {
-                  document.dispatchEvent(new CustomEvent('openAskBolt'));
-                  setIsOpen(false);
-                }}
-              >
-                <MessageCircle className="w-5 h-5" />
-                <span className="font-medium">Ask Agent</span>
-              </button>
+
             </div>
           </motion.div>
         )}

@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Filter, Download, ChevronDown, ChevronRight, Search } from 'lucide-react';
+import { Filter, Download, ChevronDown, ChevronRight, BarChart3 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import FilterPanel from '../components/FilterPanel';
 import StockTable from '../components/StockTable';
 
 const Screener = () => {
+  const navigate = useNavigate();
   const [isFilterOpen, setIsFilterOpen] = useState(true);
 
   return (
@@ -24,6 +26,13 @@ const Screener = () => {
               <p className="text-gray-400 mt-2">Advanced filtering and analysis tools</p>
             </div>
             <div className="flex items-center space-x-4 mt-4 lg:mt-0">
+              <button
+                onClick={() => navigate('/screener/compare')}
+                className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl hover:from-blue-600 hover:to-cyan-600 transition-all hover:scale-105"
+              >
+                <BarChart3 className="w-5 h-5" />
+                <span>Compare Stocks</span>
+              </button>
               <button
                 onClick={() => setIsFilterOpen(!isFilterOpen)}
                 className="flex items-center space-x-2 px-4 py-2 bg-gray-800 border border-gray-700 rounded-xl hover:border-gray-600 transition-colors"
