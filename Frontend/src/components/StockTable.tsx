@@ -92,28 +92,28 @@ const StockTable = () => {
 
   const TableHeader = ({ label, sortKey, className = '' }: any) => (
     <th
-      className={`px-6 py-4 text-left cursor-pointer hover:bg-gray-700 transition-colors ${className}`}
+      className={`px-6 py-4 text-left cursor-pointer hover:bg-white/5 transition-colors ${className}`}
       onClick={() => handleSort(sortKey)}
     >
-      <div className="flex items-center space-x-1">
-        <span className="text-sm font-semibold text-gray-300">{label}</span>
-        <ArrowUpDown className="w-4 h-4 text-gray-500" />
+      <div className="flex items-center space-x-1 group">
+        <span className="text-xs font-bold tracking-widest uppercase text-gray-400 group-hover:text-cyan-400 transition-colors">{label}</span>
+        <ArrowUpDown className="w-3.5 h-3.5 text-gray-600 group-hover:text-cyan-400 transition-colors" />
       </div>
     </th>
   );
 
   return (
-    <div className="bg-gray-800 rounded-2xl border border-gray-700 overflow-hidden">
-      <div className="p-6 border-b border-gray-700">
+    <div className="bg-white/5 backdrop-blur-xl rounded-3xl border border-white/10 overflow-hidden shadow-2xl">
+      <div className="p-6 border-b border-white/5 bg-white/5">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-white">Screened Stocks</h2>
-          <span className="text-sm text-gray-400">{stocks.length} results</span>
+          <h2 className="text-xl font-bold text-white tracking-wide">Screened Stocks</h2>
+          <span className="text-sm font-semibold tracking-widest uppercase text-gray-500 bg-black/20 px-3 py-1 rounded-full">{stocks.length} results</span>
         </div>
       </div>
 
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-gray-700">
+          <thead className="bg-black/20 border-b border-white/5">
             <tr>
               <TableHeader label="Stock" sortKey="name" />
               <TableHeader label="Price" sortKey="price" />
@@ -124,69 +124,71 @@ const StockTable = () => {
               <TableHeader label="P/B" sortKey="pb" />
               <TableHeader label="Sector" sortKey="sector" />
               <th className="px-6 py-4 text-right">
-                <span className="text-sm font-semibold text-gray-300">Actions</span>
+                <span className="text-xs font-bold tracking-widest uppercase text-gray-500">Actions</span>
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-700">
+          <tbody className="divide-y divide-white/5">
             {sortedStocks.map((stock, index) => (
               <motion.tr
                 key={stock.symbol}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="hover:bg-gray-700 transition-colors"
+                className="hover:bg-white/5 transition-colors group cursor-pointer"
               >
                 <td className="px-6 py-4">
                   <div>
                     <Link
                       to={`/stock/${stock.symbol}`}
-                      className="text-white font-semibold hover:text-cyan-400 transition-colors"
+                      className="text-white font-bold group-hover:text-cyan-400 transition-colors"
                     >
                       {stock.symbol}
                     </Link>
-                    <p className="text-xs text-gray-400 mt-1">{stock.name}</p>
+                    <p className="text-xs font-medium text-gray-500 mt-1 tracking-wide">{stock.name}</p>
                   </div>
                 </td>
                 <td className="px-6 py-4">
-                  <span className="text-white font-medium">₹{stock.price.toLocaleString()}</span>
+                  <span className="text-white font-bold tracking-wide">₹{stock.price.toLocaleString()}</span>
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex items-center space-x-2">
-                    {stock.change > 0 ? (
-                      <TrendingUp className="w-4 h-4 text-green-400" />
-                    ) : (
-                      <TrendingDown className="w-4 h-4 text-red-400" />
-                    )}
+                    <div className={`p-1 rounded-md ${stock.change > 0 ? 'bg-green-500/10' : 'bg-red-500/10'}`}>
+                      {stock.change > 0 ? (
+                        <TrendingUp className="w-4 h-4 text-green-400" />
+                      ) : (
+                        <TrendingDown className="w-4 h-4 text-red-400" />
+                      )}
+                    </div>
                     <div className={`${stock.change > 0 ? 'text-green-400' : 'text-red-400'}`}>
-                      <p className="font-medium">
+                      <p className="font-bold tracking-wide">
                         {stock.change > 0 ? '+' : ''}₹{stock.change.toFixed(2)}
                       </p>
-                      <p className="text-xs">
-                        ({stock.change > 0 ? '+' : ''}{stock.changePercent}%)
+                      <p className="text-xs font-medium px-1.5 py-0.5 mt-1 rounded-md bg-white/5 inline-block">
+                        {stock.change > 0 ? '+' : ''}{stock.changePercent}%
                       </p>
                     </div>
                   </div>
                 </td>
                 <td className="px-6 py-4">
-                  <span className="text-gray-300">{stock.volume}L</span>
+                  <span className="text-gray-300 font-medium">{stock.volume}L</span>
                 </td>
                 <td className="px-6 py-4">
-                  <span className="text-gray-300">₹{(stock.marketCap / 100).toLocaleString()}Cr</span>
+                  <span className="text-gray-300 font-medium">₹{(stock.marketCap / 100).toLocaleString()}Cr</span>
                 </td>
                 <td className="px-6 py-4">
-                  <span className="text-gray-300">{stock.pe}</span>
+                  <span className="text-gray-300 font-medium">{stock.pe}</span>
                 </td>
                 <td className="px-6 py-4">
-                  <span className="text-gray-300">{stock.pb}</span>
+                  <span className="text-gray-300 font-medium">{stock.pb}</span>
                 </td>
                 <td className="px-6 py-4">
-                  <span className="inline-block px-2 py-1 text-xs bg-gray-600 text-gray-200 rounded-md">
+                  <span className="inline-block px-3 py-1 text-xs font-bold tracking-wider uppercase bg-white/5 text-gray-300 rounded-lg border border-white/10 group-hover:bg-white/10 transition-colors">
                     {stock.sector}
                   </span>
                 </td>
                 <td className="px-6 py-4 text-right">
-                  <button className="p-2 hover:bg-gray-600 rounded-lg transition-colors">
+                  <button className="p-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-colors">
                     <Star className="w-4 h-4 text-gray-400 hover:text-yellow-400" />
                   </button>
                 </td>

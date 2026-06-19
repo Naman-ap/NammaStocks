@@ -85,10 +85,10 @@ const KeyRatioCards = ({ data }: any) => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="bg-gray-800 rounded-2xl p-6 border border-gray-700 hover:border-gray-600 transition-all hover:shadow-lg hover:shadow-cyan-500/10"
+              className="bg-white/5 backdrop-blur-xl rounded-3xl p-6 border border-white/10 hover:border-white/20 transition-all hover:shadow-2xl hover:shadow-cyan-500/10"
             >
               <div className="flex items-center justify-between mb-4">
-                <div className={`p-2 rounded-xl ${getTrendColor(ratio.trend)} bg-opacity-20`}>
+                <div className={`p-2 rounded-xl bg-white/5 border border-white/10`}>
                   <ratio.icon className={`w-6 h-6 ${getTrendColor(ratio.trend)}`} />
                 </div>
                 <TrendIcon className={`w-5 h-5 ${getTrendColor(ratio.trend)}`} />

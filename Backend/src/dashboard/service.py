@@ -1,6 +1,9 @@
 """Dashboard service layer for business logic."""
 
 import requests
+import yfinance as yf
+from nselib import capital_market
+from mftool import Mftool
 from src.dashboard.repository import DashboardRepository
 from src.dashboard.models import DashboardMetric
 from src.dashboard.schemas import (
@@ -96,3 +99,62 @@ class DashboardService:
             categories=categories,
             latest_metrics=[DashboardMetricRead.model_validate(m) for m in latest]
         )
+
+
+class YFinanceService:
+    """Service layer for yfinance temporary API experimentation."""
+    
+    def get_ticker_info(self, symbol: str) -> dict:
+        """Get ticker info using yfinance."""
+        ticker = yf.Ticker(symbol)
+        return ticker.info
+
+    def get_ticker_history(self, symbol: str, period: str = "1mo") -> dict:
+        """Get historical data using yfinance."""
+        ticker = yf.Ticker(symbol)
+        history_df = ticker.history(period=period)
+        
+        # Convert index (datetime) to string so it can be easily serialized by Pydantic/FastAPI
+        if not history_df.empty:
+            history_df.index = history_df.index.astype(str)
+            
+        return history_df.to_dict(orient="index")
+
+
+class NseService:
+    """Service layer for nselib temporary API experimentation."""
+    
+    def get_price_volume_data(self, symbol: str, period: str = "1M") -> list[dict]:
+        """Get price volume data using nselib."""
+        df = capital_market.price_volume_data(symbol=symbol.upper(), period=period)
+        if df is not None and not df.empty:
+            return df.fillna("").to_dict(orient="records")
+        return []
+
+
+class MfService:
+    """Service layer for mftool temporary API experimentation."""
+    
+    def __init__(self):
+        self.mf = Mftool()
+        
+    def get_scheme_info(self, code: str) -> dict:
+        """Get mutual fund scheme quote."""
+        try:
+            return self.mf.get_scheme_quote(code) or {}
+        except Exception as e:
+            return {"error": str(e)}
+        
+    def get_scheme_history(self, code: str) -> dict:
+        """Get mutual fund scheme historical nav."""
+        import json
+        try:
+            data = self.mf.get_scheme_historical_nav(code, as_json=True)
+            if isinstance(data, str):
+                try:
+                    return json.loads(data)
+                except:
+                    return {"error": "Invalid data returned", "data": data}
+            return data or {}
+        except Exception as e:
+            return {"error": str(e)}

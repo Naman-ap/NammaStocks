@@ -296,7 +296,7 @@ const CommoditiesInsights = () => {
         className="space-y-6"
       >
         {/* Risk & Market Context */}
-        <div className="bg-gradient-to-br from-gray-800 to-gray-700 rounded-2xl p-8 border border-gray-600">
+        <div className="bg-gradient-to-br from-gray-800 to-gray-700 rounded-2xl p-8 border border-white/5">
           <div className="flex items-start justify-between mb-6">
             <div>
               <h2 className="text-2xl font-bold text-white mb-2 flex items-center space-x-3">
@@ -311,7 +311,7 @@ const CommoditiesInsights = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
             {/* Overall Risk Level */}
-            <div className="bg-gray-700/50 rounded-xl p-6 border border-gray-600">
+            <div className="bg-white/5/50 rounded-xl p-6 border border-white/5">
               <div className="flex items-center space-x-3 mb-3">
                 <AlertTriangle className={`w-6 h-6 text-${getRiskLevelColor(riskAssessment.level)}-400`} />
                 <h3 className="text-sm font-medium text-gray-400">Overall Risk Level</h3>
@@ -325,7 +325,7 @@ const CommoditiesInsights = () => {
             </div>
 
             {/* Volatility Outlook */}
-            <div className="bg-gray-700/50 rounded-xl p-6 border border-gray-600">
+            <div className="bg-white/5/50 rounded-xl p-6 border border-white/5">
               <div className="flex items-center space-x-3 mb-3">
                 <Activity className="w-6 h-6 text-purple-400" />
                 <h3 className="text-sm font-medium text-gray-400">Volatility Outlook</h3>
@@ -339,7 +339,7 @@ const CommoditiesInsights = () => {
             </div>
 
             {/* Confidence Level */}
-            <div className="bg-gray-700/50 rounded-xl p-6 border border-gray-600">
+            <div className="bg-white/5/50 rounded-xl p-6 border border-white/5">
               <div className="flex items-center space-x-3 mb-3">
                 <CheckCircle className="w-6 h-6 text-blue-400" />
                 <h3 className="text-sm font-medium text-gray-400">Assessment Confidence</h3>
@@ -364,7 +364,7 @@ const CommoditiesInsights = () => {
         </div>
 
         {/* Market Regime */}
-        <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700">
+        <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10">
           <h2 className="text-2xl font-bold text-white mb-4 flex items-center space-x-3">
             <Waves className="w-6 h-6 text-indigo-400" />
             <span>Current Market Regime</span>
@@ -403,14 +403,14 @@ const CommoditiesInsights = () => {
         className="space-y-6"
       >
         {/* Analysis Tabs */}
-        <div className="bg-gray-800 rounded-2xl p-2 border border-gray-700">
+        <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-2 border border-white/10">
           <div className="grid grid-cols-3 gap-2">
             <button
               onClick={() => setActiveAnalysisTab('drivers')}
               className={`px-6 py-4 rounded-xl font-semibold transition-all ${
                 activeAnalysisTab === 'drivers'
                   ? 'bg-yellow-500/20 text-yellow-400 border-2 border-yellow-500'
-                  : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
+                  : 'bg-white/5 text-gray-400 hover:bg-white/10'
               }`}
             >
               <Lightbulb className="w-5 h-5 mx-auto mb-2" />
@@ -421,7 +421,7 @@ const CommoditiesInsights = () => {
               className={`px-6 py-4 rounded-xl font-semibold transition-all ${
                 activeAnalysisTab === 'factors'
                   ? 'bg-green-500/20 text-green-400 border-2 border-green-500'
-                  : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
+                  : 'bg-white/5 text-gray-400 hover:bg-white/10'
               }`}
             >
               <BarChart3 className="w-5 h-5 mx-auto mb-2" />
@@ -432,7 +432,7 @@ const CommoditiesInsights = () => {
               className={`px-6 py-4 rounded-xl font-semibold transition-all ${
                 activeAnalysisTab === 'scenarios'
                   ? 'bg-orange-500/20 text-orange-400 border-2 border-orange-500'
-                  : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
+                  : 'bg-white/5 text-gray-400 hover:bg-white/10'
               }`}
             >
               <Zap className="w-5 h-5 mx-auto mb-2" />
@@ -461,14 +461,14 @@ const CommoditiesInsights = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  className="bg-gray-800 rounded-2xl border border-gray-700 hover:border-gray-600 transition-all overflow-hidden"
+                  className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 hover:border-white/5 transition-all overflow-hidden"
                 >
                   <div className="p-6">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex-1">
                         <div className="flex items-center space-x-3 mb-2">
                           <span className="text-2xl font-bold text-gray-600">#{index + 1}</span>
-                          <span className="px-3 py-1 bg-gray-700 rounded-full text-xs font-medium text-gray-300">
+                          <span className="px-3 py-1 bg-white/5 rounded-full text-xs font-medium text-gray-300">
                             {driver.category}
                           </span>
                           <span className={`px-3 py-1 rounded-full text-xs font-medium ${
@@ -490,7 +490,7 @@ const CommoditiesInsights = () => {
                       </div>
                     </div>
 
-                    <div className="bg-gray-700/50 rounded-xl p-4 border border-gray-600">
+                    <div className="bg-white/5/50 rounded-xl p-4 border border-white/5">
                       <h4 className="text-sm font-semibold text-cyan-400 mb-2">Why it matters</h4>
                       <p className="text-gray-300 text-sm leading-relaxed">
                         {driver.whyItMatters}
@@ -520,7 +520,7 @@ const CommoditiesInsights = () => {
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: index * 0.05 }}
-                  className="bg-gray-800 rounded-2xl p-6 border border-gray-700 hover:border-gray-600 transition-all"
+                  className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10 hover:border-white/5 transition-all"
                 >
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center space-x-3">
@@ -545,7 +545,7 @@ const CommoditiesInsights = () => {
                     </div>
                   </div>
 
-                  <div className="mt-4 pt-4 border-t border-gray-700">
+                  <div className="mt-4 pt-4 border-t border-white/10">
                     <p className="text-sm text-gray-300 leading-relaxed">
                       {factor.explanation}
                     </p>
@@ -584,7 +584,7 @@ const CommoditiesInsights = () => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  className="bg-gray-800 rounded-2xl p-6 border border-gray-700"
+                  className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10"
                 >
                   <div className="mb-4">
                     <div className="flex items-start space-x-2 mb-3">
@@ -602,7 +602,7 @@ const CommoditiesInsights = () => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3 pt-4 border-t border-gray-700">
+                  <div className="grid grid-cols-2 gap-3 pt-4 border-t border-white/10">
                     <div>
                       <p className="text-xs text-gray-400 mb-1">Probability</p>
                       <p className="text-sm text-white font-semibold">{scenario.probability}</p>
@@ -630,7 +630,7 @@ const CommoditiesInsights = () => {
         exit={{ opacity: 0, y: -20 }}
         className="space-y-6"
       >
-        <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700">
+        <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10">
           <h2 className="text-2xl font-bold text-white mb-4 flex items-center space-x-3">
             <Users className="w-6 h-6 text-purple-400" />
             <span>Community Sentiment</span>
@@ -658,7 +658,7 @@ const CommoditiesInsights = () => {
                     className={`w-full text-left p-4 rounded-xl border transition-all ${
                       userPoll === option.label
                         ? 'bg-purple-500/20 border-purple-500'
-                        : 'bg-gray-700 border-gray-600 hover:border-gray-500'
+                        : 'bg-white/5 border-white/5 hover:border-gray-500'
                     }`}
                   >
                     <div className="flex items-center justify-between mb-2">
@@ -690,7 +690,7 @@ const CommoditiesInsights = () => {
 
               <div className="space-y-3">
                 {communityInsights.map((insight, index) => (
-                  <div key={index} className="bg-gray-700 rounded-xl p-4">
+                  <div key={index} className="bg-white/5 rounded-xl p-4">
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-semibold text-white">{insight.theme}</span>
                       <span className="text-sm text-purple-400">{insight.count} mentions</span>
@@ -700,7 +700,7 @@ const CommoditiesInsights = () => {
                 ))}
               </div>
 
-              <div className="mt-4 p-3 bg-gray-700/50 rounded-xl border border-gray-600">
+              <div className="mt-4 p-3 bg-white/5/50 rounded-xl border border-white/5">
                 <p className="text-xs text-gray-400 italic">
                   These themes reflect recurring topics in user commentary. They do not constitute consensus predictions or recommendations.
                 </p>
@@ -721,7 +721,7 @@ const CommoditiesInsights = () => {
         exit={{ opacity: 0, y: -20 }}
         className="space-y-6"
       >
-        <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700">
+        <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10">
           <div className="flex items-center space-x-3 mb-6">
             <BookOpen className="w-6 h-6 text-indigo-400" />
             <h2 className="text-2xl font-bold text-white">Evidence & Methodology</h2>
@@ -731,7 +731,7 @@ const CommoditiesInsights = () => {
             {/* Volatility Comparison */}
             <div>
               <h3 className="text-lg font-semibold text-white mb-3">Volatility vs Historical Baseline</h3>
-              <div className="bg-gray-700 rounded-xl p-4">
+              <div className="bg-white/5 rounded-xl p-4">
                 <div className="grid grid-cols-3 gap-4 text-center">
                   <div>
                     <p className="text-sm text-gray-400 mb-1">Current 30-Day Vol</p>
@@ -753,25 +753,25 @@ const CommoditiesInsights = () => {
             <div>
               <h3 className="text-lg font-semibold text-white mb-3">Primary Sources</h3>
               <div className="space-y-2">
-                <div className="flex items-center space-x-3 p-3 bg-gray-700 rounded-lg">
+                <div className="flex items-center space-x-3 p-3 bg-white/5 rounded-lg">
                   <ExternalLink className="w-4 h-4 text-cyan-400" />
                   <span className="text-gray-300 text-sm">
                     Bloomberg Commodity Index Data (Real-time pricing and volatility metrics)
                   </span>
                 </div>
-                <div className="flex items-center space-x-3 p-3 bg-gray-700 rounded-lg">
+                <div className="flex items-center space-x-3 p-3 bg-white/5 rounded-lg">
                   <ExternalLink className="w-4 h-4 text-cyan-400" />
                   <span className="text-gray-300 text-sm">
                     Reuters News API (Aggregated news sentiment and event tracking)
                   </span>
                 </div>
-                <div className="flex items-center space-x-3 p-3 bg-gray-700 rounded-lg">
+                <div className="flex items-center space-x-3 p-3 bg-white/5 rounded-lg">
                   <ExternalLink className="w-4 h-4 text-cyan-400" />
                   <span className="text-gray-300 text-sm">
                     Central Bank Policy Statements (FOMC, ECB, BoJ official communications)
                   </span>
                 </div>
-                <div className="flex items-center space-x-3 p-3 bg-gray-700 rounded-lg">
+                <div className="flex items-center space-x-3 p-3 bg-white/5 rounded-lg">
                   <ExternalLink className="w-4 h-4 text-cyan-400" />
                   <span className="text-gray-300 text-sm">
                     IEA Energy Reports (Supply and demand projections for energy commodities)
@@ -783,7 +783,7 @@ const CommoditiesInsights = () => {
             {/* Methodology */}
             <div>
               <h3 className="text-lg font-semibold text-white mb-3">Methodology Notes</h3>
-              <div className="bg-gray-700 rounded-xl p-4 space-y-3 text-sm text-gray-300">
+              <div className="bg-white/5 rounded-xl p-4 space-y-3 text-sm text-gray-300">
                 <p>
                   <strong className="text-white">Risk Assessment:</strong> Based on combination of implied volatility, news sentiment analysis, and historical pattern deviation.
                 </p>
@@ -834,8 +834,11 @@ const CommoditiesInsights = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-[#0a0a0a] to-black relative overflow-hidden">
+      {/* Abstract Background Elements */}
+      <div className="absolute top-[10%] right-[-5%] w-[40%] h-[40%] rounded-full bg-cyan-900/20 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-900/20 blur-[120px] pointer-events-none" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -852,7 +855,7 @@ const CommoditiesInsights = () => {
               </p>
             </div>
 
-            <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700">
+            <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Commodity Selector */}
                 <div>
@@ -863,7 +866,7 @@ const CommoditiesInsights = () => {
                     <select
                       value={selectedCommodity}
                       onChange={(e) => setSelectedCommodity(e.target.value)}
-                      className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white appearance-none cursor-pointer focus:border-cyan-400 focus:outline-none"
+                      className="w-full px-4 py-3 bg-white/5 border border-white/5 rounded-xl text-white appearance-none cursor-pointer focus:border-cyan-400 focus:outline-none"
                     >
                       {commodities.map(commodity => (
                         <option key={commodity} value={commodity}>{commodity}</option>
@@ -882,7 +885,7 @@ const CommoditiesInsights = () => {
                     <select
                       value={timeHorizon}
                       onChange={(e) => setTimeHorizon(e.target.value)}
-                      className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white appearance-none cursor-pointer focus:border-cyan-400 focus:outline-none"
+                      className="w-full px-4 py-3 bg-white/5 border border-white/5 rounded-xl text-white appearance-none cursor-pointer focus:border-cyan-400 focus:outline-none"
                     >
                       {timeHorizons.map(horizon => (
                         <option key={horizon.value} value={horizon.value}>{horizon.label}</option>
@@ -897,7 +900,7 @@ const CommoditiesInsights = () => {
                   <label className="block text-sm font-medium text-gray-400 mb-2">
                     Last Updated
                   </label>
-                  <div className="flex items-center space-x-2 px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl">
+                  <div className="flex items-center space-x-2 px-4 py-3 bg-white/5 border border-white/5 rounded-xl">
                     <Clock className="w-5 h-5 text-cyan-400" />
                     <span className="text-white text-sm">
                       {formatTimestamp(riskAssessment.lastUpdated)}
@@ -919,7 +922,7 @@ const CommoditiesInsights = () => {
                 className={`p-6 rounded-2xl border-2 transition-all ${
                   activeMode === mode.id
                     ? `bg-${mode.color}-500/20 border-${mode.color}-500`
-                    : 'bg-gray-800 border-gray-700 hover:border-gray-600'
+                    : 'bg-white/5 backdrop-blur-xl border-white/10 hover:border-white/5'
                 }`}
               >
                 <mode.icon className={`w-8 h-8 mb-3 ${
@@ -946,7 +949,7 @@ const CommoditiesInsights = () => {
           </div>
 
           {/* Disclaimer Footer */}
-          <div className="bg-gradient-to-r from-gray-800 to-gray-700 rounded-2xl p-6 border border-gray-600">
+          <div className="bg-gradient-to-r from-gray-800 to-gray-700 rounded-2xl p-6 border border-white/5">
             <div className="flex items-start space-x-4">
               <AlertTriangle className="w-6 h-6 text-yellow-400 flex-shrink-0 mt-1" />
               <div className="space-y-2">

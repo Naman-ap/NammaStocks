@@ -125,8 +125,11 @@ const Blog = () => {
   const regularPosts = filteredPosts.filter(post => !post.featured);
 
   return (
-    <div className="min-h-screen bg-gray-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-[#0a0a0a] to-black relative overflow-hidden">
+      {/* Abstract Background Elements */}
+      <div className="absolute top-[10%] right-[-5%] w-[40%] h-[40%] rounded-full bg-cyan-900/20 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-900/20 blur-[120px] pointer-events-none" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -158,7 +161,7 @@ const Blog = () => {
                 placeholder="Search articles..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-gray-800 border border-gray-700 rounded-xl focus:border-cyan-400 focus:outline-none text-white placeholder-gray-400"
+                className="w-full pl-10 pr-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl focus:border-cyan-400 focus:outline-none text-white placeholder-gray-400"
               />
             </div>
             <div className="flex space-x-2 overflow-x-auto pb-2">
@@ -169,7 +172,7 @@ const Blog = () => {
                   className={`flex items-center space-x-2 px-4 py-3 rounded-xl whitespace-nowrap transition-colors ${
                     selectedCategory === category.id
                       ? 'bg-cyan-500 text-white'
-                      : 'bg-gray-800 text-gray-300 hover:text-white hover:bg-gray-700'
+                      : 'bg-white/5 backdrop-blur-xl text-gray-300 hover:text-white hover:bg-white/5'
                   }`}
                 >
                   <span>{category.label}</span>
@@ -186,7 +189,7 @@ const Blog = () => {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-gradient-to-r from-gray-800 to-gray-700 rounded-2xl p-8 border border-gray-600"
+              className="bg-gradient-to-r from-gray-800 to-gray-700 rounded-2xl p-8 border border-white/5"
             >
               <div className="flex items-center space-x-2 mb-4">
                 <TrendingUp className="w-5 h-5 text-yellow-400" />
@@ -228,7 +231,7 @@ const Blog = () => {
                   </button>
                 </div>
                 
-                <div className="bg-gray-900 rounded-xl p-4 border border-gray-600">
+                <div className="bg-black/20 rounded-xl p-4 border border-white/5">
                   <div className="flex items-center space-x-2 mb-3">
                     <Code className="w-4 h-4 text-green-400" />
                     <span className="text-green-400 font-medium text-sm">Code Preview</span>
@@ -249,7 +252,7 @@ const Blog = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-gray-800 rounded-2xl border border-gray-700 hover:border-gray-600 transition-all hover:shadow-lg hover:shadow-cyan-500/10 overflow-hidden group"
+                className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 hover:border-white/5 transition-all hover:shadow-lg hover:shadow-cyan-500/10 overflow-hidden group"
               >
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-4">
@@ -265,7 +268,7 @@ const Blog = () => {
                   
                   <p className="text-gray-300 mb-4 line-clamp-3">{post.excerpt}</p>
                   
-                  <div className="bg-gray-900 rounded-lg p-3 mb-4 border border-gray-600">
+                  <div className="bg-black/20 rounded-lg p-3 mb-4 border border-white/5">
                     <div className="flex items-center space-x-2 mb-2">
                       <Code className="w-3 h-3 text-green-400" />
                       <span className="text-green-400 font-medium text-xs">Snippet</span>
@@ -297,7 +300,7 @@ const Blog = () => {
                     {post.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="px-2 py-1 bg-gray-700 text-gray-300 rounded text-xs"
+                        className="px-2 py-1 bg-white/5 text-gray-300 rounded text-xs"
                       >
                         #{tag}
                       </span>

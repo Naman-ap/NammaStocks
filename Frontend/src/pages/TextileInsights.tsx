@@ -322,8 +322,11 @@ const TextileInsights = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-[#0a0a0a] to-black relative overflow-hidden">
+      {/* Abstract Background Elements */}
+      <div className="absolute top-[10%] right-[-5%] w-[40%] h-[40%] rounded-full bg-cyan-900/20 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-900/20 blur-[120px] pointer-events-none" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -354,7 +357,7 @@ const TextileInsights = () => {
           </div>
 
           {/* Table of Contents */}
-          <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700">
+          <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10">
             <h2 className="text-xl font-semibold text-white mb-4 flex items-center space-x-2">
               <FileText className="w-5 h-5 text-cyan-400" />
               <span>Table of Contents</span>
@@ -367,7 +370,7 @@ const TextileInsights = () => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
                   onClick={() => scrollToSection(item.id)}
-                  className="flex items-center space-x-3 p-3 text-left hover:bg-gray-700 rounded-xl transition-colors group"
+                  className="flex items-center space-x-3 p-3 text-left hover:bg-white/5 rounded-xl transition-colors group"
                 >
                   <item.icon className="w-5 h-5 text-cyan-400 group-hover:text-cyan-300" />
                   <span className="text-gray-300 group-hover:text-white">{item.title}</span>
@@ -383,7 +386,7 @@ const TextileInsights = () => {
                 <Calendar className="w-6 h-6 text-cyan-400" />
                 <span>Latest News & Updates</span>
               </h2>
-              <button className="flex items-center space-x-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-xl transition-colors">
+              <button className="flex items-center space-x-2 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-xl transition-colors">
                 <Share2 className="w-4 h-4" />
                 <span className="text-gray-300">Share Section</span>
               </button>
@@ -396,7 +399,7 @@ const TextileInsights = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="bg-gray-800 rounded-2xl p-6 border border-gray-700 hover:border-gray-600 transition-all"
+                  className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10 hover:border-white/5 transition-all"
                 >
                   <div className="flex items-start justify-between mb-3">
                     <span className="px-3 py-1 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-full text-xs font-medium">
@@ -420,7 +423,7 @@ const TextileInsights = () => {
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-gray-500">Source: {news.source}</span>
                     <div className="flex items-center space-x-2">
-                      <button className="p-2 hover:bg-gray-700 rounded-lg transition-colors">
+                      <button className="p-2 hover:bg-white/5 rounded-lg transition-colors">
                         <Bookmark className="w-4 h-4 text-gray-400 hover:text-cyan-400" />
                       </button>
                       <button className="flex items-center space-x-1 text-cyan-400 hover:text-cyan-300 text-sm transition-colors">
@@ -441,7 +444,7 @@ const TextileInsights = () => {
                 <TrendingUp className="w-6 h-6 text-green-400" />
                 <span>Expert Predictions</span>
               </h2>
-              <button className="flex items-center space-x-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-xl transition-colors">
+              <button className="flex items-center space-x-2 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-xl transition-colors">
                 <Share2 className="w-4 h-4" />
                 <span className="text-gray-300">Share Section</span>
               </button>
@@ -454,7 +457,7 @@ const TextileInsights = () => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="bg-gray-800 rounded-2xl p-6 border border-gray-700 hover:border-gray-600 transition-all"
+                  className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10 hover:border-white/5 transition-all"
                 >
                   <div className="flex items-start space-x-4">
                     <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center flex-shrink-0">
@@ -496,7 +499,7 @@ const TextileInsights = () => {
                 <BarChart3 className="w-6 h-6 text-blue-400" />
                 <span>Industry Segments Analysis</span>
               </h2>
-              <button className="flex items-center space-x-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-xl transition-colors">
+              <button className="flex items-center space-x-2 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-xl transition-colors">
                 <Share2 className="w-4 h-4" />
                 <span className="text-gray-300">Share Section</span>
               </button>
@@ -509,7 +512,7 @@ const TextileInsights = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="bg-gray-800 rounded-2xl p-6 border border-gray-700 hover:border-gray-600 transition-all"
+                  className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10 hover:border-white/5 transition-all"
                 >
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-xl font-semibold text-white">{segment.name}</h3>
@@ -573,7 +576,7 @@ const TextileInsights = () => {
                 <Factory className="w-6 h-6 text-purple-400" />
                 <span>Manufacturing & Innovation</span>
               </h2>
-              <button className="flex items-center space-x-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-xl transition-colors">
+              <button className="flex items-center space-x-2 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-xl transition-colors">
                 <Share2 className="w-4 h-4" />
                 <span className="text-gray-300">Share Section</span>
               </button>
@@ -586,7 +589,7 @@ const TextileInsights = () => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="bg-gray-800 rounded-2xl p-6 border border-gray-700 hover:border-gray-600 transition-all"
+                  className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10 hover:border-white/5 transition-all"
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">
@@ -620,26 +623,26 @@ const TextileInsights = () => {
                 <Globe className="w-6 h-6 text-orange-400" />
                 <span>Global Politics & Trade Impact</span>
               </h2>
-              <button className="flex items-center space-x-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-xl transition-colors">
+              <button className="flex items-center space-x-2 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-xl transition-colors">
                 <Share2 className="w-4 h-4" />
                 <span className="text-gray-300">Share Section</span>
               </button>
             </div>
 
-            <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700">
+            <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div>
                   <h3 className="text-lg font-semibold text-white mb-4">Recent Trade Policy Changes</h3>
                   <div className="space-y-4">
-                    <div className="p-4 bg-gray-700 rounded-xl">
+                    <div className="p-4 bg-white/5 rounded-xl">
                       <h4 className="font-medium text-cyan-400 mb-2">US-China Trade Relations</h4>
                       <p className="text-sm text-gray-300">Reduced tariffs on textile imports from China by 15%, expected to lower costs for US retailers and increase competition for domestic manufacturers.</p>
                     </div>
-                    <div className="p-4 bg-gray-700 rounded-xl">
+                    <div className="p-4 bg-white/5 rounded-xl">
                       <h4 className="font-medium text-cyan-400 mb-2">EU Green Deal Impact</h4>
                       <p className="text-sm text-gray-300">New carbon border adjustments will affect textile imports, requiring detailed emissions reporting and potentially increasing costs for non-EU suppliers.</p>
                     </div>
-                    <div className="p-4 bg-gray-700 rounded-xl">
+                    <div className="p-4 bg-white/5 rounded-xl">
                       <h4 className="font-medium text-cyan-400 mb-2">RCEP Implementation</h4>
                       <p className="text-sm text-gray-300">Regional Comprehensive Economic Partnership reduces textile tariffs across Asia-Pacific, creating new opportunities for regional trade integration.</p>
                     </div>
@@ -649,19 +652,19 @@ const TextileInsights = () => {
                 <div>
                   <h3 className="text-lg font-semibold text-white mb-4">Regional Impact Analysis</h3>
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between p-3 bg-gray-700 rounded-xl">
+                    <div className="flex items-center justify-between p-3 bg-white/5 rounded-xl">
                       <span className="text-gray-300">North America</span>
                       <span className="text-green-400 font-medium">+8.5% Growth</span>
                     </div>
-                    <div className="flex items-center justify-between p-3 bg-gray-700 rounded-xl">
+                    <div className="flex items-center justify-between p-3 bg-white/5 rounded-xl">
                       <span className="text-gray-300">Europe</span>
                       <span className="text-yellow-400 font-medium">+3.2% Growth</span>
                     </div>
-                    <div className="flex items-center justify-between p-3 bg-gray-700 rounded-xl">
+                    <div className="flex items-center justify-between p-3 bg-white/5 rounded-xl">
                       <span className="text-gray-300">Asia-Pacific</span>
                       <span className="text-green-400 font-medium">+12.7% Growth</span>
                     </div>
-                    <div className="flex items-center justify-between p-3 bg-gray-700 rounded-xl">
+                    <div className="flex items-center justify-between p-3 bg-white/5 rounded-xl">
                       <span className="text-gray-300">Latin America</span>
                       <span className="text-red-400 font-medium">-2.1% Decline</span>
                     </div>
@@ -678,7 +681,7 @@ const TextileInsights = () => {
                 <Zap className="w-6 h-6 text-yellow-400" />
                 <span>Upcoming Companies & Startups</span>
               </h2>
-              <button className="flex items-center space-x-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-xl transition-colors">
+              <button className="flex items-center space-x-2 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-xl transition-colors">
                 <Share2 className="w-4 h-4" />
                 <span className="text-gray-300">Share Section</span>
               </button>
@@ -691,7 +694,7 @@ const TextileInsights = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="bg-gray-800 rounded-2xl p-6 border border-gray-700 hover:border-gray-600 transition-all"
+                  className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10 hover:border-white/5 transition-all"
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div>
@@ -718,7 +721,7 @@ const TextileInsights = () => {
                     </div>
                   </div>
                   
-                  <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-700">
+                  <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/10">
                     <button className="flex items-center space-x-1 text-cyan-400 hover:text-cyan-300 text-sm transition-colors">
                       <Building className="w-4 h-4" />
                       <span>Company Profile</span>
@@ -740,7 +743,7 @@ const TextileInsights = () => {
                 <FileText className="w-6 h-6 text-indigo-400" />
                 <span>Research & Market Trends</span>
               </h2>
-              <button className="flex items-center space-x-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-xl transition-colors">
+              <button className="flex items-center space-x-2 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-xl transition-colors">
                 <Share2 className="w-4 h-4" />
                 <span className="text-gray-300">Share Section</span>
               </button>
@@ -753,7 +756,7 @@ const TextileInsights = () => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="bg-gray-800 rounded-2xl p-6 border border-gray-700 hover:border-gray-600 transition-all"
+                  className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10 hover:border-white/5 transition-all"
                 >
                   <div className="flex items-start space-x-4">
                     <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -761,7 +764,7 @@ const TextileInsights = () => {
                     </div>
                     <div className="flex-1">
                       <h3 className="text-lg font-semibold text-white mb-2">{trend.title}</h3>
-                      <div className="bg-gray-700 rounded-xl p-4 mb-3">
+                      <div className="bg-white/5 rounded-xl p-4 mb-3">
                         <p className="text-cyan-400 font-medium text-lg mb-1">{trend.finding}</p>
                         <p className="text-xs text-gray-400">{trend.data}</p>
                       </div>
@@ -783,7 +786,7 @@ const TextileInsights = () => {
                 <AlertCircle className="w-6 h-6 text-red-400" />
                 <span>Taxation & Regulatory Updates</span>
               </h2>
-              <button className="flex items-center space-x-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-xl transition-colors">
+              <button className="flex items-center space-x-2 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-xl transition-colors">
                 <Share2 className="w-4 h-4" />
                 <span className="text-gray-300">Share Section</span>
               </button>
@@ -796,7 +799,7 @@ const TextileInsights = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="bg-gray-800 rounded-2xl p-6 border border-gray-700 hover:border-gray-600 transition-all"
+                  className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10 hover:border-white/5 transition-all"
                 >
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-semibold text-white">{update.region}</h3>
@@ -820,7 +823,7 @@ const TextileInsights = () => {
                     </div>
                   </div>
                   
-                  <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-700">
+                  <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/10">
                     <button className="flex items-center space-x-1 text-cyan-400 hover:text-cyan-300 text-sm transition-colors">
                       <ExternalLink className="w-4 h-4" />
                       <span>Official Source</span>
@@ -837,7 +840,7 @@ const TextileInsights = () => {
 
           {/* Call-to-Action Section */}
           <section className="space-y-6">
-            <div className="bg-gradient-to-r from-gray-800 to-gray-700 rounded-2xl p-8 border border-gray-600">
+            <div className="bg-gradient-to-r from-gray-800 to-gray-700 rounded-2xl p-8 border border-white/5">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Newsletter Signup */}
                 <div>
@@ -854,7 +857,7 @@ const TextileInsights = () => {
                       value={newsletterEmail}
                       onChange={(e) => setNewsletterEmail(e.target.value)}
                       placeholder="Enter your email address"
-                      className="flex-1 px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl focus:border-cyan-400 focus:outline-none text-white placeholder-gray-400"
+                      className="flex-1 px-4 py-3 bg-white/5 border border-white/5 rounded-xl focus:border-cyan-400 focus:outline-none text-white placeholder-gray-400"
                       required
                     />
                     <button
@@ -879,7 +882,7 @@ const TextileInsights = () => {
                     <button className="flex-1 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl hover:from-green-600 hover:to-emerald-600 transition-all font-medium">
                       Schedule Consultation
                     </button>
-                    <button className="px-6 py-3 border border-gray-600 text-gray-300 rounded-xl hover:bg-gray-700 transition-colors">
+                    <button className="px-6 py-3 border border-white/5 text-gray-300 rounded-xl hover:bg-white/5 transition-colors">
                       Learn More
                     </button>
                   </div>
@@ -888,24 +891,24 @@ const TextileInsights = () => {
             </div>
 
             {/* Related Resources */}
-            <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700">
+            <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10">
               <h3 className="text-lg font-semibold text-white mb-4">Related Resources</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <button className="flex items-center space-x-3 p-4 bg-gray-700 hover:bg-gray-600 rounded-xl transition-colors text-left">
+                <button className="flex items-center space-x-3 p-4 bg-white/5 hover:bg-white/10 rounded-xl transition-colors text-left">
                   <FileText className="w-5 h-5 text-cyan-400" />
                   <div>
                     <p className="text-white font-medium">Industry Report 2024</p>
                     <p className="text-xs text-gray-400">Comprehensive market analysis</p>
                   </div>
                 </button>
-                <button className="flex items-center space-x-3 p-4 bg-gray-700 hover:bg-gray-600 rounded-xl transition-colors text-left">
+                <button className="flex items-center space-x-3 p-4 bg-white/5 hover:bg-white/10 rounded-xl transition-colors text-left">
                   <BarChart3 className="w-5 h-5 text-green-400" />
                   <div>
                     <p className="text-white font-medium">Market Data Dashboard</p>
                     <p className="text-xs text-gray-400">Real-time industry metrics</p>
                   </div>
                 </button>
-                <button className="flex items-center space-x-3 p-4 bg-gray-700 hover:bg-gray-600 rounded-xl transition-colors text-left">
+                <button className="flex items-center space-x-3 p-4 bg-white/5 hover:bg-white/10 rounded-xl transition-colors text-left">
                   <Users className="w-5 h-5 text-purple-400" />
                   <div>
                     <p className="text-white font-medium">Industry Directory</p>

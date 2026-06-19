@@ -39,30 +39,29 @@ const MarketOverview = () => {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="space-y-2">
       {marketData.map((item, index) => (
         <motion.div
           key={item.title}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: index * 0.1 }}
-          className="bg-gray-800 rounded-2xl p-6 border border-gray-700 hover:border-gray-600 transition-all hover:shadow-lg hover:shadow-cyan-500/10"
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: index * 0.07 }}
+          className="flex items-center justify-between p-3 rounded-2xl bg-white/3 border border-white/5 hover:bg-white/6 hover:border-white/10 transition-all group cursor-pointer"
         >
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-medium text-gray-400">{item.title}</h3>
-            <item.icon className={`w-5 h-5 ${item.positive ? 'text-green-400' : 'text-red-400'}`} />
-          </div>
-          
-          <div className="space-y-2">
-            <p className="text-2xl font-bold text-white">{item.value}</p>
-            <div className="flex items-center space-x-2">
-              <span className={`text-sm font-medium ${item.positive ? 'text-green-400' : 'text-red-400'}`}>
-                {item.change}
-              </span>
-              <span className={`text-sm ${item.positive ? 'text-green-400' : 'text-red-400'}`}>
-                ({item.percentage})
-              </span>
+          <div className="flex items-center gap-3">
+            <div className={`p-1.5 rounded-lg ${item.positive ? 'bg-green-400/10 text-green-400' : 'bg-red-400/10 text-red-400'}`}>
+              <item.icon className="w-4 h-4" />
             </div>
+            <div>
+              <p className="text-xs font-bold text-gray-400 tracking-wider uppercase">{item.title}</p>
+              <p className="text-base font-black text-white">{item.value}</p>
+            </div>
+          </div>
+          <div className="text-right">
+            <span className={`text-xs font-bold px-2 py-1 rounded-lg ${item.positive ? 'bg-green-400/10 text-green-400' : 'bg-red-400/10 text-red-400'}`}>
+              {item.percentage}
+            </span>
+            <p className={`text-xs mt-1 ${item.positive ? 'text-green-500' : 'text-red-500'}`}>{item.change}</p>
           </div>
         </motion.div>
       ))}

@@ -16,7 +16,7 @@ const RealTimeTickerTape = () => {
   const duplicatedStocks = [...stocks, ...stocks, ...stocks];
 
   return (
-    <div className="bg-gray-800 border-b border-gray-700 overflow-hidden">
+    <div className="bg-[#08090c]/40 backdrop-blur-md border-b border-white/5 overflow-hidden">
       <motion.div
         className="flex space-x-8 py-3"
         animate={{ x: [-1000, 0] }}

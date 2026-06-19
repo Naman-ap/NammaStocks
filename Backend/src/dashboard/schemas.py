@@ -55,3 +55,38 @@ class NewsSentimentResponse(BaseModel):
     ticker: str
     feed: list[dict]
     sentiment_score_definition: Optional[str] = None
+
+
+class YFinanceTickerInfoResponse(BaseModel):
+    """Schema for yfinance ticker info response."""
+    
+    symbol: str
+    info: dict
+
+
+class YFinanceHistoryResponse(BaseModel):
+    """Schema for yfinance history response."""
+    
+    symbol: str
+    history: dict
+
+
+class NseHistoryResponse(BaseModel):
+    """Schema for nselib history response."""
+    
+    symbol: str
+    history: list[dict]
+
+
+class MfSchemeInfoResponse(BaseModel):
+    """Schema for mutual fund scheme info."""
+    
+    code: str
+    info: dict
+
+
+class MfSchemeHistoryResponse(BaseModel):
+    """Schema for mutual fund history."""
+    
+    code: str
+    history: dict

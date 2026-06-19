@@ -1,19 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Send, Zap, Sparkles, MessageCircle, Bot } from 'lucide-react';
+import { useAgent } from '../hooks/useAgent';
+import { useNavigate } from 'react-router-dom';
+
+const ProposalWidget = ({ symbols, onNavigate }: { symbols: string, onNavigate: () => void }) => {
+  const [state, setState] = useState<'pending' | 'cancelled'>('pending');
+
+  if (state === 'cancelled') {
+    return (
+      <div className="mt-3 bg-red-500/10 border border-red-500/20 rounded-xl p-3">
+        <p className="text-xs text-red-400 font-medium">Action Cancelled</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-3 bg-white/5 border border-white/10 rounded-xl p-3 flex flex-col gap-3 shadow-lg shadow-black/20">
+      <p className="text-xs text-gray-300 font-medium flex items-center gap-2">
+        <Zap className="w-3.5 h-3.5 text-cyan-400" />
+        Proposed Action: <span className="text-cyan-400">Compare Stocks ({symbols})</span>
+      </p>
+      <div className="flex gap-2">
+        <button onClick={onNavigate} className="flex-1 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg text-xs font-semibold text-white shadow-md shadow-cyan-500/20 hover:shadow-cyan-500/40 transition-all active:scale-95">
+          Execute
+        </button>
+        <button onClick={() => setState('cancelled')} className="flex-1 py-2 bg-white/5 border border-white/10 rounded-lg text-xs font-semibold text-gray-300 hover:bg-white/10 hover:text-white transition-all active:scale-95">
+          Cancel
+        </button>
+      </div>
+    </div>
+  );
+};
 
 const AskBoltModal = () => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      type: 'bot',
-      content: 'Hi! I\'m your AI stock analysis assistant. How can I help you today?',
-      timestamp: new Date(),
-    }
-  ]);
-  const [isTyping, setIsTyping] = useState(false);
+  const { messages, isTyping, error, sendMessage } = useAgent();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, isTyping]);
 
   const suggestedPrompts = [
     'Analyze RELIANCE stock performance',
@@ -23,31 +52,11 @@ const AskBoltModal = () => {
   ];
 
   const handleSendMessage = async () => {
-    if (!message.trim()) return;
-
-    const userMessage = {
-      id: messages.length + 1,
-      type: 'user' as const,
-      content: message,
-      timestamp: new Date(),
-    };
-
-    setMessages(prev => [...prev, userMessage]);
+    if (!message.trim() || isTyping) return;
+    
+    const currentMessage = message;
     setMessage('');
-    setIsTyping(true);
-
-    // Simulate AI response
-    setTimeout(() => {
-      const botResponse = {
-        id: messages.length + 2,
-        type: 'bot' as const,
-        content: `I understand you're asking about "${message}". Based on current market data and analysis, here's what I found... [This is a demo response]`,
-        timestamp: new Date(),
-      };
-      
-      setMessages(prev => [...prev, botResponse]);
-      setIsTyping(false);
-    }, 2000);
+    await sendMessage(currentMessage);
   };
 
   const handlePromptClick = (prompt: string) => {
@@ -85,10 +94,10 @@ const AskBoltModal = () => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="fixed bottom-24 right-6 bg-gray-900/95 backdrop-blur-xl rounded-2xl border border-gray-700/50 w-[calc(100vw-3rem)] sm:w-[400px] h-[600px] max-h-[calc(100vh-8rem)] shadow-2xl flex flex-col z-50 overflow-hidden"
+            className="fixed bottom-24 right-6 bg-[#08090c]/80 backdrop-blur-2xl rounded-3xl border border-white/10 w-[calc(100vw-3rem)] sm:w-[400px] h-[600px] max-h-[calc(100vh-8rem)] shadow-2xl flex flex-col z-50 overflow-hidden"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-gray-800 bg-gray-800/50">
+            <div className="flex items-center justify-between p-4 border-b border-white/10 bg-white/5">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg shadow-cyan-500/20">
                   <Bot className="w-6 h-6 text-white" />
@@ -103,7 +112,7 @@ const AskBoltModal = () => {
               </div>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-2 hover:bg-gray-700 rounded-xl transition-colors"
+                className="p-2 hover:bg-white/10 rounded-xl transition-colors"
               >
                 <X className="w-5 h-5 text-gray-400" />
               </button>
@@ -121,7 +130,7 @@ const AskBoltModal = () => {
                   <div className={`max-w-[85%] px-4 py-3 rounded-2xl ${
                     msg.type === 'user'
                       ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-br-sm'
-                      : 'bg-gray-800 border border-gray-700 text-gray-100 rounded-bl-sm'
+                      : 'bg-white/5 border border-white/10 text-gray-100 rounded-bl-sm backdrop-blur-md'
                   }`}>
                     {msg.type === 'bot' && (
                       <div className="flex items-center space-x-2 mb-2">
@@ -129,7 +138,21 @@ const AskBoltModal = () => {
                         <span className="text-xs font-medium text-cyan-400">Agent</span>
                       </div>
                     )}
-                    <p className="text-sm leading-relaxed">{msg.content}</p>
+                    <p className="text-sm leading-relaxed">{msg.content.replace(/\[(ACTION|PROPOSAL):.*?\]/, '')}</p>
+                    
+                    {msg.type === 'bot' && msg.content.includes('[PROPOSAL:NAVIGATE_COMPARE:') && (
+                      <ProposalWidget 
+                        symbols={msg.content.match(/\[PROPOSAL:NAVIGATE_COMPARE:(.*?)\]/)?.[1] || ''}
+                        onNavigate={() => {
+                          const symbols = msg.content.match(/\[PROPOSAL:NAVIGATE_COMPARE:(.*?)\]/)?.[1];
+                          if (symbols) {
+                            setIsOpen(false);
+                            navigate(`/screener?drive=true&target=compare&symbols=${symbols}`);
+                          }
+                        }}
+                      />
+                    )}
+                    
                     <p className={`text-[10px] mt-2 ${msg.type === 'user' ? 'text-cyan-100' : 'text-gray-500'}`}>
                       {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </p>
@@ -143,7 +166,7 @@ const AskBoltModal = () => {
                   animate={{ opacity: 1, y: 0 }}
                   className="flex justify-start"
                 >
-                  <div className="bg-gray-800 border border-gray-700 px-4 py-3 rounded-2xl rounded-bl-sm">
+                  <div className="bg-white/5 border border-white/10 px-4 py-3 rounded-2xl rounded-bl-sm backdrop-blur-md">
                     <div className="flex items-center space-x-2">
                       <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
                       <span className="text-xs font-medium text-cyan-400">Agent</span>
@@ -156,6 +179,7 @@ const AskBoltModal = () => {
                   </div>
                 </motion.div>
               )}
+              <div ref={messagesEndRef} />
             </div>
 
             {/* Suggested Prompts */}
@@ -167,7 +191,7 @@ const AskBoltModal = () => {
                     <button
                       key={index}
                       onClick={() => handlePromptClick(prompt)}
-                      className="px-3 py-1.5 text-xs bg-gray-800 border border-gray-700 text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white transition-colors text-left"
+                      className="px-3 py-1.5 text-xs bg-white/5 border border-white/10 text-gray-300 rounded-lg hover:bg-white/10 hover:text-white transition-colors text-left"
                     >
                       {prompt}
                     </button>
@@ -177,7 +201,7 @@ const AskBoltModal = () => {
             )}
 
             {/* Input Area */}
-            <div className="p-4 border-t border-gray-800 bg-gray-800/30">
+            <div className="p-4 border-t border-white/10 bg-white/5">
               <div className="flex items-center space-x-2 relative">
                 <input
                   type="text"
@@ -185,7 +209,7 @@ const AskBoltModal = () => {
                   onChange={(e) => setMessage(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                   placeholder="Message Agent..."
-                  className="flex-1 px-4 py-3 pr-12 bg-gray-800 border border-gray-700 rounded-xl focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none text-white text-sm placeholder-gray-500 transition-all"
+                  className="flex-1 px-4 py-3 pr-12 bg-white/5 border border-white/10 rounded-xl focus:border-cyan-500 focus:bg-white/10 focus:outline-none text-white text-sm placeholder-gray-500 transition-all shadow-[inset_0_0_10px_rgba(0,0,0,0.2)]"
                 />
                 <button
                   onClick={handleSendMessage}

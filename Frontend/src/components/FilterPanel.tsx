@@ -19,13 +19,13 @@ const FilterPanel = () => {
   };
 
   const FilterSection = ({ title, isOpen, onToggle, children }: any) => (
-    <div className="border-b border-gray-700 last:border-b-0">
+    <div className="border-b border-white/5 last:border-b-0">
       <button
         onClick={onToggle}
-        className="w-full flex items-center justify-between p-4 hover:bg-gray-700 transition-colors"
+        className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors"
       >
-        <span className="text-white font-medium">{title}</span>
-        {isOpen ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+        <span className="text-white font-medium tracking-wide">{title}</span>
+        {isOpen ? <ChevronDown className="w-4 h-4 text-cyan-400" /> : <ChevronRight className="w-4 h-4 text-gray-400" />}
       </button>
       <motion.div
         initial={false}
@@ -41,30 +41,30 @@ const FilterPanel = () => {
 
   const RangeInput = ({ label, min, max, step = 1 }: any) => (
     <div>
-      <label className="block text-sm text-gray-400 mb-2">{label}</label>
+      <label className="block text-sm font-semibold tracking-wider uppercase text-gray-400 mb-2">{label}</label>
       <div className="flex items-center space-x-2">
         <input
           type="number"
           placeholder="Min"
-          className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:border-cyan-400 focus:outline-none text-white text-sm"
+          className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg focus:border-cyan-400 focus:bg-white/10 focus:outline-none text-white text-sm transition-all shadow-[inset_0_0_10px_rgba(0,0,0,0.2)]"
         />
         <span className="text-gray-400">-</span>
         <input
           type="number"
           placeholder="Max"
-          className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:border-cyan-400 focus:outline-none text-white text-sm"
+          className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg focus:border-cyan-400 focus:bg-white/10 focus:outline-none text-white text-sm transition-all shadow-[inset_0_0_10px_rgba(0,0,0,0.2)]"
         />
       </div>
     </div>
   );
 
   return (
-    <div className="bg-gray-800 rounded-2xl border border-gray-700">
-      <div className="p-4 border-b border-gray-700">
-        <h2 className="text-lg font-semibold text-white">Filters</h2>
+    <div className="bg-white/5 backdrop-blur-xl rounded-3xl border border-white/10 shadow-2xl overflow-hidden">
+      <div className="p-5 border-b border-white/5 bg-white/5">
+        <h2 className="text-lg font-bold text-white tracking-wide">Filters</h2>
       </div>
 
-      <div className="divide-y divide-gray-700">
+      <div className="divide-y divide-white/5">
         <FilterSection
           title="Price Range"
           isOpen={openSections.price}
@@ -80,12 +80,12 @@ const FilterPanel = () => {
         >
           <RangeInput label="Market Cap (Cr)" />
           <div>
-            <label className="block text-sm text-gray-400 mb-2">Category</label>
-            <select className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:border-cyan-400 focus:outline-none text-white text-sm">
-              <option value="">All</option>
-              <option value="large">Large Cap</option>
-              <option value="mid">Mid Cap</option>
-              <option value="small">Small Cap</option>
+            <label className="block text-sm font-semibold tracking-wider uppercase text-gray-400 mb-2">Category</label>
+            <select className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg focus:border-cyan-400 focus:bg-white/10 focus:outline-none text-white text-sm transition-all shadow-[inset_0_0_10px_rgba(0,0,0,0.2)]">
+              <option value="" className="bg-gray-900">All</option>
+              <option value="large" className="bg-gray-900">Large Cap</option>
+              <option value="mid" className="bg-gray-900">Mid Cap</option>
+              <option value="small" className="bg-gray-900">Small Cap</option>
             </select>
           </div>
         </FilterSection>
@@ -108,12 +108,14 @@ const FilterPanel = () => {
           <RangeInput label="RSI" />
           <RangeInput label="Volume (Lakhs)" />
           <div>
-            <label className="block text-sm text-gray-400 mb-2">Moving Averages</label>
-            <div className="space-y-2">
+            <label className="block text-sm font-semibold tracking-wider uppercase text-gray-400 mb-2">Moving Averages</label>
+            <div className="space-y-3">
               {['Above 20 DMA', 'Above 50 DMA', 'Above 200 DMA'].map((option) => (
-                <label key={option} className="flex items-center">
-                  <input type="checkbox" className="mr-2 text-cyan-400" />
-                  <span className="text-sm text-gray-300">{option}</span>
+                <label key={option} className="flex items-center group cursor-pointer">
+                  <div className="relative flex items-center justify-center w-5 h-5 mr-3 border border-white/20 rounded bg-white/5 group-hover:border-cyan-400 transition-colors">
+                    <input type="checkbox" className="absolute opacity-0 cursor-pointer" />
+                  </div>
+                  <span className="text-sm font-medium text-gray-300 group-hover:text-white transition-colors">{option}</span>
                 </label>
               ))}
             </div>
@@ -131,12 +133,12 @@ const FilterPanel = () => {
         </FilterSection>
       </div>
 
-      <div className="p-4 border-t border-gray-700">
-        <div className="flex space-x-2">
-          <button className="flex-1 px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-xl hover:from-cyan-600 hover:to-blue-600 transition-all font-medium">
+      <div className="p-5 border-t border-white/5 bg-white/5">
+        <div className="flex space-x-3">
+          <button className="flex-1 px-4 py-2.5 bg-cyan-500/20 border border-cyan-500/50 text-cyan-400 rounded-xl hover:bg-cyan-500/30 transition-all font-bold tracking-wide shadow-[0_0_15px_rgba(34,211,238,0.2)]">
             Apply Filters
           </button>
-          <button className="px-4 py-2 border border-gray-600 text-gray-300 rounded-xl hover:bg-gray-700 transition-colors">
+          <button className="px-4 py-2.5 bg-white/5 border border-white/10 text-gray-300 rounded-xl hover:bg-white/10 transition-all font-semibold tracking-wide">
             Reset
           </button>
         </div>

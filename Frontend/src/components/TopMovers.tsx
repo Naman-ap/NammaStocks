@@ -18,12 +18,12 @@ const TopMovers = () => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Gainers */}
       <div>
-        <div className="flex items-center space-x-2 mb-4">
+        <div className="flex items-center space-x-2 mb-5 bg-green-500/10 w-max px-3 py-1.5 rounded-lg border border-green-500/20">
           <TrendingUp className="w-4 h-4 text-green-400" />
-          <h3 className="text-sm font-semibold text-green-400">Top Gainers</h3>
+          <h3 className="text-sm font-bold text-green-400 tracking-wide uppercase">Top Gainers</h3>
         </div>
         <div className="space-y-3">
           {gainers.map((stock, index) => (
@@ -32,14 +32,17 @@ const TopMovers = () => {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="flex items-center justify-between p-3 bg-gray-700 rounded-xl hover:bg-gray-600 transition-colors cursor-pointer"
+              whileHover={{ scale: 1.02, x: 5 }}
+              className="flex items-center justify-between p-4 bg-white/5 border border-white/5 rounded-2xl hover:bg-white/10 hover:border-white/10 transition-all cursor-pointer group"
             >
               <div>
-                <p className="text-white font-medium text-sm">{stock.symbol}</p>
-                <p className="text-gray-400 text-xs">₹{stock.price}</p>
+                <p className="text-white font-bold text-base group-hover:text-green-400 transition-colors">{stock.symbol}</p>
+                <p className="text-gray-400 text-sm font-medium mt-0.5">₹{stock.price}</p>
               </div>
-              <div className="text-green-400 font-semibold text-sm">
-                {stock.change}
+              <div className="bg-green-400/10 px-3 py-1.5 rounded-lg border border-green-400/20">
+                <span className="text-green-400 font-bold text-sm">
+                  {stock.change}
+                </span>
               </div>
             </motion.div>
           ))}
@@ -48,9 +51,9 @@ const TopMovers = () => {
 
       {/* Losers */}
       <div>
-        <div className="flex items-center space-x-2 mb-4">
+        <div className="flex items-center space-x-2 mb-5 bg-red-500/10 w-max px-3 py-1.5 rounded-lg border border-red-500/20">
           <TrendingDown className="w-4 h-4 text-red-400" />
-          <h3 className="text-sm font-semibold text-red-400">Top Losers</h3>
+          <h3 className="text-sm font-bold text-red-400 tracking-wide uppercase">Top Losers</h3>
         </div>
         <div className="space-y-3">
           {losers.map((stock, index) => (
@@ -59,14 +62,17 @@ const TopMovers = () => {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="flex items-center justify-between p-3 bg-gray-700 rounded-xl hover:bg-gray-600 transition-colors cursor-pointer"
+              whileHover={{ scale: 1.02, x: 5 }}
+              className="flex items-center justify-between p-4 bg-white/5 border border-white/5 rounded-2xl hover:bg-white/10 hover:border-white/10 transition-all cursor-pointer group"
             >
               <div>
-                <p className="text-white font-medium text-sm">{stock.symbol}</p>
-                <p className="text-gray-400 text-xs">₹{stock.price}</p>
+                <p className="text-white font-bold text-base group-hover:text-red-400 transition-colors">{stock.symbol}</p>
+                <p className="text-gray-400 text-sm font-medium mt-0.5">₹{stock.price}</p>
               </div>
-              <div className="text-red-400 font-semibold text-sm">
-                {stock.change}
+              <div className="bg-red-400/10 px-3 py-1.5 rounded-lg border border-red-400/20">
+                <span className="text-red-400 font-bold text-sm">
+                  {stock.change}
+                </span>
               </div>
             </motion.div>
           ))}

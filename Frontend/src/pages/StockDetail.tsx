@@ -47,15 +47,18 @@ const StockDetail = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-[#0a0a0a] to-black relative overflow-hidden">
+      {/* Abstract Background Elements */}
+      <div className="absolute top-[10%] right-[-5%] w-[40%] h-[40%] rounded-full bg-cyan-900/20 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-900/20 blur-[120px] pointer-events-none" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="space-y-8"
         >
           {/* Stock Header */}
-          <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700">
+          <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-6 border border-white/10 shadow-2xl">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
               <div className="flex items-center space-x-4">
                 <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-2xl flex items-center justify-center">
@@ -115,7 +118,7 @@ const StockDetail = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-gray-800 rounded-xl p-4 border border-gray-700"
+                className="bg-white/5 backdrop-blur-xl rounded-2xl p-4 border border-white/10 shadow-lg"
               >
                 <p className="text-gray-400 text-sm">{stat.label}</p>
                 <p className="text-white font-semibold mt-1">{stat.value}</p>
@@ -155,7 +158,7 @@ const StockDetail = () => {
               )}
               
               {activeTab === 'financials' && (
-                <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700">
+                <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-6 border border-white/10 shadow-lg">
                   <h3 className="text-xl font-semibold text-white mb-4">Financial Highlights</h3>
                   <div className="space-y-4">
                     <div className="text-gray-300">
@@ -170,7 +173,7 @@ const StockDetail = () => {
 
             {/* Sidebar */}
             <div className="space-y-6">
-              <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700">
+              <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-6 border border-white/10 shadow-lg">
                 <h3 className="text-lg font-semibold text-white mb-4">Company Info</h3>
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between">
@@ -196,7 +199,7 @@ const StockDetail = () => {
                 </div>
               </div>
 
-              <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700">
+              <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-6 border border-white/10 shadow-2xl">
                 <h3 className="text-lg font-semibold text-white mb-4">Quick Actions</h3>
                 <div className="space-y-3">
                   <button className="w-full px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl hover:from-green-600 hover:to-emerald-600 transition-all">
