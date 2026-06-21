@@ -47,11 +47,14 @@ const ScreenerCompare = () => {
   const symbolsToClick = symbolsParam ? symbolsParam.split(',') : [];
 
   useEffect(() => {
+    let mounted = true;
     const fetchStocks = async () => {
       setLoading(true);
       try {
         const querySymbols = DEFAULT_SYMBOLS.map(s => `${s.sym}.NS`);
         const res = await stocksApi.getMarketSummary(querySymbols);
+        if (!mounted) return;
+        
         const fetchedStocks: Stock[] = [];
         
         DEFAULT_SYMBOLS.forEach((defStock, index) => {
@@ -81,24 +84,62 @@ const ScreenerCompare = () => {
       } catch (err) {
         console.error("Failed to fetch market summary", err);
       } finally {
-        setLoading(false);
+        if (mounted) setLoading(false);
       }
     };
     fetchStocks();
-  }, [symbolsParam, isDriveMode]);
+    
+    return () => {
+      mounted = false;
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty dependency array so it only runs once on mount
 
-  const cursorSteps = isDriveMode && availableStocks.length > 0 ? [
+  const cursorSteps = isDriveMode ? [
     ...symbolsToClick.map((symbol, index) => ({
-      targetId: `stock-${symbol}`,
+      targetId: 'compare-search-input',
       action: 'click' as const,
-      delayBefore: index === 0 ? 1500 : 1200,
-      onComplete: () => {
-        const stockObj = availableStocks.find(s => s.symbol === symbol);
-        if (stockObj) {
-          setSelectedStocks(prev => {
-            if (!prev.find(s => s.symbol === symbol)) return [...prev, stockObj];
-            return prev;
-          });
+      delayBefore: index === 0 ? 1500 : 800,
+      onComplete: async () => {
+        // Typing effect
+        for (let i = 0; i <= symbol.length; i++) {
+          setSearchInput(symbol.slice(0, i));
+          await new Promise(r => setTimeout(r, 100));
+        }
+        await new Promise(r => setTimeout(r, 300));
+        
+        // Fetch API
+        setSearchLoading(true);
+        try {
+          const searchSymbol = symbol.toUpperCase().trim();
+          const querySymbol = searchSymbol.includes('.') ? searchSymbol : `${searchSymbol}.NS`;
+          const res = await stocksApi.getMarketSummary([querySymbol]);
+          const summary = res?.[querySymbol];
+          
+          if (summary) {
+            const newStock: Stock = {
+              symbol: symbol,
+              name: summary.name || symbol,
+              price: summary.price || 0,
+              change: summary.change || 0,
+              changePercent: summary.changePercent || 0,
+              sector: 'Unknown',
+            };
+            
+            setAvailableStocks(prev => {
+              if (!prev.find(s => s.symbol === symbol)) return [...prev, newStock];
+              return prev;
+            });
+            setSelectedStocks(prev => {
+              if (!prev.find(s => s.symbol === symbol)) return [...prev, newStock];
+              return prev;
+            });
+          }
+        } catch (err) {
+          console.error("Search failed in drive mode", err);
+        } finally {
+          setSearchLoading(false);
+          setSearchInput('');
         }
       }
     })),
@@ -225,6 +266,7 @@ const ScreenerCompare = () => {
                     <Search className="absolute left-3 top-2.5 w-4 h-4 text-content-secondary" />
                   )}
                   <input
+                    id="compare-search-input"
                     type="text"
                     value={searchInput}
                     onChange={(e) => setSearchInput(e.target.value)}

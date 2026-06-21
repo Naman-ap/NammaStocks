@@ -7,7 +7,7 @@ interface GhostCursorProps {
     action: 'click' | 'type';
     text?: string;
     delayBefore: number;
-    onComplete?: () => void;
+    onComplete?: () => void | Promise<void>;
   }[];
   onAllComplete?: () => void;
 }
@@ -42,12 +42,14 @@ const GhostCursor = ({ steps, onAllComplete }: GhostCursorProps) => {
       });
 
       // Wait for movement to finish (approx 1s), then perform action
-      timeoutId = setTimeout(() => {
+      timeoutId = setTimeout(async () => {
         if (step.action === 'click') {
           setIsClicking(true);
-          setTimeout(() => {
+          setTimeout(async () => {
             setIsClicking(false);
-            if (step.onComplete) step.onComplete();
+            if (step.onComplete) {
+              await step.onComplete();
+            }
             
             // Move to next step after a short delay
             setTimeout(() => {
@@ -56,7 +58,9 @@ const GhostCursor = ({ steps, onAllComplete }: GhostCursorProps) => {
           }, 200);
         } else if (step.action === 'type') {
           // Simulated typing effect could go here
-          if (step.onComplete) step.onComplete();
+          if (step.onComplete) {
+            await step.onComplete();
+          }
           setTimeout(() => {
             setCurrentStepIndex(prev => prev + 1);
           }, 500);

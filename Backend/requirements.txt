@@ -11,3 +11,6 @@ yfinance
 nselib
 mftool
 feedparser
+langchain
+langchain-core
+langchain-ollama
