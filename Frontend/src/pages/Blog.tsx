@@ -6,7 +6,6 @@ import {
   User, 
   Tag, 
   Search, 
-  Filter,
   Code,
   TrendingUp,
   BookOpen,
@@ -125,11 +124,8 @@ const Blog = () => {
   const regularPosts = filteredPosts.filter(post => !post.featured);
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-[#0a0a0a] to-black relative overflow-hidden">
-      {/* Abstract Background Elements */}
-      <div className="absolute top-[10%] right-[-5%] w-[40%] h-[40%] rounded-full bg-cyan-900/20 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-900/20 blur-[120px] pointer-events-none" />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+    <div className="min-h-screen bg-theme-canvas">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -138,16 +134,16 @@ const Blog = () => {
           {/* Header */}
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+              <h1 className="text-3xl font-bold text-content-primary">
                 Developer Blog
               </h1>
-              <p className="text-gray-400 mt-2">Technical insights and tutorials for financial technology</p>
+              <p className="text-content-secondary mt-2">Technical insights and tutorials for financial technology</p>
             </div>
             <Link
               to="/blog/new"
-              className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl hover:from-green-600 hover:to-emerald-600 transition-all hover:scale-105 mt-4 lg:mt-0"
+              className="flex items-center space-x-2 px-4 py-2.5 bg-gradient-to-r from-trade-gain to-emerald-600 text-white rounded-xl hover:from-emerald-700 hover:to-emerald-600 transition-all hover:scale-105 mt-4 lg:mt-0 font-semibold text-sm shadow-sm shadow-trade-gain/20"
             >
-              <Plus className="w-5 h-5" />
+              <Plus className="w-4 h-4" />
               <span>Write Article</span>
             </Link>
           </div>
@@ -155,28 +151,30 @@ const Blog = () => {
           {/* Search and Filter */}
           <div className="flex flex-col lg:flex-row gap-4">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-content-secondary w-4 h-4" />
               <input
                 type="text"
                 placeholder="Search articles..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl focus:border-cyan-400 focus:outline-none text-white placeholder-gray-400"
+                className="w-full pl-10 pr-4 py-3 bg-theme-surface border border-theme-border rounded-xl focus:border-trade-action focus:ring-1 focus:ring-trade-action/20 focus:outline-none text-content-primary placeholder:text-content-secondary/60 transition-all"
               />
             </div>
-            <div className="flex space-x-2 overflow-x-auto pb-2">
+            <div className="flex space-x-2 overflow-x-auto pb-1 scrollbar-none">
               {categories.map((category) => (
                 <button
                   key={category.id}
                   onClick={() => setSelectedCategory(category.id)}
-                  className={`flex items-center space-x-2 px-4 py-3 rounded-xl whitespace-nowrap transition-colors ${
+                  className={`flex items-center space-x-2 px-4 py-2.5 rounded-xl whitespace-nowrap transition-all text-sm font-semibold ${
                     selectedCategory === category.id
-                      ? 'bg-cyan-500 text-white'
-                      : 'bg-white/5 backdrop-blur-xl text-gray-300 hover:text-white hover:bg-white/5'
+                      ? 'bg-trade-action text-white shadow-sm shadow-trade-action/20'
+                      : 'bg-theme-surface border border-theme-border text-content-secondary hover:border-trade-action/30 hover:text-trade-action'
                   }`}
                 >
                   <span>{category.label}</span>
-                  <span className="text-xs bg-gray-600 px-2 py-1 rounded-full">
+                  <span className={`text-xs px-1.5 py-0.5 rounded-full font-bold ${
+                    selectedCategory === category.id ? 'bg-white/20 text-white' : 'bg-theme-canvas text-content-secondary'
+                  }`}>
                     {category.count}
                   </span>
                 </button>
@@ -189,54 +187,62 @@ const Blog = () => {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-gradient-to-r from-gray-800 to-gray-700 rounded-2xl p-8 border border-white/5"
+              className="bg-theme-surface rounded-2xl p-8 border border-theme-border shadow-surface"
             >
-              <div className="flex items-center space-x-2 mb-4">
-                <TrendingUp className="w-5 h-5 text-yellow-400" />
-                <span className="text-yellow-400 font-medium">Featured Article</span>
+              <div className="flex items-center space-x-2 mb-5">
+                <TrendingUp className="w-5 h-5 text-yellow-500" />
+                <span className="text-yellow-600 font-semibold text-sm">Featured Article</span>
               </div>
               
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div>
-                  <h2 className="text-2xl font-bold text-white mb-4">{featuredPost.title}</h2>
-                  <p className="text-gray-300 mb-6">{featuredPost.excerpt}</p>
+                  <h2 className="text-2xl font-bold text-content-primary mb-4">{featuredPost.title}</h2>
+                  <p className="text-content-secondary mb-6 leading-relaxed">{featuredPost.excerpt}</p>
                   
-                  <div className="flex items-center space-x-6 mb-6">
+                  <div className="flex items-center space-x-5 mb-6 flex-wrap gap-y-2">
                     <div className="flex items-center space-x-2">
-                      <div className="w-8 h-8 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full flex items-center justify-center">
-                        <span className="text-white text-sm font-bold">{featuredPost.authorAvatar}</span>
+                      <div className="w-8 h-8 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full flex items-center justify-center">
+                        <span className="text-white text-xs font-bold">{featuredPost.authorAvatar}</span>
                       </div>
-                      <span className="text-gray-300">{featuredPost.author}</span>
+                      <span className="text-content-secondary text-sm">{featuredPost.author}</span>
                     </div>
-                    <div className="flex items-center space-x-2 text-gray-400">
+                    <div className="flex items-center space-x-1.5 text-content-secondary text-sm">
                       <Calendar className="w-4 h-4" />
                       <span>{new Date(featuredPost.publishedAt).toLocaleDateString()}</span>
                     </div>
-                    <span className="text-gray-400">{featuredPost.readTime}</span>
+                    <span className="text-content-secondary text-sm">{featuredPost.readTime}</span>
                   </div>
                   
                   <div className="flex flex-wrap gap-2 mb-6">
                     {featuredPost.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="px-3 py-1 bg-gray-600 text-gray-200 rounded-full text-sm"
+                        className="px-3 py-1 bg-theme-canvas border border-theme-border text-content-secondary rounded-full text-sm font-medium"
                       >
                         {tag}
                       </span>
                     ))}
                   </div>
                   
-                  <button className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-xl hover:from-cyan-600 hover:to-blue-600 transition-all">
+                  <button className="px-6 py-2.5 bg-gradient-to-r from-trade-action to-blue-600 text-white rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all font-semibold text-sm shadow-sm shadow-trade-action/20">
                     Read Article
                   </button>
                 </div>
                 
-                <div className="bg-black/20 rounded-xl p-4 border border-white/5">
-                  <div className="flex items-center space-x-2 mb-3">
-                    <Code className="w-4 h-4 text-green-400" />
-                    <span className="text-green-400 font-medium text-sm">Code Preview</span>
+                {/* Code Preview */}
+                <div className="bg-gray-900 rounded-xl p-5 border border-gray-700 overflow-hidden">
+                  <div className="flex items-center space-x-2 mb-4">
+                    <div className="flex gap-1.5">
+                      <div className="w-3 h-3 rounded-full bg-red-500/80" />
+                      <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+                      <div className="w-3 h-3 rounded-full bg-green-500/80" />
+                    </div>
+                    <div className="flex items-center space-x-1.5 ml-2">
+                      <Code className="w-3.5 h-3.5 text-gray-400" />
+                      <span className="text-gray-400 font-mono text-xs">Code Preview</span>
+                    </div>
                   </div>
-                  <pre className="text-gray-300 text-sm overflow-x-auto">
+                  <pre className="text-green-400 text-xs overflow-x-auto font-mono leading-relaxed">
                     <code>{featuredPost.content}</code>
                   </pre>
                 </div>
@@ -245,53 +251,54 @@ const Blog = () => {
           )}
 
           {/* Blog Posts Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {regularPosts.map((post, index) => (
               <motion.article
                 key={post.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 hover:border-white/5 transition-all hover:shadow-lg hover:shadow-cyan-500/10 overflow-hidden group"
+                className="bg-theme-surface border border-theme-border rounded-2xl hover:border-trade-action/30 hover:shadow-surface transition-all overflow-hidden group"
               >
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <span className="px-3 py-1 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-full text-sm font-medium">
+                    <span className="px-3 py-1 bg-gradient-to-r from-trade-action to-blue-500 text-white rounded-full text-xs font-semibold">
                       {post.category}
                     </span>
-                    <span className="text-gray-400 text-sm">{post.readTime}</span>
+                    <span className="text-content-secondary text-sm">{post.readTime}</span>
                   </div>
                   
-                  <h2 className="text-xl font-bold text-white mb-3 group-hover:text-cyan-400 transition-colors">
+                  <h2 className="text-lg font-bold text-content-primary mb-3 group-hover:text-trade-action transition-colors leading-snug">
                     {post.title}
                   </h2>
                   
-                  <p className="text-gray-300 mb-4 line-clamp-3">{post.excerpt}</p>
+                  <p className="text-content-secondary mb-4 line-clamp-3 text-sm leading-relaxed">{post.excerpt}</p>
                   
-                  <div className="bg-black/20 rounded-lg p-3 mb-4 border border-white/5">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <Code className="w-3 h-3 text-green-400" />
-                      <span className="text-green-400 font-medium text-xs">Snippet</span>
+                  {/* Code Snippet */}
+                  <div className="bg-gray-900 rounded-lg p-3 mb-4 border border-gray-700">
+                    <div className="flex items-center space-x-1.5 mb-2">
+                      <Code className="w-3 h-3 text-gray-400" />
+                      <span className="text-gray-400 font-mono text-xs">Snippet</span>
                     </div>
-                    <pre className="text-gray-300 text-xs overflow-x-auto">
+                    <pre className="text-green-400 text-xs overflow-x-auto font-mono">
                       <code>{post.content.substring(0, 100)}...</code>
                     </pre>
                   </div>
                   
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between pt-2 border-t border-theme-border mt-2">
                     <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full flex items-center justify-center">
-                        <span className="text-white text-sm font-bold">{post.authorAvatar}</span>
+                      <div className="w-7 h-7 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full flex items-center justify-center">
+                        <span className="text-white text-xs font-bold">{post.authorAvatar}</span>
                       </div>
                       <div>
-                        <p className="text-white font-medium text-sm">{post.author}</p>
-                        <p className="text-gray-400 text-xs">
+                        <p className="text-content-primary font-semibold text-sm">{post.author}</p>
+                        <p className="text-content-secondary text-xs">
                           {new Date(post.publishedAt).toLocaleDateString()}
                         </p>
                       </div>
                     </div>
                     
-                    <button className="text-cyan-400 hover:text-cyan-300 font-medium text-sm transition-colors">
+                    <button className="text-trade-action hover:text-blue-700 font-semibold text-sm transition-colors">
                       Read more →
                     </button>
                   </div>
@@ -300,7 +307,7 @@ const Blog = () => {
                     {post.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="px-2 py-1 bg-white/5 text-gray-300 rounded text-xs"
+                        className="px-2 py-0.5 bg-theme-canvas border border-theme-border text-content-secondary rounded text-xs font-medium"
                       >
                         #{tag}
                       </span>
@@ -312,10 +319,10 @@ const Blog = () => {
           </div>
 
           {filteredPosts.length === 0 && (
-            <div className="text-center py-12">
-              <BookOpen className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-400 mb-2">No articles found</h3>
-              <p className="text-gray-500">Try adjusting your search or filter criteria</p>
+            <div className="text-center py-16">
+              <BookOpen className="w-16 h-16 text-theme-border mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-content-primary mb-2">No articles found</h3>
+              <p className="text-content-secondary">Try adjusting your search or filter criteria</p>
             </div>
           )}
         </motion.div>

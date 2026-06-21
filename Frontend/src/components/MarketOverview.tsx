@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, TrendingDown, Activity, DollarSign } from 'lucide-react';
+import { TrendingUp, TrendingDown, Activity } from 'lucide-react';
 
 const MarketOverview = () => {
   const marketData = [
@@ -39,29 +39,29 @@ const MarketOverview = () => {
   ];
 
   return (
-    <div className="space-y-2">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 h-full content-start">
       {marketData.map((item, index) => (
         <motion.div
           key={item.title}
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: index * 0.07 }}
-          className="flex items-center justify-between p-3 rounded-2xl bg-white/3 border border-white/5 hover:bg-white/6 hover:border-white/10 transition-all group cursor-pointer"
+          className="flex items-center justify-between p-4 rounded-2xl bg-theme-canvas border border-theme-border hover:border-trade-action/30 hover:bg-blue-50/50 transition-all group cursor-pointer"
         >
-          <div className="flex items-center gap-3">
-            <div className={`p-1.5 rounded-lg ${item.positive ? 'bg-green-400/10 text-green-400' : 'bg-red-400/10 text-red-400'}`}>
-              <item.icon className="w-4 h-4" />
+          <div className="flex items-center gap-4">
+            <div className={`p-2 rounded-lg ${item.positive ? 'bg-trade-gain/10 text-trade-gain' : 'bg-trade-loss/10 text-trade-loss'}`}>
+              <item.icon className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-xs font-bold text-gray-400 tracking-wider uppercase">{item.title}</p>
-              <p className="text-base font-black text-white">{item.value}</p>
+              <p className="text-[11px] font-bold text-content-secondary tracking-wider uppercase">{item.title}</p>
+              <p className="text-lg md:text-xl font-black tracking-tight text-content-primary">{item.value}</p>
             </div>
           </div>
-          <div className="text-right">
-            <span className={`text-xs font-bold px-2 py-1 rounded-lg ${item.positive ? 'bg-green-400/10 text-green-400' : 'bg-red-400/10 text-red-400'}`}>
+          <div className="text-right flex flex-col justify-between h-full py-1">
+            <span className={`text-xs font-bold px-2 py-1 rounded-lg self-end ${item.positive ? 'bg-trade-gain/10 text-trade-gain' : 'bg-trade-loss/10 text-trade-loss'}`}>
               {item.percentage}
             </span>
-            <p className={`text-xs mt-1 ${item.positive ? 'text-green-500' : 'text-red-500'}`}>{item.change}</p>
+            <p className={`text-xs mt-2 font-bold ${item.positive ? 'text-trade-gain' : 'text-trade-loss'}`}>{item.change}</p>
           </div>
         </motion.div>
       ))}

@@ -86,6 +86,32 @@ def get_yfinance_ticker_history(
     return YFinanceHistoryResponse(symbol=symbol, history=history)
 
 
+@router.get("/yfinance/market-summary")
+def get_yfinance_market_summary(
+    symbols: str = Query(..., description="Comma separated symbols, e.g., AAPL,MSFT"),
+    service: YFinanceService = Depends(get_yfinance_service)
+):
+    """Get market summary for multiple symbols."""
+    symbol_list = [s.strip() for s in symbols.split(",") if s.strip()]
+    return service.get_market_summary(symbol_list)
+
+
+# @router.get("/yfinance/global-markets")
+# def get_yfinance_global_markets(
+#     service: YFinanceService = Depends(get_yfinance_service)
+# ):
+#     """Get global markets data."""
+#     return service.get_global_markets()
+
+
+# @router.get("/yfinance/sector-heatmap")
+# def get_yfinance_sector_heatmap(
+#     service: YFinanceService = Depends(get_yfinance_service)
+# ):
+#     """Get sector heatmap data."""
+#     return service.get_sector_heatmap()
+
+
 @router.get("/nse/history/{symbol}", response_model=NseHistoryResponse)
 def get_nse_ticker_history(
     symbol: str,

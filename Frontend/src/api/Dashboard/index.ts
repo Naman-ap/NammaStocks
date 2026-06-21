@@ -9,6 +9,33 @@ export interface CompanyOverview {
   [key: string]: unknown;
 }
 
+export interface MarketSummaryItem {
+  symbol: string;
+  name: string;
+  price: number;
+  change: number;
+  changePercent: number;
+  positive: boolean;
+  spark: number[];
+}
+
+export interface MarketSummaryResponse {
+  summary: Record<string, MarketSummaryItem>;
+  heatmap: any[];
+  globalMarkets: Record<string, any[]>;
+  topGainersLosers: TopGainersLosers;
+}
+
+export interface YFinanceTickerInfoResponse {
+  symbol: string;
+  info: any;
+}
+
+export interface YFinanceHistoryResponse {
+  symbol: string;
+  history: any;
+}
+
 export interface TopGainersLosers {
   metadata?: {
     last_updated: string;
@@ -65,5 +92,46 @@ export const dashboardApi = {
    */
   async getNewsSentiment(topics: string): Promise<NewsSentimentResponse> {
     return get<NewsSentimentResponse>(`/dashboard/news-sentiment?topics=${encodeURIComponent(topics)}`);
+  },
+
+  /**
+   * Get market summary for multiple symbols using yfinance
+   * Endpoint: GET /dashboard/yfinance/market-summary?symbols={symbols}
+   */
+  async getMarketSummary(symbols: string[]): Promise<MarketSummaryResponse> {
+    const query = symbols.join(',');
+    return get<MarketSummaryResponse>(`/dashboard/yfinance/market-summary?symbols=${query}`);
+  },
+
+  /**
+   * Get global markets structured data
+   * Endpoint: GET /dashboard/yfinance/global-markets
+   */
+  async getGlobalMarkets(): Promise<Record<string, any[]>> {
+    return get<Record<string, any[]>>('/dashboard/yfinance/global-markets');
+  },
+
+  /**
+   * Get sector heatmap structured data
+   * Endpoint: GET /dashboard/yfinance/sector-heatmap
+   */
+  async getSectorHeatmap(): Promise<any[]> {
+    return get<any[]>('/dashboard/yfinance/sector-heatmap');
+  },
+
+  /**
+   * Get ticker info using yfinance
+   * Endpoint: GET /dashboard/yfinance/info/{symbol}
+   */
+  async getYFinanceInfo(symbol: string): Promise<YFinanceTickerInfoResponse> {
+    return get<YFinanceTickerInfoResponse>(`/dashboard/yfinance/info/${encodeURIComponent(symbol)}`);
+  },
+
+  /**
+   * Get historical data using yfinance
+   * Endpoint: GET /dashboard/yfinance/history/{symbol}?period={period}
+   */
+  async getYFinanceHistory(symbol: string, period: string = '1mo'): Promise<YFinanceHistoryResponse> {
+    return get<YFinanceHistoryResponse>(`/dashboard/yfinance/history/${encodeURIComponent(symbol)}?period=${period}`);
   },
 };

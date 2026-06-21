@@ -1,232 +1,269 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Send, Zap, Sparkles, MessageCircle, Bot } from 'lucide-react';
+import { Sparkles, Send, Zap, Bot, X, TrendingUp, Clock, Scale } from 'lucide-react';
 import { useAgent } from '../hooks/useAgent';
 import { useNavigate } from 'react-router-dom';
 
-const ProposalWidget = ({ symbols, onNavigate }: { symbols: string, onNavigate: () => void }) => {
+const ProposalWidget = ({ actionType, payload, onNavigate }: { actionType: string, payload: string, onNavigate: () => void }) => {
   const [state, setState] = useState<'pending' | 'cancelled'>('pending');
 
-  if (state === 'cancelled') {
-    return (
-      <div className="mt-3 bg-red-500/10 border border-red-500/20 rounded-xl p-3">
-        <p className="text-xs text-red-400 font-medium">Action Cancelled</p>
-      </div>
-    );
-  }
+  if (state === 'cancelled') return null;
+
+  const getTitle = () => {
+    if (actionType === 'NAVIGATE_COMPARE') return `Compare Stocks (${payload})`;
+    if (actionType === 'NAVIGATE_TIMETRAVEL') return `Time-Travel Backtest (${payload})`;
+    if (actionType === 'NAVIGATE_REBALANCE') return `Rebalance Portfolio`;
+    return `Execute Action`;
+  };
 
   return (
-    <div className="mt-3 bg-white/5 border border-white/10 rounded-xl p-3 flex flex-col gap-3 shadow-lg shadow-black/20">
-      <p className="text-xs text-gray-300 font-medium flex items-center gap-2">
-        <Zap className="w-3.5 h-3.5 text-cyan-400" />
-        Proposed Action: <span className="text-cyan-400">Compare Stocks ({symbols})</span>
+    <motion.div 
+      initial={{ opacity: 0, y: 15, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ type: "spring", stiffness: 400, damping: 25 }}
+      className="mt-3 bg-theme-canvas border border-trade-action/30 rounded-xl p-3.5 flex flex-col gap-3 shadow-[0_4px_20px_-4px_rgba(0,184,217,0.15)] relative overflow-hidden"
+    >
+      <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-cyan-500 to-blue-600" />
+      <p className="text-[13px] text-content-primary font-semibold flex items-center gap-2 pl-1 tracking-tight">
+        <Zap className="w-3.5 h-3.5 text-trade-action" />
+        {getTitle()}
       </p>
-      <div className="flex gap-2">
-        <button onClick={onNavigate} className="flex-1 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg text-xs font-semibold text-white shadow-md shadow-cyan-500/20 hover:shadow-cyan-500/40 transition-all active:scale-95">
+      <div className="flex gap-2 pl-1">
+        <motion.button 
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={onNavigate} 
+          className="flex-1 py-1.5 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-lg text-xs font-semibold text-white shadow-sm shadow-trade-action/20 transition-colors"
+        >
           Execute
-        </button>
-        <button onClick={() => setState('cancelled')} className="flex-1 py-2 bg-white/5 border border-white/10 rounded-lg text-xs font-semibold text-gray-300 hover:bg-white/10 hover:text-white transition-all active:scale-95">
-          Cancel
-        </button>
+        </motion.button>
+        <motion.button 
+          whileHover={{ scale: 1.02, backgroundColor: 'rgba(255,255,255,0.05)' }}
+          whileTap={{ scale: 0.98 }}
+          onClick={() => setState('cancelled')} 
+          className="flex-1 py-1.5 bg-theme-surface border border-theme-border rounded-lg text-xs font-medium text-content-secondary transition-colors"
+        >
+          Dismiss
+        </motion.button>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
-const AskBoltModal = () => {
+interface AskBoltModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const SUGGESTIONS = [
+  { icon: TrendingUp, text: "Compare AAPL vs MSFT" },
+  { icon: Clock, text: "Time travel back to 2020" },
+  { icon: Scale, text: "Rebalance my portfolio" },
+];
+
+const AskBoltModal = ({ isOpen, onClose }: AskBoltModalProps) => {
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState('');
-  const { messages, isTyping, error, sendMessage } = useAgent();
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { latestResponse, isThinking, error, sendCommand, clearResponse } = useAgent();
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, isTyping]);
+    if (isOpen && inputRef.current) {
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
+    }
+  }, [isOpen]);
 
-  const suggestedPrompts = [
-    'Analyze RELIANCE stock performance',
-    'Top gainers today',
-    'Compare IT sector stocks',
-    'Explain P/E ratio',
-  ];
-
-  const handleSendMessage = async () => {
-    if (!message.trim() || isTyping) return;
+  const handleSendMessage = async (customMessage?: string) => {
+    const textToSend = customMessage || message;
+    if (!textToSend.trim() || isThinking) return;
     
-    const currentMessage = message;
-    setMessage('');
-    await sendMessage(currentMessage);
+    if (!customMessage) setMessage('');
+    await sendCommand(textToSend);
   };
 
-  const handlePromptClick = (prompt: string) => {
-    setMessage(prompt);
+  const handleClear = () => {
+    setMessage('');
+    clearResponse();
   };
 
   return (
-    <>
-      {/* Floating Action Button */}
-      <motion.button
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-50 p-4 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full shadow-lg hover:shadow-cyan-500/50 transition-all flex items-center justify-center group"
-      >
-        {isOpen ? (
-          <X className="w-7 h-7 text-white" />
-        ) : (
-          <MessageCircle className="w-7 h-7 text-white" />
-        )}
-        {!isOpen && (
-          <span className="absolute -top-10 right-0 bg-gray-800 text-white text-xs px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-gray-700 shadow-xl">
-            Ask AI Agent
-          </span>
-        )}
-      </motion.button>
-
-      {/* Chat Window */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="fixed bottom-24 right-6 bg-[#08090c]/80 backdrop-blur-2xl rounded-3xl border border-white/10 w-[calc(100vw-3rem)] sm:w-[400px] h-[600px] max-h-[calc(100vh-8rem)] shadow-2xl flex flex-col z-50 overflow-hidden"
-          >
-            {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-white/10 bg-white/5">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg shadow-cyan-500/20">
-                  <Bot className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h2 className="text-lg font-semibold text-white">Ask Agent</h2>
-                  <p className="text-xs text-gray-400 flex items-center gap-1">
-                    <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                    Online
-                  </p>
-                </div>
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div 
+          initial={{ width: 0, opacity: 0 }}
+          animate={{ width: 340, opacity: 1 }}
+          exit={{ width: 0, opacity: 0 }}
+          transition={{ type: "spring", stiffness: 350, damping: 35 }}
+          className="border-l border-theme-border bg-theme-surface flex flex-col h-full shrink-0 shadow-[-12px_0_40px_rgba(0,0,0,0.08)] z-40 relative overflow-hidden"
+        >
+          {/* Header */}
+          <div className="p-4 border-b border-theme-border flex items-center justify-between bg-theme-canvas shrink-0 min-w-[340px]">
+            <div className="flex items-center gap-2.5">
+              <div className="p-1.5 bg-gradient-to-br from-cyan-500/20 to-blue-600/20 rounded-lg">
+                <Sparkles className="w-4 h-4 text-trade-action" />
               </div>
-              <button
-                onClick={() => setIsOpen(false)}
-                className="p-2 hover:bg-white/10 rounded-xl transition-colors"
+              <span className="font-semibold text-content-primary text-[13px] tracking-wide">Agent Workspace</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <AnimatePresence>
+                {(latestResponse || error) && (
+                  <motion.button 
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    onClick={handleClear} 
+                    className="text-[11px] font-medium text-content-secondary hover:text-content-primary transition-colors px-2 py-1 rounded-md hover:bg-theme-surface"
+                  >
+                    Clear
+                  </motion.button>
+                )}
+              </AnimatePresence>
+              <button 
+                onClick={onClose} 
+                className="p-1.5 text-content-secondary hover:text-content-primary hover:bg-theme-border rounded-lg transition-colors border border-transparent"
               >
-                <X className="w-5 h-5 text-gray-400" />
+                <X className="w-4 h-4" />
               </button>
             </div>
+          </div>
 
-            {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent">
-              {messages.map((msg) => (
-                <motion.div
-                  key={msg.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}
-                >
-                  <div className={`max-w-[85%] px-4 py-3 rounded-2xl ${
-                    msg.type === 'user'
-                      ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-br-sm'
-                      : 'bg-white/5 border border-white/10 text-gray-100 rounded-bl-sm backdrop-blur-md'
-                  }`}>
-                    {msg.type === 'bot' && (
-                      <div className="flex items-center space-x-2 mb-2">
-                        <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-                        <span className="text-xs font-medium text-cyan-400">Agent</span>
-                      </div>
-                    )}
-                    <p className="text-sm leading-relaxed">{msg.content.replace(/\[(ACTION|PROPOSAL):.*?\]/, '')}</p>
-                    
-                    {msg.type === 'bot' && msg.content.includes('[PROPOSAL:NAVIGATE_COMPARE:') && (
-                      <ProposalWidget 
-                        symbols={msg.content.match(/\[PROPOSAL:NAVIGATE_COMPARE:(.*?)\]/)?.[1] || ''}
-                        onNavigate={() => {
-                          const symbols = msg.content.match(/\[PROPOSAL:NAVIGATE_COMPARE:(.*?)\]/)?.[1];
-                          if (symbols) {
-                            setIsOpen(false);
-                            navigate(`/screener?drive=true&target=compare&symbols=${symbols}`);
-                          }
-                        }}
-                      />
-                    )}
-                    
-                    <p className={`text-[10px] mt-2 ${msg.type === 'user' ? 'text-cyan-100' : 'text-gray-500'}`}>
-                      {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </p>
-                  </div>
-                </motion.div>
-              ))}
-              
-              {isTyping && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="flex justify-start"
-                >
-                  <div className="bg-white/5 border border-white/10 px-4 py-3 rounded-2xl rounded-bl-sm backdrop-blur-md">
-                    <div className="flex items-center space-x-2">
-                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-                      <span className="text-xs font-medium text-cyan-400">Agent</span>
-                    </div>
-                    <div className="flex items-center space-x-1.5 mt-2 h-4">
-                      <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" />
-                      <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.15s' }} />
-                      <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.3s' }} />
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-              <div ref={messagesEndRef} />
-            </div>
-
-            {/* Suggested Prompts */}
-            {messages.length === 1 && (
-              <div className="px-4 pb-3">
-                <p className="text-xs font-medium text-gray-400 mb-2 px-1">Suggested for you</p>
-                <div className="flex flex-wrap gap-2">
-                  {suggestedPrompts.map((prompt, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handlePromptClick(prompt)}
-                      className="px-3 py-1.5 text-xs bg-white/5 border border-white/10 text-gray-300 rounded-lg hover:bg-white/10 hover:text-white transition-colors text-left"
-                    >
-                      {prompt}
-                    </button>
-                  ))}
+          {/* Main Content Area */}
+          <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-5 scrollbar-thin min-w-[340px] bg-theme-surface">
+            {isThinking && (
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex items-center gap-3 text-content-secondary text-[13px] bg-theme-canvas p-3 rounded-xl border border-theme-border/50 shadow-sm w-fit"
+              >
+                <div className="flex space-x-1.5">
+                  <div className="w-1.5 h-1.5 bg-trade-action rounded-full animate-[bounce_1s_infinite]" />
+                  <div className="w-1.5 h-1.5 bg-trade-action rounded-full animate-[bounce_1s_infinite_0.15s]" />
+                  <div className="w-1.5 h-1.5 bg-trade-action rounded-full animate-[bounce_1s_infinite_0.3s]" />
                 </div>
-              </div>
+                <span className="font-medium tracking-tight">Agent is analyzing...</span>
+              </motion.div>
             )}
 
-            {/* Input Area */}
-            <div className="p-4 border-t border-white/10 bg-white/5">
-              <div className="flex items-center space-x-2 relative">
-                <input
-                  type="text"
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                  placeholder="Message Agent..."
-                  className="flex-1 px-4 py-3 pr-12 bg-white/5 border border-white/10 rounded-xl focus:border-cyan-500 focus:bg-white/10 focus:outline-none text-white text-sm placeholder-gray-500 transition-all shadow-[inset_0_0_10px_rgba(0,0,0,0.2)]"
-                />
-                <button
-                  onClick={handleSendMessage}
-                  disabled={!message.trim() || isTyping}
-                  className="absolute right-2 p-2 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-lg hover:from-cyan-400 hover:to-blue-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-cyan-500/20"
-                >
-                  <Send className="w-4 h-4" />
-                </button>
-              </div>
-              <p className="text-[10px] text-center text-gray-500 mt-2">
-                Agent can make mistakes. Consider verifying important information.
-              </p>
+            {error && (
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-trade-loss text-[13px] flex items-start gap-2.5 bg-trade-loss/10 p-3.5 rounded-xl border border-trade-loss/20 shadow-sm"
+              >
+                <X className="w-4 h-4 shrink-0 mt-0.5" /> 
+                <span className="leading-relaxed font-medium">{error}</span>
+              </motion.div>
+            )}
+
+            {latestResponse && !isThinking && (
+              <motion.div 
+                initial={{ opacity: 0, y: 15 }} 
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                className="flex flex-col gap-3"
+              >
+                <div className="bg-theme-canvas border border-theme-border p-4 rounded-2xl shadow-sm rounded-tl-sm relative">
+                  <p className="text-[13px] text-content-primary leading-relaxed tracking-tight">
+                    {latestResponse.content.replace(/\[(ACTION|PROPOSAL):.*?\]/, '')}
+                  </p>
+                </div>
+
+                {latestResponse.content.includes('[PROPOSAL:') && (
+                  <ProposalWidget 
+                    actionType={latestResponse.content.match(/\[PROPOSAL:([^:]+):/)?.[1] || ''}
+                    payload={latestResponse.content.match(/\[PROPOSAL:[^:]+:(.*?)\]/)?.[1] || ''}
+                    onNavigate={() => {
+                      const action = latestResponse.content.match(/\[PROPOSAL:([^:]+):/)?.[1];
+                      const payload = latestResponse.content.match(/\[PROPOSAL:[^:]+:(.*?)\]/)?.[1];
+                      if (action === 'NAVIGATE_COMPARE') {
+                        navigate(`/screener?drive=true&target=compare&symbols=${payload}`);
+                      } else if (action === 'NAVIGATE_TIMETRAVEL') {
+                        navigate(`/time-travel?drive=true&symbols=${payload}`);
+                      } else if (action === 'NAVIGATE_REBALANCE') {
+                        navigate(`/portfolio/rebalance?drive=true`);
+                      }
+                    }}
+                  />
+                )}
+              </motion.div>
+            )}
+            
+            {!latestResponse && !isThinking && !error && (
+               <motion.div 
+                 initial={{ opacity: 0, filter: "blur(4px)" }}
+                 animate={{ opacity: 1, filter: "blur(0px)" }}
+                 transition={{ delay: 0.1, duration: 0.4 }}
+                 className="h-full flex flex-col justify-center py-8 min-w-[340px] pr-8"
+               >
+                 <div className="w-12 h-12 bg-gradient-to-br from-theme-canvas to-theme-surface rounded-2xl flex items-center justify-center mb-5 border border-theme-border shadow-sm ring-1 ring-white/5">
+                   <Bot className="w-6 h-6 text-trade-action drop-shadow-[0_0_8px_rgba(0,184,217,0.5)]" />
+                 </div>
+                 <h3 className="text-[15px] font-semibold text-content-primary mb-1.5 tracking-tight">How can I help?</h3>
+                 <p className="text-[13px] text-content-secondary leading-relaxed mb-6 max-w-[260px]">
+                   I can analyze markets, execute tasks, and guide you through NammaStocks. Try asking me to:
+                 </p>
+                 
+                 <div className="flex flex-col gap-2 w-full max-w-[280px]">
+                   {SUGGESTIONS.map((suggestion, idx) => (
+                     <motion.button
+                       key={idx}
+                       whileHover={{ scale: 1.02, x: 4 }}
+                       whileTap={{ scale: 0.98 }}
+                       onClick={() => handleSendMessage(suggestion.text)}
+                       className="flex items-center gap-3 p-3 text-left bg-theme-canvas hover:bg-theme-surface border border-theme-border hover:border-trade-action/50 rounded-xl transition-colors group shadow-sm"
+                     >
+                       <div className="p-1.5 bg-theme-surface group-hover:bg-trade-action/10 rounded-md transition-colors">
+                         <suggestion.icon className="w-3.5 h-3.5 text-content-secondary group-hover:text-trade-action transition-colors" />
+                       </div>
+                       <span className="text-[12px] font-medium text-content-primary group-hover:text-trade-action transition-colors tracking-tight">
+                         {suggestion.text}
+                       </span>
+                     </motion.button>
+                   ))}
+                 </div>
+               </motion.div>
+            )}
+          </div>
+
+          {/* Input Area */}
+          <div className="p-4 border-t border-theme-border bg-theme-canvas min-w-[340px] shadow-[0_-4px_24px_rgba(0,0,0,0.05)] z-10">
+            <div className="flex items-end space-x-2 bg-theme-surface border border-theme-border rounded-xl p-2.5 focus-within:border-trade-action/50 focus-within:ring-2 focus-within:ring-trade-action/20 shadow-inner transition-all group">
+              <textarea
+                ref={inputRef}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendMessage();
+                  }
+                }}
+                placeholder="Ask the Agent..."
+                className="flex-1 bg-transparent border-none text-content-primary text-[13px] p-1.5 resize-none max-h-32 min-h-[40px] focus:ring-0 focus:outline-none placeholder:text-content-secondary/60 scrollbar-thin tracking-tight"
+                disabled={isThinking}
+                rows={1}
+              />
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => handleSendMessage()}
+                disabled={!message.trim() || isThinking}
+                className="p-2 mb-0.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-lg hover:from-cyan-400 hover:to-blue-500 transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-sm shadow-cyan-500/20 shrink-0"
+              >
+                <Send className="w-4 h-4 translate-x-px" />
+              </motion.button>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
+            <div className="flex justify-between items-center mt-3 px-1.5 text-[10px] text-content-secondary/80 font-medium tracking-wide uppercase">
+              <p>Enter to send</p>
+              <p>Shift+Enter for newline</p>
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
 

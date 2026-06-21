@@ -77,38 +77,50 @@ const GhostCursor = ({ steps, onAllComplete }: GhostCursorProps) => {
           opacity: 1, 
           x: position.x, 
           y: position.y,
-          scale: isClicking ? 0.8 : 1
+          scale: isClicking ? 0.9 : 1
         }}
         exit={{ opacity: 0 }}
         transition={{ 
-          x: { type: "spring", stiffness: 100, damping: 25 },
-          y: { type: "spring", stiffness: 100, damping: 25 },
+          x: { type: "spring", stiffness: 150, damping: 20, mass: 0.8 },
+          y: { type: "spring", stiffness: 150, damping: 20, mass: 0.8 },
           scale: { duration: 0.1 }
         }}
-        className="fixed top-0 left-0 z-[9999] pointer-events-none"
+        className="fixed top-0 left-0 z-[9999] pointer-events-none flex items-start"
         style={{ transformOrigin: "top left" }}
       >
-        <svg 
-          width="24" 
-          height="24" 
-          viewBox="0 0 24 24" 
-          fill="none" 
-          stroke="white" 
-          strokeWidth="2"
-          className="drop-shadow-lg"
-          style={{ transform: 'rotate(-20deg) scale(1.5)' }}
+        <div className="relative">
+          <svg 
+            width="28" 
+            height="28" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="white" 
+            strokeWidth="1.5"
+            strokeLinejoin="round"
+            className="drop-shadow-2xl"
+            style={{ transform: 'rotate(-10deg)' }}
+          >
+            <polygon points="3 11 22 2 13 21 11 13 3 11" fill="#06b6d4" />
+          </svg>
+          {isClicking && (
+            <motion.div 
+              initial={{ scale: 0, opacity: 1 }}
+              animate={{ scale: 2.5, opacity: 0 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+              className="absolute top-0 left-0 w-8 h-8 bg-cyan-400 rounded-full mix-blend-screen"
+              style={{ transform: 'translate(-10%, -10%)' }}
+            />
+          )}
+        </div>
+        <motion.div
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.2 }}
+          className="ml-2 mt-4 px-3 py-1.5 bg-cyan-950/80 backdrop-blur-md text-cyan-50 text-[10px] font-mono uppercase tracking-widest rounded-full shadow-lg shadow-cyan-500/20 border border-cyan-400/40 flex items-center gap-2"
         >
-          <path d="M4 4l16 5.333-7.556 2.222L10.222 19 4 4z" fill="#06b6d4" stroke="#ffffff" strokeWidth="1.5" />
-        </svg>
-        {isClicking && (
-          <motion.div 
-            initial={{ scale: 0, opacity: 1 }}
-            animate={{ scale: 2, opacity: 0 }}
-            transition={{ duration: 0.5 }}
-            className="absolute top-0 left-0 w-6 h-6 bg-cyan-400 rounded-full"
-            style={{ transform: 'translate(-25%, -25%)' }}
-          />
-        )}
+          <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
+          Bolt
+        </motion.div>
       </motion.div>
     </AnimatePresence>
   );

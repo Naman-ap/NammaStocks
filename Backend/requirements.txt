@@ -10,3 +10,4 @@ ollama
 yfinance
 nselib
 mftool
+feedparser

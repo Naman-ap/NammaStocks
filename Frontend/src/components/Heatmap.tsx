@@ -1,63 +1,88 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { dashboardApi } from '../api/Dashboard'; // Can be removed later
 
-const Heatmap = () => {
-  const sectors = [
-    { name: 'IT', change: 2.45, size: 'large' },
-    { name: 'Banking', change: -0.89, size: 'large' },
-    { name: 'Auto', change: 1.67, size: 'medium' },
-    { name: 'Pharma', change: -1.23, size: 'medium' },
-    { name: 'FMCG', change: 0.34, size: 'medium' },
-    { name: 'Metals', change: 3.21, size: 'small' },
-    { name: 'Telecom', change: -2.45, size: 'small' },
-    { name: 'Oil & Gas', change: 1.89, size: 'small' },
-    { name: 'Textiles', change: 0.67, size: 'small' },
-    { name: 'Realty', change: -0.45, size: 'small' },
-    { name: 'Power', change: 2.11, size: 'small' },
-    { name: 'Infra', change: 1.34, size: 'small' },
-  ];
+const Heatmap = ({ data = [] }: { data?: any[] }) => {
+  const sectors = data;
 
   const getColor = (change: number) => {
-    if (change > 2) return 'bg-gradient-to-br from-green-500 to-green-700 shadow-[inset_0_0_20px_rgba(255,255,255,0.1)]';
-    if (change > 1) return 'bg-gradient-to-br from-green-400 to-green-600 shadow-[inset_0_0_20px_rgba(255,255,255,0.1)]';
-    if (change > 0) return 'bg-gradient-to-br from-emerald-400 to-emerald-500 shadow-[inset_0_0_20px_rgba(255,255,255,0.1)] text-gray-900';
-    if (change > -1) return 'bg-gradient-to-br from-rose-400 to-rose-500 shadow-[inset_0_0_20px_rgba(255,255,255,0.1)]';
-    if (change > -2) return 'bg-gradient-to-br from-red-500 to-red-600 shadow-[inset_0_0_20px_rgba(255,255,255,0.1)]';
-    return 'bg-gradient-to-br from-red-600 to-red-800 shadow-[inset_0_0_20px_rgba(255,255,255,0.1)]';
+    if (change >= 2)  return { bg: '#10B981', text: '#ffffff', border: '#059669' }; 
+    if (change >= 1)  return { bg: '#34D399', text: '#064E3B', border: '#10B981' }; 
+    if (change > 0)   return { bg: '#D1FAE5', text: '#065F46', border: '#A7F3D0' }; 
+    if (change === 0) return { bg: '#F8FAFC', text: '#64748B', border: '#E2E8F0' }; 
+    if (change > -1)  return { bg: '#FFE4E6', text: '#9F1239', border: '#FECDD3' }; 
+    if (change > -2)  return { bg: '#FB7185', text: '#4C0519', border: '#F43F5E' }; 
+    return            { bg: '#F43F5E', text: '#ffffff', border: '#E11D48' }; 
   };
 
   const getSize = (size: string) => {
     switch (size) {
-      case 'large': return 'col-span-2 row-span-2 min-h-[8rem]';
-      case 'medium': return 'col-span-2 min-h-[4rem]';
-      default: return 'min-h-[4rem]';
+      case 'large': return 'col-span-2 row-span-2 min-h-[10rem] p-4';
+      case 'medium': return 'col-span-2 min-h-[5rem] p-3';
+      default: return 'min-h-[5rem] p-2';
+    }
+  };
+
+  const getTitleClass = (size: string) => {
+    switch (size) {
+      case 'large': return 'text-base md:text-lg';
+      case 'medium': return 'text-sm md:text-base';
+      default: return 'text-[11px] leading-tight md:text-xs break-words';
+    }
+  };
+
+  const getValueClass = (size: string) => {
+    switch (size) {
+      case 'large': return 'text-xl md:text-2xl';
+      case 'medium': return 'text-base md:text-xl';
+      default: return 'text-sm md:text-base';
     }
   };
 
   return (
-    <div className="grid grid-cols-6 gap-3 h-auto min-h-[20rem]">
-      {sectors.map((sector, index) => (
-        <motion.div
-          key={sector.name}
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: index * 0.05 }}
-          whileHover={{ scale: 1.05, zIndex: 10 }}
-          className={`${getColor(sector.change)} ${getSize(sector.size)} rounded-2xl p-4 flex flex-col justify-between cursor-pointer group relative overflow-hidden`}
-        >
-          {/* Subtle shine effect */}
-          <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/20 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 transform -translate-x-full group-hover:translate-x-full" />
-          
-          <div className="relative z-10">
-            <h3 className={`font-bold tracking-tight ${sector.change > 0 && sector.change <= 1 ? 'text-gray-900' : 'text-white'} text-sm md:text-base`}>{sector.name}</h3>
-          </div>
-          <div className="text-right relative z-10 mt-2">
-            <p className={`font-extrabold ${sector.change > 0 && sector.change <= 1 ? 'text-gray-900' : 'text-white'} text-sm md:text-lg drop-shadow-sm`}>
-              {sector.change > 0 ? '+' : ''}{sector.change}%
-            </p>
-          </div>
-        </motion.div>
-      ))}
+    <div className="grid grid-cols-6 gap-1.5 h-auto min-h-[22rem]">
+      {sectors.map((sector, index) => {
+        const colors = getColor(sector.change);
+        return (
+          <motion.div
+            key={sector.name}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: index * 0.03, duration: 0.3 }}
+            whileHover={{ scale: 1.02, y: -2, zIndex: 20 }}
+            className={`${getSize(sector.size)} rounded-2xl flex flex-col justify-between cursor-pointer group relative overflow-hidden border shadow-sm transition-shadow hover:shadow-xl`}
+            style={{
+              backgroundColor: colors.bg,
+              borderColor: colors.border,
+              color: colors.text,
+            }}
+          >
+            {/* Hover shimmer */}
+            <div className="absolute inset-0 bg-white/0 group-hover:bg-white/20 transition-colors duration-300 pointer-events-none rounded-xl" />
+
+            <div className="relative z-10 flex justify-between items-start">
+              <h3 className={`font-bold tracking-tight ${getTitleClass(sector.size)}`}
+                  style={{ color: colors.text }}>
+                {sector.name}
+              </h3>
+              {sector.size === 'large' && (
+                <span
+                  className="text-[10px] uppercase font-bold tracking-widest opacity-70 px-1.5 py-0.5 rounded-md mt-0.5"
+                  style={{ backgroundColor: `${colors.border}60` }}
+                >
+                  {sector.mcap}
+                </span>
+              )}
+            </div>
+            <div className="text-right relative z-10 mt-1">
+              <p className={`font-black tracking-tighter ${getValueClass(sector.size)}`}
+                 style={{ color: colors.text }}>
+                {sector.change > 0 ? '+' : ''}{sector.change}%
+              </p>
+            </div>
+          </motion.div>
+        );
+      })}
     </div>
   );
 };

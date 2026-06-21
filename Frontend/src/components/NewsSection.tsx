@@ -63,57 +63,57 @@ const NewsSection = ({ symbol }: { symbol: string }) => {
   ];
 
   const getCategoryColor = (category: string) => {
-    const colors = {
-      'Earnings': 'bg-green-500',
-      'Corporate Action': 'bg-blue-500',
-      'Analyst Note': 'bg-purple-500',
-      'Partnership': 'bg-orange-500',
-      'Expansion': 'bg-cyan-500',
-      'Dividend': 'bg-emerald-500',
+    const colors: Record<string, string> = {
+      'Earnings': 'bg-trade-gain text-white',
+      'Corporate Action': 'bg-trade-action text-white',
+      'Analyst Note': 'bg-purple-500 text-white',
+      'Partnership': 'bg-orange-500 text-white',
+      'Expansion': 'bg-cyan-500 text-white',
+      'Dividend': 'bg-emerald-500 text-white',
     };
-    return colors[category as keyof typeof colors] || 'bg-gray-500';
+    return colors[category] || 'bg-content-secondary text-white';
   };
 
   return (
-    <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-semibold text-white">Latest News</h2>
-        <div className="flex items-center space-x-2">
-          <Calendar className="w-5 h-5 text-cyan-400" />
-          <span className="text-sm text-gray-400">Real-time updates</span>
+    <div>
+      <div className="flex items-center justify-between mb-5">
+        <h2 className="text-base font-bold text-content-primary">Latest News</h2>
+        <div className="flex items-center space-x-1.5">
+          <Calendar className="w-4 h-4 text-trade-action" />
+          <span className="text-xs text-content-secondary">Real-time updates</span>
         </div>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-3">
         {newsItems.slice(0, visibleNews).map((news, index) => (
           <motion.div
             key={news.id}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            className="p-4 bg-gray-700 rounded-xl border border-gray-600 hover:border-gray-500 transition-all cursor-pointer group"
+            transition={{ delay: index * 0.07 }}
+            className="p-4 bg-theme-canvas border border-theme-border rounded-xl hover:border-trade-action/30 hover:bg-blue-50/30 transition-all cursor-pointer group"
           >
-            <div className="flex items-start justify-between mb-3">
-              <div className="flex items-center space-x-3">
-                <span className={`px-2 py-1 text-xs font-medium text-white rounded-md ${getCategoryColor(news.category)}`}>
+            <div className="flex items-start justify-between mb-2">
+              <div className="flex items-center space-x-2 flex-wrap gap-y-1">
+                <span className={`px-2 py-0.5 text-xs font-semibold rounded-md ${getCategoryColor(news.category)}`}>
                   {news.category}
                 </span>
-                <span className="text-xs text-gray-400">{news.timestamp}</span>
+                <span className="text-xs text-content-secondary">{news.timestamp}</span>
               </div>
-              <ExternalLink className="w-4 h-4 text-gray-400 group-hover:text-cyan-400 transition-colors" />
+              <ExternalLink className="w-3.5 h-3.5 text-content-secondary group-hover:text-trade-action transition-colors flex-shrink-0 mt-0.5" />
             </div>
             
-            <h3 className="text-white font-semibold mb-2 group-hover:text-cyan-400 transition-colors">
+            <h3 className="text-content-primary font-semibold text-sm mb-1.5 group-hover:text-trade-action transition-colors leading-snug">
               {news.title}
             </h3>
             
-            <p className="text-gray-300 text-sm mb-3 line-clamp-2">
+            <p className="text-content-secondary text-xs mb-2.5 line-clamp-2 leading-relaxed">
               {news.summary}
             </p>
             
             <div className="flex items-center justify-between">
-              <span className="text-xs text-gray-500">{news.source}</span>
-              <button className="text-xs text-cyan-400 hover:text-cyan-300 transition-colors">
+              <span className="text-xs text-content-secondary font-medium">{news.source}</span>
+              <button className="text-xs text-trade-action hover:text-blue-700 transition-colors font-semibold">
                 Read more
               </button>
             </div>
@@ -122,10 +122,10 @@ const NewsSection = ({ symbol }: { symbol: string }) => {
       </div>
 
       {visibleNews < newsItems.length && (
-        <div className="text-center mt-6">
+        <div className="text-center mt-4">
           <button
             onClick={() => setVisibleNews(prev => prev + 3)}
-            className="flex items-center space-x-2 mx-auto px-4 py-2 bg-gray-700 border border-gray-600 text-gray-300 rounded-xl hover:bg-gray-600 hover:text-white transition-colors"
+            className="flex items-center space-x-2 mx-auto px-4 py-2 bg-theme-canvas border border-theme-border text-content-secondary rounded-xl hover:border-trade-action/30 hover:text-trade-action transition-all text-sm font-medium"
           >
             <span>Load more news</span>
             <ChevronDown className="w-4 h-4" />

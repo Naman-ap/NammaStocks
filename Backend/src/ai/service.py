@@ -12,6 +12,10 @@ async def get_chat_response(messages: List[Message], model: str = "llama3.2") ->
             last_msg = messages[-1].content.lower()
             if "compare hdfc and infosys" in last_msg:
                 return "I can help you compare HDFC and Infosys. Should I go ahead and execute this? [PROPOSAL:NAVIGATE_COMPARE:HDFC,INFY]"
+            elif "tata motors" in last_msg or "time travel" in last_msg:
+                return "I can run a visual backtest for Tata Motors vs HDFC. Should I go back in time and show you? [PROPOSAL:NAVIGATE_TIMETRAVEL:TATAMOTORS,HDFC]"
+            elif "de-risk" in last_msg or "election" in last_msg or "rebalance" in last_msg:
+                return "I can help you de-risk your portfolio. Shall I set up a rebalance scenario? [PROPOSAL:NAVIGATE_REBALANCE:]"
 
         # Convert pydantic models to dicts for ollama SDK
         formatted_messages = [{"role": msg.role, "content": msg.content} for msg in messages]
