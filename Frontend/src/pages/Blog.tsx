@@ -9,7 +9,9 @@ import {
   Code,
   TrendingUp,
   BookOpen,
-  Plus
+  Plus,
+  Construction,
+  Sparkles
 } from 'lucide-react';
 
 const Blog = () => {
@@ -147,6 +149,35 @@ const Blog = () => {
               <span>Write Article</span>
             </Link>
           </div>
+
+          {/* 🚧 Work In Progress Banner */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="relative overflow-hidden rounded-2xl border border-amber-400/60 bg-gradient-to-r from-amber-950/80 via-yellow-900/70 to-orange-950/80 shadow-lg shadow-amber-500/10"
+          >
+            {/* Diagonal stripe pattern */}
+            <div className="absolute inset-0 bg-[repeating-linear-gradient(135deg,transparent,transparent_20px,rgba(251,191,36,0.05)_20px,rgba(251,191,36,0.05)_40px)]" />
+            <div className="relative flex items-center gap-4 px-6 py-4">
+              <div className="flex-shrink-0 flex items-center justify-center w-11 h-11 rounded-xl bg-amber-500/20 border border-amber-400/40">
+                <Construction className="w-6 h-6 text-amber-400" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-0.5">
+                  <span className="text-amber-300 font-bold text-sm tracking-wide uppercase">Work in Progress</span>
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-semibold">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                    Releasing Soon
+                  </span>
+                </div>
+                <p className="text-amber-200/80 text-sm leading-relaxed">
+                  The blog is under active development. New articles, author profiles, and community features are being crafted. We’ll be publishing soon!
+                </p>
+              </div>
+              <Sparkles className="flex-shrink-0 w-5 h-5 text-amber-400/60" />
+            </div>
+          </motion.div>
 
           {/* Search and Filter */}
           <div className="flex flex-col lg:flex-row gap-4">

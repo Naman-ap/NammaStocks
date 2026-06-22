@@ -96,20 +96,29 @@ def get_yfinance_market_summary(
     return service.get_market_summary(symbol_list)
 
 
-# @router.get("/yfinance/global-markets")
-# def get_yfinance_global_markets(
-#     service: YFinanceService = Depends(get_yfinance_service)
-# ):
-#     """Get global markets data."""
-#     return service.get_global_markets()
+@router.get("/yfinance/top-gainers-losers")
+def get_nse_top_gainers_losers(
+    service: YFinanceService = Depends(get_yfinance_service)
+):
+    """Get NSE top gainers and losers via nselib."""
+    return service.get_top_gainers_losers()
 
 
-# @router.get("/yfinance/sector-heatmap")
-# def get_yfinance_sector_heatmap(
-#     service: YFinanceService = Depends(get_yfinance_service)
-# ):
-#     """Get sector heatmap data."""
-#     return service.get_sector_heatmap()
+
+@router.get("/yfinance/global-markets")
+def get_yfinance_global_markets(
+    service: YFinanceService = Depends(get_yfinance_service)
+):
+    """Get global markets data."""
+    return service.get_global_markets()
+
+
+@router.get("/yfinance/sector-heatmap")
+def get_yfinance_sector_heatmap(
+    service: YFinanceService = Depends(get_yfinance_service)
+):
+    """Get sector heatmap data."""
+    return service.get_sector_heatmap()
 
 
 @router.get("/nse/history/{symbol}", response_model=NseHistoryResponse)

@@ -5,13 +5,13 @@ import { TrendingUp, TrendingDown } from 'lucide-react';
 import { TopGainersLosers } from '../api/Dashboard';
 
 const TopMovers = ({ data }: { data?: TopGainersLosers | null }) => {
-  const gainers = data?.top_gainers?.slice(0, 4).map(g => ({
+  const gainers = data?.top_gainers?.slice(0, 5).map(g => ({
     symbol: g.ticker,
     price: parseFloat(g.price).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
     change: g.change_percentage
   })) || [];
 
-  const losers = data?.top_losers?.slice(0, 4).map(l => ({
+  const losers = data?.top_losers?.slice(0, 5).map(l => ({
     symbol: l.ticker,
     price: parseFloat(l.price).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
     change: l.change_percentage

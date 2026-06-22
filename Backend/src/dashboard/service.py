@@ -4,6 +4,7 @@ import requests
 import yfinance as yf
 from nselib import capital_market
 from mftool import Mftool
+from src.shared.market_data import fetch_batch_summary
 from src.dashboard.repository import DashboardRepository
 from src.dashboard.models import DashboardMetric
 from src.dashboard.schemas import (
@@ -133,38 +134,11 @@ class YFinanceService:
         return history_df.to_dict(orient="index")
 
     def _get_market_summary_data(self, symbols: list[str]) -> dict:
-        """Get market summary (current price, % change, sparkline) for multiple symbols."""
-        results = {}
-        for symbol in symbols:
-            try:
-                ticker = yf.Ticker(symbol)
-                hist = ticker.history(period="1mo")
-                if hist.empty or len(hist) < 2:
-                    continue
-                
-                closes = hist["Close"].tolist()
-                last_price = closes[-1]
-                prev_price = closes[-2]
-                change = last_price - prev_price
-                change_percent = (change / prev_price) * 100
-                
-                spark = closes[-10:] if len(closes) >= 10 else closes
-                
-                info = ticker.info
-                name = info.get("shortName") or info.get("longName") or symbol.replace(".NS", "")
-                
-                results[symbol] = {
-                    "symbol": symbol,
-                    "name": name,
-                    "price": round(last_price, 2),
-                    "change": round(change, 2),
-                    "changePercent": round(change_percent, 2),
-                    "positive": change >= 0,
-                    "spark": [round(p, 2) for p in spark]
-                }
-            except Exception as e:
-                print(f"Error fetching {symbol}: {e}")
-        return results
+        """
+        Get market summary for multiple symbols.
+        Delegates to shared batch utility — one HTTP request for all symbols.
+        """
+        return fetch_batch_summary(symbols)
 
     def get_global_markets(self) -> dict:
         """Get structured global markets data."""
@@ -252,50 +226,54 @@ class YFinanceService:
                 })
         return result
 
+    def get_top_gainers_losers(self) -> dict:
+        """
+        Fetch NSE top gainers and losers via nselib.
+        Returns { top_gainers: [...], top_losers: [...] }
+        """
+        result: dict = {"top_gainers": [], "top_losers": []}
+
+        try:
+            gainers_df = capital_market.top_gainers_or_losers(to_get='gainers')
+            if gainers_df is not None and not gainers_df.empty:
+                for _, row in gainers_df.head(10).iterrows():
+                    per_change = str(row.get('perChange', 0)).replace('%', '').strip()
+                    result['top_gainers'].append({
+                        "ticker": str(row.get('symbol', '')),
+                        "price": str(row.get('ltp', 0)),
+                        "change_percentage": f"{per_change}%",
+                    })
+        except Exception as e:
+            print(f"[YFinanceService] Error fetching gainers via nselib: {e}")
+
+        try:
+            # Note: nselib uses 'losers' (not 'loosers')
+            losers_df = capital_market.top_gainers_or_losers(to_get='loosers')
+            if losers_df is not None and not losers_df.empty:
+                for _, row in losers_df.head(10).iterrows():
+                    per_change = str(row.get('perChange', 0)).replace('%', '').strip()
+                    result['top_losers'].append({
+                        "ticker": str(row.get('symbol', '')),
+                        "price": str(row.get('ltp', 0)),
+                        "change_percentage": f"{per_change}%",
+                    })
+        except Exception as e:
+            print(f"[YFinanceService] Error fetching losers via nselib: {e}")
+
+        return result
+
     def get_market_summary(self, symbols: list[str]) -> dict:
         """Get aggregated dashboard data using market summary API."""
         summary_data = self._get_market_summary_data(symbols)
         heatmap_data = self.get_sector_heatmap()
         global_markets_data = self.get_global_markets()
-        
-        # Fetch top gainers/losers via nselib
-        top_gainers_losers = {"top_gainers": [], "top_losers": []}
-        try:
-            # Fetch top gainers
-            try:
-                gainers_df = capital_market.top_gainers_or_losers(to_get='gainers')
-                if gainers_df is not None and not gainers_df.empty:
-                    for _, row in gainers_df.head(10).iterrows():
-                        per_change = str(row.get('perChange', 0)).replace('%', '')
-                        top_gainers_losers['top_gainers'].append({
-                            "ticker": str(row.get('symbol', '')),
-                            "price": str(row.get('ltp', 0)),
-                            "change_percentage": f"{per_change}%"
-                        })
-            except Exception as e:
-                print(f"Error fetching gainers via nselib: {e}")
-                
-            # Fetch top losers
-            try:
-                losers_df = capital_market.top_gainers_or_losers(to_get='loosers')
-                if losers_df is not None and not losers_df.empty:
-                    for _, row in losers_df.head(10).iterrows():
-                        per_change = str(row.get('perChange', 0)).replace('%', '')
-                        top_gainers_losers['top_losers'].append({
-                            "ticker": str(row.get('symbol', '')),
-                            "price": str(row.get('ltp', 0)),
-                            "change_percentage": f"{per_change}%"
-                        })
-            except Exception as e:
-                print(f"Error fetching losers via nselib: {e}")
-        except Exception as e:
-            print(f"Error in top gainers/losers overall: {e}")
+        top_gainers_losers = self.get_top_gainers_losers()
 
         return {
             "summary": summary_data,
             "heatmap": heatmap_data,
             "globalMarkets": global_markets_data,
-            "topGainersLosers": top_gainers_losers
+            "topGainersLosers": top_gainers_losers,
         }
 
 

@@ -75,7 +75,7 @@ export const dashboardApi = {
    * Endpoint: GET /dashboard/top-gainers-losers-direct
    */
   async getTopGainersLosers(): Promise<TopGainersLosers> {
-    return get<TopGainersLosers>('/dashboard/top-gainers-losers-direct');
+    return get<TopGainersLosers>('/dashboard/yfinance/top-gainers-losers');
   },
 
   /**

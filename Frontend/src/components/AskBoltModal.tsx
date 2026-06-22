@@ -1,11 +1,105 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Sparkles, Send, Zap, Bot, X, TrendingUp, Clock, Scale,
-  StopCircle, User, ChevronDown,
+  StopCircle, User, ArrowRight, Command,
 } from 'lucide-react';
 import { useAgent, AgentMessage, AgentAction } from '../hooks/useAgent';
 import { useNavigate } from 'react-router-dom';
+
+// ---------------------------------------------------------------------------
+// Slash command definitions — single source of truth
+// ---------------------------------------------------------------------------
+
+interface SlashCommandDef {
+  cmd: string;           // e.g. "/compare"
+  args: string;          // human-readable args, e.g. "<SYM1> <SYM2> [...]"
+  description: string;
+  example: string;       // full example string inserted on Tab/click
+  icon: React.ElementType;
+}
+
+const SLASH_COMMANDS: SlashCommandDef[] = [
+  {
+    cmd: '/compare',
+    args: '<SYM1> <SYM2> [...]',
+    description: 'Compare stocks side-by-side',
+    example: '/compare TCS INFY',
+    icon: TrendingUp,
+  },
+  {
+    cmd: '/timetravel',
+    args: '<SYM1> <SYM2>',
+    description: 'Run a visual backtest',
+    example: '/timetravel TCS HDFCBANK',
+    icon: Clock,
+  },
+  {
+    cmd: '/rebalance',
+    args: '',
+    description: 'Open portfolio rebalancer',
+    example: '/rebalance',
+    icon: Scale,
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Slash command autocomplete dropdown
+// ---------------------------------------------------------------------------
+
+const SlashMenu = ({
+  query,
+  onSelect,
+}: {
+  query: string;         // text after the leading "/"
+  onSelect: (example: string) => void;
+}) => {
+  const filtered = useMemo(() => {
+    const q = query.toLowerCase();
+    return SLASH_COMMANDS.filter(c => c.cmd.slice(1).startsWith(q));
+  }, [query]);
+
+  if (!filtered.length) return null;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 6, scale: 0.97 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: 6, scale: 0.97 }}
+      transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+      className="absolute bottom-full left-0 right-0 mb-2 bg-theme-canvas border border-theme-border rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.18)] overflow-hidden z-50"
+    >
+      <div className="px-3 py-2 border-b border-theme-border flex items-center gap-2">
+        <Command className="w-3 h-3 text-trade-action" />
+        <span className="text-[10px] font-semibold text-content-secondary uppercase tracking-widest">
+          Slash Commands
+        </span>
+      </div>
+      {filtered.map((c) => (
+        <motion.button
+          key={c.cmd}
+          whileHover={{ backgroundColor: 'rgba(0,184,217,0.06)' }}
+          onClick={() => onSelect(c.example)}
+          className="w-full flex items-center gap-3 px-3 py-2.5 text-left transition-colors group"
+        >
+          <div className="w-7 h-7 rounded-lg bg-trade-action/10 flex items-center justify-center shrink-0">
+            <c.icon className="w-3.5 h-3.5 text-trade-action" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-[13px] font-semibold text-content-primary font-mono">{c.cmd}</span>
+              {c.args && (
+                <span className="text-[11px] text-content-secondary font-mono">{c.args}</span>
+              )}
+            </div>
+            <p className="text-[11px] text-content-secondary truncate">{c.description}</p>
+          </div>
+          <ArrowRight className="w-3.5 h-3.5 text-content-secondary group-hover:text-trade-action transition-colors shrink-0" />
+        </motion.button>
+      ))}
+    </motion.div>
+  );
+};
 
 // ---------------------------------------------------------------------------
 // Proposal widget — driven by typed AgentAction (no regex)
@@ -68,6 +162,8 @@ const ChatBubble = ({
   onNavigate: (action: AgentAction) => void;
 }) => {
   const isUser = message.role === 'user';
+  const isSlashCmd = isUser && message.content.startsWith('/');
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -91,7 +187,9 @@ const ChatBubble = ({
       <div className={`flex-1 ${isUser ? 'flex flex-col items-end' : ''}`}>
         <div className={`px-3.5 py-2.5 rounded-2xl text-[13px] leading-relaxed tracking-tight max-w-[90%] ${
           isUser
-            ? 'bg-trade-action text-white rounded-tr-sm'
+            ? isSlashCmd
+              ? 'bg-theme-canvas border border-trade-action/40 text-trade-action rounded-tr-sm font-mono'
+              : 'bg-trade-action text-white rounded-tr-sm'
             : 'bg-theme-canvas border border-theme-border text-content-primary rounded-tl-sm shadow-sm'
         }`}>
           {message.content}
@@ -153,14 +251,14 @@ const ThinkingIndicator = () => (
 );
 
 // ---------------------------------------------------------------------------
-// Empty state suggestions
+// Empty state suggestions — now slash-first
 // ---------------------------------------------------------------------------
 
 const SUGGESTIONS = [
-  { icon: TrendingUp, text: 'Compare TCS vs INFY' },
-  { icon: TrendingUp, text: 'Is Reliance a good buy right now?' },
-  { icon: Clock, text: 'Time travel: HDFCBANK vs ICICIBANK' },
-  { icon: Scale, text: 'Rebalance my portfolio' },
+  { icon: TrendingUp, text: '/compare TCS INFY RELIANCE', label: 'Compare stocks' },
+  { icon: Clock,      text: '/timetravel HDFCBANK ICICIBANK', label: 'Backtest two stocks' },
+  { icon: Scale,      text: '/rebalance', label: 'Rebalance portfolio' },
+  { icon: TrendingUp, text: 'Is Reliance a good buy right now?', label: 'Ask anything' },
 ];
 
 // ---------------------------------------------------------------------------
@@ -175,8 +273,10 @@ interface AskBoltModalProps {
 const AskBoltModal = ({ isOpen, onClose }: AskBoltModalProps) => {
   const navigate = useNavigate();
   const [message, setMessage] = useState('');
+  const [showSlashMenu, setShowSlashMenu] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const inputWrapperRef = useRef<HTMLDivElement>(null);
 
   const {
     history,
@@ -187,6 +287,20 @@ const AskBoltModal = ({ isOpen, onClose }: AskBoltModalProps) => {
     cancelRequest,
     clearHistory,
   } = useAgent();
+
+  // Derive slash menu query from message content
+  const slashMenuQuery = useMemo(() => {
+    if (!message.startsWith('/')) return '';
+    // Only show menu while typing the command word (no space yet means still typing cmd)
+    const afterSlash = message.slice(1);
+    if (afterSlash.includes(' ')) return ''; // args mode — hide menu
+    return afterSlash;
+  }, [message]);
+
+  // Show/hide menu
+  useEffect(() => {
+    setShowSlashMenu(message.startsWith('/') && !message.slice(1).includes(' '));
+  }, [message]);
 
   // Focus input when panel opens
   useEffect(() => {
@@ -204,7 +318,14 @@ const AskBoltModal = ({ isOpen, onClose }: AskBoltModalProps) => {
     const textToSend = customMessage || message;
     if (!textToSend.trim() || isThinking) return;
     if (!customMessage) setMessage('');
+    setShowSlashMenu(false);
     await sendCommand(textToSend);
+  };
+
+  const handleSlashSelect = (example: string) => {
+    setMessage(example + ' ');
+    setShowSlashMenu(false);
+    inputRef.current?.focus();
   };
 
   /** Navigate based on typed AgentAction — no regex needed */
@@ -225,6 +346,7 @@ const AskBoltModal = ({ isOpen, onClose }: AskBoltModalProps) => {
     }
   };
 
+  const isSlashMode = message.startsWith('/');
   const isEmpty = history.length === 0 && !isThinking && !error;
 
   return (
@@ -287,8 +409,29 @@ const AskBoltModal = ({ isOpen, onClose }: AskBoltModalProps) => {
                 </div>
                 <h3 className="text-[15px] font-semibold text-content-primary mb-1.5 tracking-tight">How can I help?</h3>
                 <p className="text-[13px] text-content-secondary leading-relaxed mb-6 max-w-[260px]">
-                  I can analyze markets, compare stocks with live data, and drive the app for you.
+                  Ask anything, or use{' '}
+                  <span className="text-trade-action font-mono font-semibold">/commands</span>{' '}
+                  to trigger actions instantly.
                 </p>
+
+                {/* Slash command quick reference */}
+                <div className="mb-4 bg-theme-canvas border border-theme-border rounded-xl p-3 space-y-2">
+                  <p className="text-[10px] font-semibold text-content-secondary uppercase tracking-widest flex items-center gap-1.5">
+                    <Command className="w-3 h-3" /> Commands
+                  </p>
+                  {SLASH_COMMANDS.map(c => (
+                    <button
+                      key={c.cmd}
+                      onClick={() => handleSendMessage(c.example)}
+                      className="w-full flex items-center gap-2 text-left group"
+                    >
+                      <span className="text-[12px] font-mono font-semibold text-trade-action group-hover:underline">{c.cmd}</span>
+                      {c.args && <span className="text-[11px] font-mono text-content-secondary">{c.args}</span>}
+                      <span className="ml-auto text-[10px] text-content-secondary group-hover:text-content-primary transition-colors">{c.description}</span>
+                    </button>
+                  ))}
+                </div>
+
                 <div className="flex flex-col gap-2 w-full max-w-[280px]">
                   {SUGGESTIONS.map((s, idx) => (
                     <motion.button
@@ -301,9 +444,14 @@ const AskBoltModal = ({ isOpen, onClose }: AskBoltModalProps) => {
                       <div className="p-1.5 bg-theme-surface group-hover:bg-trade-action/10 rounded-md transition-colors">
                         <s.icon className="w-3.5 h-3.5 text-content-secondary group-hover:text-trade-action transition-colors" />
                       </div>
-                      <span className="text-[12px] font-medium text-content-primary group-hover:text-trade-action transition-colors tracking-tight">
-                        {s.text}
-                      </span>
+                      <div className="flex flex-col gap-0.5">
+                        <span className={`text-[12px] font-medium tracking-tight group-hover:text-trade-action transition-colors ${
+                          s.text.startsWith('/') ? 'font-mono text-trade-action/80' : 'text-content-primary'
+                        }`}>
+                          {s.text}
+                        </span>
+                        <span className="text-[10px] text-content-secondary">{s.label}</span>
+                      </div>
                     </motion.button>
                   ))}
                 </div>
@@ -340,46 +488,78 @@ const AskBoltModal = ({ isOpen, onClose }: AskBoltModalProps) => {
 
           {/* Input */}
           <div className="p-4 border-t border-theme-border bg-theme-canvas min-w-[360px] shadow-[0_-4px_24px_rgba(0,0,0,0.05)] z-10">
-            <div className="flex items-end space-x-2 bg-theme-surface border border-theme-border rounded-xl p-2.5 focus-within:border-trade-action/50 focus-within:ring-2 focus-within:ring-trade-action/20 shadow-inner transition-all">
-              <textarea
-                ref={inputRef}
-                value={message}
-                onChange={e => setMessage(e.target.value)}
-                onKeyDown={e => {
-                  if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    handleSendMessage();
-                  }
-                }}
-                placeholder="Ask Bolt..."
-                className="flex-1 bg-transparent border-none text-content-primary text-[13px] p-1.5 resize-none max-h-32 min-h-[40px] focus:ring-0 focus:outline-none placeholder:text-content-secondary/60 scrollbar-thin tracking-tight"
-                disabled={isThinking}
-                rows={1}
-              />
-              {isThinking ? (
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={cancelRequest}
-                  className="p-2 mb-0.5 bg-trade-loss/10 text-trade-loss rounded-lg hover:bg-trade-loss/20 transition-all shrink-0 border border-trade-loss/30"
-                  title="Cancel"
-                >
-                  <StopCircle className="w-4 h-4" />
-                </motion.button>
-              ) : (
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => handleSendMessage()}
-                  disabled={!message.trim()}
-                  className="p-2 mb-0.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-lg hover:from-cyan-400 hover:to-blue-500 transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-sm shadow-cyan-500/20 shrink-0"
-                >
-                  <Send className="w-4 h-4 translate-x-px" />
-                </motion.button>
-              )}
+            {/* Slash command autocomplete */}
+            <div ref={inputWrapperRef} className="relative">
+              <AnimatePresence>
+                {showSlashMenu && (
+                  <SlashMenu query={slashMenuQuery} onSelect={handleSlashSelect} />
+                )}
+              </AnimatePresence>
+
+              <div className={`flex items-end space-x-2 bg-theme-surface border rounded-xl p-2.5 focus-within:ring-2 shadow-inner transition-all ${
+                isSlashMode
+                  ? 'border-trade-action/50 ring-1 ring-trade-action/20'
+                  : 'border-theme-border focus-within:border-trade-action/50 focus-within:ring-trade-action/20'
+              }`}>
+                {isSlashMode && (
+                  <div className="self-center mb-0.5 shrink-0">
+                    <Command className="w-3.5 h-3.5 text-trade-action" />
+                  </div>
+                )}
+                <textarea
+                  ref={inputRef}
+                  value={message}
+                  onChange={e => setMessage(e.target.value)}
+                  onKeyDown={e => {
+                    if (e.key === 'Escape' && showSlashMenu) {
+                      e.preventDefault();
+                      setShowSlashMenu(false);
+                      return;
+                    }
+                    if (e.key === 'Tab' && showSlashMenu) {
+                      e.preventDefault();
+                      const filtered = SLASH_COMMANDS.filter(c =>
+                        c.cmd.slice(1).startsWith(slashMenuQuery.toLowerCase())
+                      );
+                      if (filtered.length === 1) handleSlashSelect(filtered[0].example);
+                      return;
+                    }
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      handleSendMessage();
+                    }
+                  }}
+                  placeholder={isSlashMode ? 'compare TCS INFY ...' : 'Ask Bolt, or type / for commands...'}
+                  className="flex-1 bg-transparent border-none text-content-primary text-[13px] p-1.5 resize-none max-h-32 min-h-[40px] focus:ring-0 focus:outline-none placeholder:text-content-secondary/60 scrollbar-thin tracking-tight font-mono"
+                  disabled={isThinking}
+                  rows={1}
+                />
+                {isThinking ? (
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={cancelRequest}
+                    className="p-2 mb-0.5 bg-trade-loss/10 text-trade-loss rounded-lg hover:bg-trade-loss/20 transition-all shrink-0 border border-trade-loss/30"
+                    title="Cancel"
+                  >
+                    <StopCircle className="w-4 h-4" />
+                  </motion.button>
+                ) : (
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => handleSendMessage()}
+                    disabled={!message.trim()}
+                    className="p-2 mb-0.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-lg hover:from-cyan-400 hover:to-blue-500 transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-sm shadow-cyan-500/20 shrink-0"
+                  >
+                    <Send className="w-4 h-4 translate-x-px" />
+                  </motion.button>
+                )}
+              </div>
             </div>
+
             <div className="flex justify-between items-center mt-2 px-1.5 text-[10px] text-content-secondary/80 font-medium tracking-wide uppercase">
-              <p>Enter to send</p>
+              <p>Enter to send · Tab to complete</p>
               <p>Shift+Enter for newline</p>
             </div>
           </div>

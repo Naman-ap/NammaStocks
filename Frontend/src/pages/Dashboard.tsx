@@ -12,6 +12,7 @@ import RealTimeTickerTape from '../components/RealTimeTickerTape';
 import NewsSection from '../components/NewsSection';
 import GlobalMarkets from '../components/GlobalMarkets';
 import { dashboardApi, MarketSummaryItem } from '../api/Dashboard';
+import { stocksApi } from '../api/Stocks';
 
 // ─── Mini Spark Line (pure SVG, no deps) ─────────────────────────────────────
 const SparkLine = ({ data, positive }: { data: number[]; positive: boolean }) => {
@@ -91,27 +92,36 @@ const Dashboard = () => {
   const [topGainersLosersData, setTopGainersLosersData] = React.useState<any>(null);
 
   React.useEffect(() => {
-    const fetchMarketData = async () => {
-      try {
-        const symbols = [
-          ...INITIAL_MARKET_INDICES.map(i => i.symbol),
-          ...INITIAL_WATCHLIST.map(w => w.symbol)
-        ];
-        const data = await dashboardApi.getMarketSummary(symbols);
-        
-        if (data.summary) {
-          setMarketIndices(prev => prev.map(item => data.summary[item.symbol] ? { ...item, ...data.summary[item.symbol] } : item));
-          setWatchlist(prev => prev.map(item => data.summary[item.symbol] ? { ...item, ...data.summary[item.symbol] } : item));
-        }
-        
-        if (data.heatmap) setHeatmapData(data.heatmap);
-        if (data.globalMarkets) setGlobalMarketsData(data.globalMarkets);
-        if (data.topGainersLosers) setTopGainersLosersData(data.topGainersLosers);
-      } catch (error) {
-        console.error("Failed to fetch market data", error);
-      }
-    };
-    fetchMarketData();
+    const allSymbols = [
+      ...INITIAL_MARKET_INDICES.map(i => i.symbol),
+      ...INITIAL_WATCHLIST.map(w => w.symbol),
+    ];
+
+    // ── 1. Summary strip: reuse /stocks/market-summary (fast batch call) ──
+    stocksApi.getMarketSummary(allSymbols)
+      .then(summary => {
+        setMarketIndices(prev => prev.map(item =>
+          summary[item.symbol] ? { ...item, ...summary[item.symbol] } : item
+        ));
+        setWatchlist(prev => prev.map(item =>
+          summary[item.symbol] ? { ...item, ...summary[item.symbol] } : item
+        ));
+      })
+      .catch(err => console.error('[Dashboard] Summary fetch failed:', err));
+
+    // ── 2. Heatmap: separate call, fires concurrently ──────────────────────
+    dashboardApi.getSectorHeatmap()
+      .then(heatmap => setHeatmapData(heatmap))
+      .catch(err => console.error('[Dashboard] Heatmap fetch failed:', err));
+
+    // ── 3. Gainers/Losers + Global Markets: also concurrent ───────────────
+    dashboardApi.getGlobalMarkets()
+      .then(gm => setGlobalMarketsData(gm))
+      .catch(err => console.error('[Dashboard] Global markets fetch failed:', err));
+
+    dashboardApi.getTopGainersLosers()
+      .then(gl => setTopGainersLosersData(gl))
+      .catch(err => console.error('[Dashboard] Gainers/losers fetch failed:', err));
   }, []);
 
   return (
