@@ -127,9 +127,24 @@ class YFinanceService:
             
         history_df = ticker.history(period=period, interval=interval)
         
-        # Convert index (datetime) to string so it can be easily serialized by Pydantic/FastAPI
         if not history_df.empty:
-            history_df.index = history_df.index.astype(str)
+            # Normalize the DatetimeIndex to a consistent string format.
+            #
+            # ROOT CAUSE: astype(str) preserves the raw UTC offset of each ticker's
+            # index (e.g. SBIN.NS → "+05:30", another stock → "+00:00"). The same
+            # trading day then serialises to different YYYY-MM-DD prefixes ("2025-07-09"
+            # vs "2025-07-08"), so the frontend cannot merge them into the same slot.
+            #
+            # Fix: always convert to IST (Asia/Kolkata) first, then format:
+            #   - daily/weekly → plain "YYYY-MM-DD"  (no time, no tz ambiguity)
+            #   - intraday     → "YYYY-MM-DD HH:MM:SS" in IST
+            if hasattr(history_df.index, 'tz') and history_df.index.tz is not None:
+                history_df.index = history_df.index.tz_convert('Asia/Kolkata')
+            
+            if interval in ("1d", "1wk"):
+                history_df.index = history_df.index.strftime('%Y-%m-%d')
+            else:
+                history_df.index = history_df.index.strftime('%Y-%m-%d %H:%M:%S')
             
         return history_df.to_dict(orient="index")
 

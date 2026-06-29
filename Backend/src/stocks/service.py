@@ -29,9 +29,20 @@ class StocksService:
 
         history_df = ticker.history(period=period, interval=interval)
 
-        # Convert index (datetime) to string so it can be easily serialized
         if not history_df.empty:
-            history_df.index = history_df.index.astype(str)
+            # Normalize the DatetimeIndex to a consistent string format.
+            # astype(str) preserves the raw UTC offset, which causes different stocks
+            # to emit different YYYY-MM-DD prefixes for the same trading day when their
+            # timezone offsets differ. Always convert to IST first, then format:
+            #   - daily/weekly → plain "YYYY-MM-DD"
+            #   - intraday     → "YYYY-MM-DD HH:MM:SS" in IST
+            if hasattr(history_df.index, 'tz') and history_df.index.tz is not None:
+                history_df.index = history_df.index.tz_convert('Asia/Kolkata')
+
+            if interval in ("1d", "1wk"):
+                history_df.index = history_df.index.strftime('%Y-%m-%d')
+            else:
+                history_df.index = history_df.index.strftime('%Y-%m-%d %H:%M:%S')
 
         return history_df.to_dict(orient="index")
 

@@ -11,6 +11,7 @@ const Screener = () => {
   const [searchParams] = useSearchParams();
   const [isFilterOpen, setIsFilterOpen] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeFilter, setActiveFilter] = useState<string | null>(null);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -92,8 +93,16 @@ const Screener = () => {
 
           {/* Quick Filters Ribbon */}
           <div className="flex overflow-x-auto pb-2 gap-2 scrollbar-none">
-            {['Top Gainers', 'Volume Shockers', '52W High', 'Undervalued (P/E < 15)', 'High Dividend', 'Large Cap Tech', 'Oversold (RSI < 30)'].map((filter) => (
-              <button key={filter} className="flex-shrink-0 px-4 py-2 bg-theme-surface hover:bg-blue-50 border border-theme-border hover:border-trade-action/40 rounded-full text-sm font-semibold tracking-wide text-content-secondary hover:text-trade-action transition-all whitespace-nowrap shadow-surface">
+            {['My Watchlist', 'Top Gainers', 'Volume Shockers', '52W High', 'Undervalued (P/E < 15)', 'High Dividend', 'Large Cap Tech', 'Oversold (RSI < 30)'].map((filter) => (
+              <button 
+                key={filter} 
+                onClick={() => setActiveFilter(activeFilter === filter ? null : filter)}
+                className={`flex-shrink-0 px-4 py-2 border rounded-full text-sm font-semibold tracking-wide transition-all whitespace-nowrap shadow-surface ${
+                  activeFilter === filter 
+                    ? 'bg-trade-action border-trade-action text-white' 
+                    : 'bg-theme-surface hover:bg-blue-50 border-theme-border hover:border-trade-action/40 text-content-secondary hover:text-trade-action'
+                }`}
+              >
                 {filter}
               </button>
             ))}
@@ -123,7 +132,7 @@ const Screener = () => {
               transition={{ delay: 0.2 }}
               className="flex-1 w-full min-w-0 pb-8"
             >
-              <StockTable />
+              <StockTable showWatchlistOnly={activeFilter === 'My Watchlist'} />
             </motion.div>
           </div>
         </motion.div>

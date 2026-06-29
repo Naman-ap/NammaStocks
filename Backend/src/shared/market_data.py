@@ -79,6 +79,22 @@ def fetch_batch_summary(symbols: list[str], period: str = "1mo") -> dict:
     if df.empty:
         return {}
 
+    # Fetch live prices concurrently to ensure we have the latest real-time quote
+    from concurrent.futures import ThreadPoolExecutor
+    live_data = {}
+    def get_live(sym):
+        try:
+            info = yf.Ticker(sym).info
+            price = info.get("currentPrice") or info.get("regularMarketPrice") or info.get("previousClose") or 0
+            prev = info.get("previousClose") or price
+            return sym, price, prev
+        except:
+            return sym, None, None
+
+    with ThreadPoolExecutor(max_workers=min(20, max(1, len(symbols)))) as executor:
+        for sym, price, prev in executor.map(get_live, symbols):
+            live_data[sym] = (price, prev)
+
     results = {}
 
     # yfinance returns different DataFrame shapes depending on symbol count:
@@ -93,7 +109,8 @@ def fetch_batch_summary(symbols: list[str], period: str = "1mo") -> dict:
             close_col = close_col.squeeze(axis=1)
         closes = _safe_series(close_col)
         if closes is not None and len(closes) >= 2:
-            results[sym] = _build_row(sym, closes)
+            l_price, l_prev = live_data.get(sym, (None, None))
+            results[sym] = _build_row(sym, closes, l_price, l_prev)
     else:
         # Try to access df["Close"] which should be a DataFrame of shape (dates, symbols)
         try:
@@ -109,7 +126,8 @@ def fetch_batch_summary(symbols: list[str], period: str = "1mo") -> dict:
                 closes = _safe_series(close_df[sym])
                 if closes is None or len(closes) < 2:
                     continue
-                results[sym] = _build_row(sym, closes)
+                l_price, l_prev = live_data.get(sym, (None, None))
+                results[sym] = _build_row(sym, closes, l_price, l_prev)
             except Exception as e:
                 print(f"[market_data] Error processing {sym}: {e}")
 
@@ -131,10 +149,15 @@ def _safe_series(series: pd.Series | None) -> list[float] | None:
     return clean if clean else None
 
 
-def _build_row(symbol: str, closes: list[float]) -> dict:
-    """Build a market summary row from a list of closing prices."""
-    last_price = closes[-1]
-    prev_price = closes[-2]
+def _build_row(symbol: str, closes: list[float], live_price: float | None = None, live_prev: float | None = None) -> dict:
+    """Build a market summary row from a list of closing prices and live data."""
+    if live_price is not None and live_price > 0:
+        last_price = live_price
+        prev_price = live_prev if (live_prev and live_prev > 0) else closes[-2]
+    else:
+        last_price = closes[-1]
+        prev_price = closes[-2]
+
     change = last_price - prev_price
     change_pct = (change / prev_price) * 100 if prev_price else 0.0
 

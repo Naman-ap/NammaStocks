@@ -59,27 +59,79 @@ const ComparisonChart: React.FC<ComparisonChartProps> = ({ stocks, timeframe }) 
         
         const results = await Promise.all(promises);
         
-        // 1. Group data by exact timestamp
-        const groupedData: Record<number, any> = {};
+        // 1. Group data by a normalised slot key.
+        //
+        //    ROOT CAUSE A (missing stock in first half):
+        //    Different stocks can return different timestamp formats — e.g. GROWW may
+        //    return "2025-07-09 03:45:00+00:00" while SBIN returns "2025-07-09". Grouping
+        //    by milliseconds means they NEVER land in the same slot, so one stock's line
+        //    appears completely absent for the period before the other stock's timestamps
+        //    show up in the merged array. Fix: for multi-day timeframes use the date part
+        //    (YYYY-MM-DD) as the slot key so all stocks always merge correctly.
+        //
+        //    ROOT CAUSE B (one-day-extra timezone shift):
+        //    new Date("2025-06-30") is parsed as UTC midnight, which in IST (UTC+5:30)
+        //    rolls back to the previous day visually. Fix: construct local noon from the
+        //    date components for the final timestamp that drives the X-axis.
+
+        const isIntraday = timeframe === '1D';
+
+        // Returns { slotKey, timestamp } for a raw date string from the API.
+        const parseEntry = (dateStr: string): { slotKey: string; timestamp: number } => {
+          // Extract the YYYY-MM-DD prefix regardless of whether the string has a time component
+          const dateMatch = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})/);
+          if (dateMatch) {
+            const year = Number(dateMatch[1]);
+            const month = Number(dateMatch[2]);
+            const day = Number(dateMatch[3]);
+
+            if (isIntraday) {
+              // For intraday we need the real time — parse the full string
+              const d = new Date(dateStr);
+              return { slotKey: String(d.getTime()), timestamp: d.getTime() };
+            } else {
+              // For daily+ data group by calendar date; use local noon as the timestamp
+              // so labels always show the correct calendar day in any timezone
+              const localNoon = new Date(year, month - 1, day, 12, 0, 0);
+              const slotKey = `${dateMatch[1]}-${dateMatch[2]}-${dateMatch[3]}`;
+              return { slotKey, timestamp: localNoon.getTime() };
+            }
+          }
+          // Fallback for unexpected formats
+          const d = new Date(dateStr);
+          return { slotKey: String(d.getTime()), timestamp: d.getTime() };
+        };
+
+        const groupedData: Record<string, any> = {};
 
         results.forEach(res => {
           Object.entries(res.history).forEach(([dateStr, value]: [string, any]) => {
-            const d = new Date(dateStr);
-            const timestamp = d.getTime();
             const rawPrice = Number(value.Close);
-            
-            if (isNaN(rawPrice)) return; // skip if not a valid number
 
-            if (!groupedData[timestamp]) {
-              groupedData[timestamp] = { timestamp, fullDate: dateStr };
+            // ROOT CAUSE C (all-graphs crash at end):
+            // The API sometimes returns price = 0 for the latest date when the market
+            // hasn't opened yet or data is missing. ((0 - start) / start) * 100 = -100%.
+            // Guard: skip any non-positive price.
+            if (isNaN(rawPrice) || rawPrice <= 0) return;
+
+            const { slotKey, timestamp } = parseEntry(dateStr);
+
+            if (!groupedData[slotKey]) {
+              groupedData[slotKey] = { timestamp, fullDate: dateStr };
             }
-            // Store raw price first
-            groupedData[timestamp][`${res.symbol}_raw`] = rawPrice;
+            groupedData[slotKey][`${res.symbol}_raw`] = rawPrice;
           });
         });
-        
+
         // Convert to array and sort chronologically
         let finalData = Object.values(groupedData).sort((a, b) => a.timestamp - b.timestamp);
+
+        // Remove any slots where no stock has a valid price (shouldn't happen after the
+        // guard above, but kept as a safety net against future data-quality issues).
+        const symbolKeys = stocks.map(s => `${s.symbol}_raw`);
+        finalData = finalData.filter(point =>
+          symbolKeys.some(key => typeof point[key] === 'number')
+        );
 
         // 2. Normalize to Percentage Change
         // Find starting price for each stock

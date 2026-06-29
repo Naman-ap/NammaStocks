@@ -245,7 +245,7 @@ const ThinkingIndicator = () => (
         <div className="w-1.5 h-1.5 bg-trade-action rounded-full animate-[bounce_1s_infinite_0.15s]" />
         <div className="w-1.5 h-1.5 bg-trade-action rounded-full animate-[bounce_1s_infinite_0.3s]" />
       </div>
-      <span className="font-medium tracking-tight">Bolt is thinking...</span>
+      <span className="font-medium tracking-tight">Stockie is thinking...</span>
     </div>
   </motion.div>
 );
@@ -265,12 +265,12 @@ const SUGGESTIONS = [
 // Main component
 // ---------------------------------------------------------------------------
 
-interface AskBoltModalProps {
+interface AskStockieModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const AskBoltModal = ({ isOpen, onClose }: AskBoltModalProps) => {
+const AskStockieModal = ({ isOpen, onClose }: AskStockieModalProps) => {
   const navigate = useNavigate();
   const [message, setMessage] = useState('');
   const [showSlashMenu, setShowSlashMenu] = useState(false);
@@ -342,7 +342,7 @@ const AskBoltModal = ({ isOpen, onClose }: AskBoltModalProps) => {
         navigate('/portfolio/rebalance?drive=true');
         break;
       default:
-        console.warn('[AskBolt] Unknown action type:', action.type);
+        console.warn('[AskStockie] Unknown action type:', action.type);
     }
   };
 
@@ -366,7 +366,7 @@ const AskBoltModal = ({ isOpen, onClose }: AskBoltModalProps) => {
                 <Sparkles className="w-4 h-4 text-trade-action" />
               </div>
               <div>
-                <span className="font-semibold text-content-primary text-[13px] tracking-wide">Bolt Agent</span>
+                <span className="font-semibold text-content-primary text-[13px] tracking-wide">Stockie Agent</span>
                 {isThinking && (
                   <span className="block text-[10px] text-trade-action font-medium animate-pulse">
                     Analyzing...
@@ -529,7 +529,7 @@ const AskBoltModal = ({ isOpen, onClose }: AskBoltModalProps) => {
                       handleSendMessage();
                     }
                   }}
-                  placeholder={isSlashMode ? 'compare TCS INFY ...' : 'Ask Bolt, or type / for commands...'}
+                  placeholder={isSlashMode ? 'compare TCS INFY ...' : 'Ask Stockie, or type / for commands...'}
                   className="flex-1 bg-transparent border-none text-content-primary text-[13px] p-1.5 resize-none max-h-32 min-h-[40px] focus:ring-0 focus:outline-none placeholder:text-content-secondary/60 scrollbar-thin tracking-tight font-mono"
                   disabled={isThinking}
                   rows={1}
@@ -569,4 +569,4 @@ const AskBoltModal = ({ isOpen, onClose }: AskBoltModalProps) => {
   );
 };
 
-export default AskBoltModal;
+export default AskStockieModal;

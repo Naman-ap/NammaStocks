@@ -6,7 +6,7 @@ const KeyRatioCards = ({ data }: any) => {
   const ratios = [
     {
       title: 'Market Cap',
-      value: (data.marketCap / 100).toLocaleString(),
+      value: (data.marketCap / 10000000).toLocaleString('en-IN', { maximumFractionDigits: 2 }),
       prefix: '₹',
       suffix: 'Cr',
       icon: DollarSign,
@@ -15,7 +15,7 @@ const KeyRatioCards = ({ data }: any) => {
     },
     {
       title: 'Price to Earnings (P/E)',
-      value: data.pe,
+      value: typeof data.pe === 'number' ? data.pe.toFixed(2) : Number(data.pe || 0).toFixed(2),
       suffix: 'x',
       icon: BarChart3,
       trend: 'neutral',
@@ -23,7 +23,7 @@ const KeyRatioCards = ({ data }: any) => {
     },
     {
       title: 'Price to Book (P/B)',
-      value: data.pb,
+      value: typeof data.pb === 'number' ? data.pb.toFixed(2) : Number(data.pb || 0).toFixed(2),
       suffix: 'x',
       icon: PieChart,
       trend: 'neutral',
@@ -46,7 +46,7 @@ const KeyRatioCards = ({ data }: any) => {
     },
     {
       title: 'Earnings Per Share (EPS)',
-      value: data.eps,
+      value: typeof data.eps === 'number' ? data.eps.toFixed(2) : Number(data.eps || 0).toFixed(2),
       prefix: '₹',
       icon: TrendingUp,
       trend: 'positive',
@@ -95,11 +95,11 @@ const KeyRatioCards = ({ data }: any) => {
               
               <div className="space-y-2">
                 <h3 className="text-sm font-semibold text-content-secondary">{ratio.title}</h3>
-                <div className="flex items-baseline space-x-1">
+                <div className="flex items-baseline space-x-1 flex-wrap overflow-hidden">
                   {ratio.prefix && (
                     <span className="text-lg font-black text-content-primary">{ratio.prefix}</span>
                   )}
-                  <span className="text-2xl font-black text-content-primary tracking-tight">{ratio.value}</span>
+                  <span className="text-2xl font-black text-content-primary tracking-tight truncate">{ratio.value}</span>
                   {ratio.suffix && (
                     <span className="text-lg font-black text-content-primary">{ratio.suffix}</span>
                   )}

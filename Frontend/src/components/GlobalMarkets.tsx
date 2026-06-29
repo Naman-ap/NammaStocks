@@ -21,8 +21,8 @@ const GlobalMarkets = ({ data = {} }: { data?: Record<string, any[]> }) => {
     <div className="bg-theme-surface border border-theme-border rounded-3xl p-5 shadow-surface flex-1 flex flex-col">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-xl bg-blue-100 border border-blue-200">
-            <Icon className="w-5 h-5 text-blue-600" />
+          <div className="p-2 rounded-xl bg-trade-action/10 border border-trade-action/20">
+            <Icon className="w-5 h-5 text-trade-action" />
           </div>
           <div>
             <h2 className="font-bold text-content-primary leading-none">Global Data</h2>
@@ -49,7 +49,7 @@ const GlobalMarkets = ({ data = {} }: { data?: Record<string, any[]> }) => {
             transition={{ duration: 0.2 }}
             className="absolute inset-0 overflow-y-auto scrollbar-thin"
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 pb-2">
+            <div className="grid grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-3 pb-2">
               {currentData.map((item, index) => (
                 <div
                   key={item.name}

@@ -123,7 +123,7 @@ const GhostCursor = ({ steps, onAllComplete }: GhostCursorProps) => {
           className="ml-2 mt-4 px-3 py-1.5 bg-cyan-950/80 backdrop-blur-md text-cyan-50 text-[10px] font-mono uppercase tracking-widest rounded-full shadow-lg shadow-cyan-500/20 border border-cyan-400/40 flex items-center gap-2"
         >
           <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
-          Bolt
+          Stockie
         </motion.div>
       </motion.div>
     </AnimatePresence>

@@ -10,6 +10,8 @@ from src.stocks.router import router as stocks_router
 from src.external.router import router as external_router
 from src.ai.router import router as ai_router
 from src.news.router import router as news_router
+from src.auth.router import router as auth_router
+from src.user_management.router import router as user_management_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -40,6 +42,8 @@ app.include_router(stocks_router, prefix=settings.API_V1_PREFIX)
 #app.include_router(external_router, prefix=settings.API_V1_PREFIX)
 app.include_router(ai_router, prefix=settings.API_V1_PREFIX)
 app.include_router(news_router, prefix=settings.API_V1_PREFIX)
+app.include_router(auth_router, prefix=settings.API_V1_PREFIX)
+app.include_router(user_management_router, prefix=settings.API_V1_PREFIX)
 
 @app.get("/")
 async def root():

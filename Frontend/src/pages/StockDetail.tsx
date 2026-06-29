@@ -15,6 +15,9 @@ import StockHistoryCharts from '../components/CandlestickChart';
 import KeyRatioCards from '../components/KeyRatioCards';
 import NewsSection from '../components/NewsSection';
 import { stocksApi } from '../api/Stocks';
+import { useAuth } from '@clerk/clerk-react';
+import { userManagementApi } from '../api/userManagement';
+import { toast } from 'react-hot-toast';
 
 const StockDetail = () => {
   const { symbol } = useParams();
@@ -22,6 +25,24 @@ const StockDetail = () => {
 
   const [stockData, setStockData] = React.useState<any>(null);
   const [loading, setLoading] = React.useState(true);
+  const { getToken } = useAuth();
+  const [watchlist, setWatchlist] = useState<string[]>([]);
+  const [isUpdatingWatchlist, setIsUpdatingWatchlist] = useState(false);
+
+  React.useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = await getToken();
+        if (token) {
+          const profile = await userManagementApi.getProfile(token);
+          setWatchlist(profile.watchlist || []);
+        }
+      } catch (err) {
+        console.error('Failed to fetch profile', err);
+      }
+    };
+    fetchProfile();
+  }, [getToken]);
 
   React.useEffect(() => {
     const fetchStockData = async () => {
@@ -90,6 +111,35 @@ const StockDetail = () => {
     { id: 'financials', label: 'Financials', icon: PieChart },
     { id: 'news', label: 'News', icon: Calendar },
   ];
+
+  const isInWatchlist = watchlist.includes(stockData.symbol);
+
+  const toggleWatchlist = async () => {
+    try {
+      setIsUpdatingWatchlist(true);
+      const token = await getToken();
+      if (!token) {
+        toast.error('Please sign in to add to watchlist');
+        return;
+      }
+      
+      let newWatchlist = [...watchlist];
+      if (isInWatchlist) {
+        newWatchlist = newWatchlist.filter(s => s !== stockData.symbol);
+      } else {
+        newWatchlist.push(stockData.symbol);
+      }
+
+      await userManagementApi.updateProfile(token, { watchlist: newWatchlist });
+      setWatchlist(newWatchlist);
+      toast.success(isInWatchlist ? 'Removed from Watchlist' : 'Added to Watchlist');
+    } catch (err) {
+      console.error('Failed to update watchlist', err);
+      toast.error('Failed to update watchlist');
+    } finally {
+      setIsUpdatingWatchlist(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-theme-canvas relative overflow-hidden">
@@ -160,7 +210,7 @@ const StockDetail = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-theme-surface rounded-2xl p-4 border border-theme-border shadow-sm hover:shadow-md transition-shadow"
+                className="bg-theme-surface rounded-2xl p-4 border border-theme-border hover:border-trade-action/30 transition-all hover:shadow-surface"
               >
                 <p className="text-content-secondary text-xs font-bold tracking-wider uppercase">{stat.label}</p>
                 <p className="text-content-primary font-black text-lg mt-1 tracking-tight">{stat.value}</p>
@@ -244,8 +294,16 @@ const StockDetail = () => {
               <div className="bg-theme-surface rounded-3xl p-6 border border-theme-border shadow-surface">
                 <h3 className="text-lg font-bold text-content-primary mb-4">Quick Actions</h3>
                 <div className="space-y-3">
-                  <button className="w-full px-4 py-2.5 bg-gradient-to-r from-trade-gain to-emerald-600 text-white font-semibold rounded-xl hover:from-emerald-700 hover:to-emerald-600 transition-all shadow-sm shadow-trade-gain/20">
-                    Add to Watchlist
+                  <button 
+                    onClick={toggleWatchlist}
+                    disabled={isUpdatingWatchlist}
+                    className={`w-full px-4 py-2.5 font-semibold rounded-xl transition-all shadow-sm flex items-center justify-center space-x-2 ${
+                      isInWatchlist 
+                        ? 'bg-theme-surface border-2 border-trade-gain text-trade-gain hover:bg-trade-gain/10'
+                        : 'bg-gradient-to-r from-trade-gain to-emerald-600 text-white hover:from-emerald-700 hover:to-emerald-600 shadow-trade-gain/20'
+                    } ${isUpdatingWatchlist ? 'opacity-70 cursor-not-allowed' : ''}`}
+                  >
+                    {isUpdatingWatchlist ? 'Updating...' : isInWatchlist ? 'In Watchlist' : 'Add to Watchlist'}
                   </button>
                   <button className="w-full px-4 py-2.5 border border-theme-border text-content-primary font-semibold rounded-xl hover:bg-theme-canvas transition-colors">
                     Set Price Alert

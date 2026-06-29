@@ -18,7 +18,7 @@ import { stocksApi } from '../api/Stocks';
 const SparkLine = ({ data, positive }: { data: number[]; positive: boolean }) => {
   const max = Math.max(...data), min = Math.min(...data);
   const range = max - min || 1;
-  const w = 80, h = 32;
+  const w = 56, h = 24;
   const points = data
     .map((v, i) => `${(i / (data.length - 1)) * w},${h - ((v - min) / range) * h}`)
     .join(' ');
@@ -79,7 +79,6 @@ const itemVariants = {
 // ─── TABS for the right column ────────────────────────────────────────────────
 const RIGHT_TABS = [
   { id: 'movers', label: 'Top Movers', icon: Flame },
-  { id: 'news',   label: 'News',       icon: Newspaper },
 ];
 
 const Dashboard = () => {
@@ -153,13 +152,13 @@ const Dashboard = () => {
                 onClick={() => setActiveWatchItem(s.symbol)}
                 className={`w-full text-left px-4 py-3.5 flex items-center justify-between transition-all group border-l-2 ${
                   activeWatchItem === s.symbol
-                    ? 'bg-blue-50/50 border-trade-action'
+                    ? 'bg-trade-action/10 border-trade-action'
                     : 'border-transparent hover:bg-theme-canvas hover:border-theme-border/50'
                 }`}
               >
                 <div>
                   <p className={`text-sm font-bold ${activeWatchItem === s.symbol ? 'text-trade-action' : 'text-content-primary group-hover:text-content-primary'}`}>
-                    {s.symbol}
+                    {s.symbol.replace('.NS', '')}
                   </p>
                   <p className="text-xs text-content-secondary mt-0.5 truncate w-28">{s.name}</p>
                 </div>
@@ -174,9 +173,9 @@ const Dashboard = () => {
           </div>
 
           {/* Portfolio mini-summary */}
-          <div className="p-4 border-t border-theme-border space-y-3">
+          {/* <div className="p-4 border-t border-theme-border space-y-3">
             <p className="text-xs font-bold text-content-secondary tracking-widest uppercase">Portfolio Today</p>
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-4 border border-blue-100">
+            <div className="bg-gradient-to-br from-trade-action/5 to-indigo-500/5 rounded-2xl p-4 border border-trade-action/20">
               <p className="text-2xl font-black text-content-primary">₹4,82,310</p>
               <div className="flex items-center gap-1.5 mt-1">
                 <ArrowUpRight className="w-4 h-4 text-trade-gain" />
@@ -187,7 +186,7 @@ const Dashboard = () => {
               </div>
               <p className="text-xs text-content-secondary mt-1">64% of daily target</p>
             </div>
-          </div>
+          </div> */}
         </aside>
 
         {/* ── CENTRE COLUMN: Main chart + grid ─────────────────────────── */}
@@ -195,20 +194,24 @@ const Dashboard = () => {
           <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-5">
 
             {/* Index Strip */}
-            <motion.div variants={itemVariants} className="grid grid-cols-2 xl:grid-cols-4 gap-3">
+            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row flex-wrap gap-3">
               {marketIndices.map((idx) => (
                 <div
                   key={idx.symbol}
-                  className="bg-theme-surface border border-theme-border rounded-2xl px-4 py-3 flex items-center justify-between hover:border-trade-action/30 hover:shadow-surface transition-all"
+                  className={`bg-theme-surface border border-theme-border rounded-2xl px-4 py-3 flex items-center justify-between hover:border-trade-action/30 hover:shadow-surface transition-all overflow-hidden ${
+                    idx.symbol === '^INDIAVIX' ? 'w-full sm:w-[160px] flex-none' : 'w-full sm:flex-1 sm:min-w-[190px]'
+                  }`}
                 >
-                  <div>
-                    <p className="text-[11px] text-content-secondary font-bold tracking-wider uppercase">{idx.name}</p>
-                    <p className="text-2xl font-black tracking-tight text-content-primary mt-0.5">{idx.price.toLocaleString()}</p>
-                    <p className={`text-xs font-bold mt-0.5 ${idx.positive ? 'text-trade-gain' : 'text-trade-loss'}`}>
+                  <div className="flex-1 min-w-0 pr-2">
+                    <p className="text-[11px] text-content-secondary font-bold tracking-wider uppercase whitespace-nowrap">{idx.name}</p>
+                    <p className="text-2xl font-black tracking-tight text-content-primary mt-0.5 whitespace-nowrap">{idx.price.toLocaleString()}</p>
+                    <p className={`text-xs font-bold mt-0.5 ${idx.positive ? 'text-trade-gain' : 'text-trade-loss'} whitespace-nowrap`}>
                       {idx.positive ? '+' : ''}{idx.changePercent.toFixed(2)}%
                     </p>
                   </div>
-                  <SparkLine data={idx.spark} positive={idx.positive} />
+                  <div className="flex-shrink-0">
+                    <SparkLine data={idx.spark} positive={idx.positive} />
+                  </div>
                 </div>
               ))}
             </motion.div>
@@ -216,8 +219,8 @@ const Dashboard = () => {
             {/* Heatmap Section */}
             <motion.div variants={itemVariants} className="bg-theme-surface border border-theme-border rounded-3xl p-5 shadow-surface flex flex-col">
               <div className="flex items-center gap-3 mb-5">
-                <div className="p-2 rounded-xl bg-violet-100 border border-violet-200">
-                  <PieChart className="w-5 h-5 text-violet-600" />
+                <div className="p-2 rounded-xl bg-violet-500/10 border border-violet-500/20">
+                  <PieChart className="w-5 h-5 text-violet-500" />
                 </div>
                 <div>
                   <h2 className="font-bold text-content-primary leading-none">Sector Heatmap</h2>
@@ -240,7 +243,7 @@ const Dashboard = () => {
         </main>
 
         {/* ── RIGHT COLUMN: Top Movers / News ──────────────────────────── */}
-        <aside className="hidden xl:flex flex-col w-80 border-l border-theme-border bg-slate-50/40 flex-shrink-0 overflow-hidden">
+        <aside className="hidden xl:flex flex-col w-80 border-l border-theme-border bg-theme-surface flex-shrink-0 overflow-hidden">
           {/* Tab header */}
           <div className="flex border-b border-theme-border">
             {RIGHT_TABS.map((tab) => {
@@ -251,7 +254,7 @@ const Dashboard = () => {
                   onClick={() => setActiveRightTab(tab.id as 'movers' | 'news')}
                   className={`flex-1 flex items-center justify-center gap-2 px-4 py-4 text-sm font-bold transition-all border-b-2 ${
                     activeRightTab === tab.id
-                      ? 'border-trade-action text-trade-action bg-blue-50/60'
+                      ? 'border-trade-action text-trade-action bg-trade-action/10'
                       : 'border-transparent text-content-secondary hover:text-content-primary hover:bg-theme-canvas'
                   }`}
                 >

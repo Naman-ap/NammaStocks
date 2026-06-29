@@ -1,166 +1,140 @@
-# Commodity Market Insights Platform
+# NammaStocks
 
-## Problem Statement
-
-Commodity prices move sharply during uncertainty (geopolitics, policy shifts, supply disruptions), but the information driving these moves is **scattered across news, macro releases, and market data**. Retail and early-stage investors lack a reliable way to connect:
-
-- **What happened** → news/events
-- **Which commodities are impacted** → market exposure  
-- **How risky is the next period** → uncertainty quantification
-
-## Solution
-
-A data-driven platform that connects real-world events to commodity market movements, providing:
-
-✅ **Evidence-backed driver analysis** — not speculation  
-✅ **Risk signals** — volatility forecasts and uncertainty bands  
-✅ **Scenario planning** — "if X escalates, then Y likely happens"  
-✅ **Real-time insights** — daily updates with citations and sources  
+> An AI-powered Indian stock market platform — real-time NSE data, screener, blogs, news ,commodity insights and our AI agent (Stockie)
 
 ---
+## Overview
 
-## Key Features
+NammaStocks is an AI-powered platform for Indian equity investors. The Dashboard surfaces live NIFTY 50, SENSEX, BANK NIFTY, and VIX data alongside a sector heatmap, top movers, and a curated watchlist. The Screener helps filter NSE stocks by metrics and jump straight into side-by-side comparisons. Commodity Insights delivers driver attribution, regime classification, and volatility forecasts for key commodities. The News page aggregates the latest market headlines, while the Blog hosts community commentary. Stockie, the built-in AI assistant, answers market questions with live price and news context right in a chat sidebar.
 
-### 1. **Market Driver Attribution**
-- Top 3–7 most relevant events/news per commodity
-- Why each driver matters with cited sources
-- Connects geopolitical, policy, and supply events to prices
 
-### 2. **Regime Classification**
-- Automatic labeling: "geopolitical shock", "demand slowdown", "policy uncertainty", "supply disruption"
-- Understand what type of uncertainty is driving the market
+## Screenshots
 
-### 3. **Risk Indicators**
-- Volatility forecasts (next 1–7 days)
-- Uncertainty bands for decision-making
-- Outperforms simple rolling volatility baseline
-
-### 4. **Scenario Analysis**
-- "If X escalates → pressure on Y"
-- Clearly framed as scenarios, not guarantees
-- Helps with hedging and risk management
-
-### 5. **Real-Time Dashboard**
-- Live commodity prices (Gold, Silver, Brent/WTI Oil)
-- Interactive charts and heatmaps
-- Filter by regime, timeframe, and risk levels
-
----
-
-## Screenshots & Demos
-
-### User Flow
-
-#### 1. Login Page
+#### Login Page
 ![Login Page](./docs/screenshots/login-page.png)
-*Secure authentication to access market insights*
 
-#### 2. Dashboard Overview
+#### Dashboard
 ![Dashboard](./docs/screenshots/dashboard.png)
-*Real-time Stock prices, News and market overview*
 
-#### 3. Commodities Insights
-![Commodities Insights](./docs/screenshots/commodities-insights.png)
-*Deep-dive analysis for individual commodities with driver attribution*
+#### Screener
+![Screener](./docs/screenshots/compare.png)
 
-#### 4. AI Agent Assistant
+###
+#### AI Agent — Stockie
 ![AI Agent](./docs/screenshots/ai-agent.png)
-*Interactive AI assistant for market questions and scenario analysis*
+
+### news
+![News](./docs/screenshots/news.png)
 
 ---
 
-## Platform Pages
-
-### Dashboard
-**Overview of all monitored commodities with key metrics and risk signals**
-- Real-time price movements
-- Risk indicator heatmap
-- Top drivers widget
-- Market regime labels
-
-### Commodity Insights
-**Deep-dive analysis for individual commodities**
-- Historical driver timeline
-- Current regime analysis
-- Volatility forecast chart
-- Scenario impact assessment
-- Related news feed with citations
-
-### Screener
-**Filter and identify opportunities based on risk/opportunity**
-- Filter by regime type
-- Volatility bands
-- Alert on significant regime changes
-- Compare multiple commodities
-
-### Blog
-**Educational content and market commentary**
-- Weekly market recaps
-- Driver analysis deep-dives
-- Risk management guides
-- Historical case studies
 
 ---
 
-## Success Metrics
+## Prerequisites
 
-### 1. **Explanation Quality**
-- Human evaluation: relevance, evidence quality, no hallucinations
-- Click-through rate on cited sources
-- User feedback on actionability
-
-### 2. **Risk Signal Accuracy**
-- Volatility forecast vs actual (out-of-sample)
-- Outperforms rolling volatility baseline
-- Calibration of uncertainty bands
-
-### 3. **User Engagement**
-- DAU/WAU on insights pages
-- Driver citations followed
-- Scenario notes saved/shared
-- Alert subscriptions
+| Tool | Version |
+|------|---------|
+| Python | 3.10+ |
+| Node.js | 18+ |
+| PostgreSQL | 15+ |
+| Docker + Docker Compose | latest |
+| Ollama (optional, for local LLM) | latest |
 
 ---
 
-## Tech Stack
+## Running with Docker Compose (Recommended)
+
+```bash
+# 1. Clone the repo
+git clone https://github.com/your-org/NammaStocks.git
+cd NammaStocks
+
+# 2. Set up environment
+cp Backend/.env.example Backend/.env
+# Edit Backend/.env — fill in CLERK_JWKS_URL, CLERK_ISSUER, and any LLM keys
+
+# 3. Start everything
+docker compose up --build
+```
+
+| Service | URL |
+|---------|-----|
+| Frontend | http://localhost:5173 |
+| Backend API | http://localhost:8000 |
+| Swagger Docs | http://localhost:8000/docs |
+
+---
+
+## Running Locally
 
 ### Backend
-- **Framework**: FastAPI (Python)
-- **Architecture**: Domain-Driven Design (DDD)
-- **Database**: PostgreSQL (async)
-- **Domains**: Items (commodities), Dashboard (aggregations), External (news API integration)
+
+```bash
+cd Backend
+
+python -m venv .venv
+source .venv/bin/activate       # Windows: .venv\Scripts\activate
+
+pip install -r requirements.txt
+
+cp .env.example .env
+# Edit .env — fill in DATABASE_URL, CLERK_JWKS_URL, CLERK_ISSUER
+
+uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
+```
 
 ### Frontend
-- **Framework**: React + TypeScript
-- **Build Tool**: Vite
-- **Styling**: Tailwind CSS
-- **State**: React Hooks
-- **Charts**: Candlestick charts, heatmaps, time-series
+
+```bash
+cd Frontend
+
+npm install
+
+# Create a .env file
+echo "VITE_API_URL=http://localhost:8000/v1" > .env
+echo "VITE_CLERK_PUBLISHABLE_KEY=pk_test_..." >> .env
+
+npm run dev
+```
 
 ---
 
-## Installation & Setup
+## Environment Variables
 
-### Prerequisites
-- Python 3.10+
-- Node.js 16+
-- PostgreSQL 13+
+### Backend (`Backend/.env`)
 
+```env
+DATABASE_URL=postgresql+asyncpg://user:pass@localhost:5432/nammastocks
+
+CLERK_JWKS_URL=https://xxx.clerk.accounts.dev/.well-known/jwks.json
+CLERK_ISSUER=https://xxx.clerk.accounts.dev
+CLERK_SECRET_KEY=sk_test_...
+
+LLM_PROVIDER=ollama          # ollama | openai | gemini | anthropic
+LLM_MODEL=mistral
+LLM_API_KEY=                 # only needed for cloud providers
+OLLAMA_HOST=http://localhost:11434
+```
+
+### Frontend (`Frontend/.env`)
+
+```env
+VITE_API_URL=http://localhost:8000/v1
+VITE_CLERK_PUBLISHABLE_KEY=pk_test_...
+```
 
 ---
 
+## LLM Provider
 
-
-
-
-
-
-## Support & Feedback
-
-For issues, feature requests, or feedback, please open an issue in the repository.
+| Provider | `LLM_PROVIDER` value | Notes |
+|----------|----------------------|-------|
+| Ollama (default) | `ollama` | Run `ollama pull mistral` locally |
+| OpenAI | `openai` | Set `LLM_API_KEY=sk-…` |
+| Google Gemini | `gemini` | Set `LLM_API_KEY=AI…` |
+| Anthropic | `anthropic` | Set `LLM_API_KEY=sk-ant-…` |
 
 ---
 
-
-
-**Built with ❤️ for commodity traders and investors seeking clarity in uncertain markets.**
+**Built with ❤️ for Indian equity traders and investors.**

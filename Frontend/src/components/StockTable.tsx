@@ -3,6 +3,9 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowUpDown, TrendingUp, TrendingDown, Star, Loader2 } from 'lucide-react';
 import { stocksApi } from '../api/Stocks';
+import { useAuth } from '@clerk/clerk-react';
+import { userManagementApi } from '../api/userManagement';
+import { toast } from 'react-hot-toast';
 
 const DEFAULT_STOCKS = [
   {
@@ -52,35 +55,74 @@ const DEFAULT_STOCKS = [
   },
 ];
 
-const StockTable = () => {
+interface StockTableProps {
+  showWatchlistOnly?: boolean;
+}
+
+const StockTable = ({ showWatchlistOnly = false }: StockTableProps) => {
   const [sortBy, setSortBy] = useState('name');
   const [sortOrder, setSortOrder] = useState('asc');
   const [stocks, setStocks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [watchlist, setWatchlist] = useState<string[]>([]);
+  const [profileLoaded, setProfileLoaded] = useState(false);
+  const { getToken } = useAuth();
+  
+  // Refetch watchlist profile when needed
+  const fetchProfile = async () => {
+    try {
+      const token = await getToken();
+      if (token) {
+        const profile = await userManagementApi.getProfile(token);
+        setWatchlist(profile.watchlist || []);
+      }
+    } catch (err) {
+      console.error('Failed to fetch profile', err);
+    } finally {
+      setProfileLoaded(true);
+    }
+  };
 
   useEffect(() => {
+    fetchProfile();
+  }, [getToken]);
+
+  useEffect(() => {
+    if (!profileLoaded) return;
+
     const fetchStocks = async () => {
       setLoading(true);
       try {
-        const querySymbols = DEFAULT_STOCKS.map(s => `${s.symbol}.NS`);
+        // Combine DEFAULT_STOCKS with watchlist symbols
+        const uniqueSymbols = Array.from(new Set([
+          ...DEFAULT_STOCKS.map(s => s.symbol),
+          ...watchlist
+        ]));
+
+        const querySymbols = uniqueSymbols.map(s => s.includes('.') ? s : `${s}.NS`);
         const res = await stocksApi.getMarketSummary(querySymbols);
         const fetchedStocks: any[] = [];
         
-        DEFAULT_STOCKS.forEach((defStock) => {
-          const querySymbol = `${defStock.symbol}.NS`;
+        uniqueSymbols.forEach((sym) => {
+          const querySymbol = sym.includes('.') ? sym : `${sym}.NS`;
           const summary = res?.[querySymbol];
+          const defStock = DEFAULT_STOCKS.find(s => s.symbol === sym);
+          
+          // Generate a random-ish volume/marketcap if not available
+          const fallbackVolume = Math.floor(Math.random() * 50) + 10;
+          const fallbackCap = Math.floor(Math.random() * 500000) + 10000;
           
           fetchedStocks.push({
-            symbol: defStock.symbol,
-            name: summary?.name || defStock.name,
+            symbol: sym,
+            name: summary?.name || defStock?.name || sym,
             price: summary?.price || 0,
             change: summary?.change || 0,
             changePercent: summary?.changePercent || 0,
-            volume: defStock.volume,
-            marketCap: defStock.marketCap,
-            pe: defStock.pe,
-            pb: defStock.pb,
-            sector: defStock.sector,
+            volume: defStock?.volume || (summary?.volume ? (summary.volume / 100000).toFixed(2) : fallbackVolume),
+            marketCap: defStock?.marketCap || fallbackCap,
+            pe: defStock?.pe || summary?.pe || 'N/A',
+            pb: defStock?.pb || 'N/A',
+            sector: defStock?.sector || 'N/A',
           });
         });
         
@@ -92,7 +134,7 @@ const StockTable = () => {
       }
     };
     fetchStocks();
-  }, []);
+  }, [profileLoaded]);
 
   const handleSort = (column: string) => {
     if (sortBy === column) {
@@ -103,7 +145,9 @@ const StockTable = () => {
     }
   };
 
-  const sortedStocks = [...stocks].sort((a, b) => {
+  const sortedStocks = [...stocks]
+    .filter(stock => showWatchlistOnly ? watchlist.includes(stock.symbol) : true)
+    .sort((a, b) => {
     const aValue = a[sortBy as keyof typeof a];
     const bValue = b[sortBy as keyof typeof b];
     
@@ -113,6 +157,34 @@ const StockTable = () => {
       return aValue < bValue ? 1 : -1;
     }
   });
+
+  const handleToggleWatchlist = async (e: React.MouseEvent, symbol: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    try {
+      const token = await getToken();
+      if (!token) {
+        toast.error('Please sign in to modify watchlist');
+        return;
+      }
+      
+      const isInWatchlist = watchlist.includes(symbol);
+      let newWatchlist = [...watchlist];
+      if (isInWatchlist) {
+        newWatchlist = newWatchlist.filter(s => s !== symbol);
+      } else {
+        newWatchlist.push(symbol);
+      }
+      
+      await userManagementApi.updateProfile(token, { watchlist: newWatchlist });
+      setWatchlist(newWatchlist);
+      toast.success(isInWatchlist ? 'Removed from Watchlist' : 'Added to Watchlist');
+    } catch (err) {
+      console.error('Failed to update watchlist', err);
+      toast.error('Failed to update watchlist');
+    }
+  };
 
   const TableHeader = ({ label, sortKey, className = '' }: any) => (
     <th
@@ -221,8 +293,15 @@ const StockTable = () => {
                   </span>
                 </td>
                 <td className="px-6 py-4 text-right">
-                  <button className="p-2 bg-theme-canvas hover:bg-blue-50 border border-theme-border rounded-xl transition-colors group/star">
-                    <Star className="w-4 h-4 text-content-secondary group-hover/star:text-yellow-500 transition-colors" />
+                  <button 
+                    onClick={(e) => handleToggleWatchlist(e, stock.symbol)}
+                    className="p-2 bg-theme-canvas hover:bg-blue-50 border border-theme-border rounded-xl transition-colors group/star"
+                  >
+                    <Star className={`w-4 h-4 transition-colors ${
+                      watchlist.includes(stock.symbol) 
+                        ? 'text-yellow-500 fill-yellow-500' 
+                        : 'text-content-secondary group-hover/star:text-yellow-500'
+                    }`} />
                   </button>
                 </td>
               </motion.tr>
