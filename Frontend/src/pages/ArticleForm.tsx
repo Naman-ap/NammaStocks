@@ -69,24 +69,24 @@ const ArticleForm = () => {
   };
 
   const WYSIWYGToolbar = () => (
-    <div className="flex items-center space-x-2 p-3 border-b border-gray-600 bg-gray-700 rounded-t-xl">
-      <button className="p-2 hover:bg-gray-600 rounded transition-colors">
+    <div className="flex items-center space-x-2 p-3 border-b border-white/5 bg-white/5 rounded-t-xl">
+      <button className="p-2 hover:bg-white/10 rounded transition-colors">
         <Bold className="w-4 h-4 text-gray-300" />
       </button>
-      <button className="p-2 hover:bg-gray-600 rounded transition-colors">
+      <button className="p-2 hover:bg-white/10 rounded transition-colors">
         <Italic className="w-4 h-4 text-gray-300" />
       </button>
       <div className="w-px h-6 bg-gray-600" />
-      <button className="p-2 hover:bg-gray-600 rounded transition-colors">
+      <button className="p-2 hover:bg-white/10 rounded transition-colors">
         <LinkIcon className="w-4 h-4 text-gray-300" />
       </button>
-      <button className="p-2 hover:bg-gray-600 rounded transition-colors">
+      <button className="p-2 hover:bg-white/10 rounded transition-colors">
         <Code className="w-4 h-4 text-gray-300" />
       </button>
-      <button className="p-2 hover:bg-gray-600 rounded transition-colors">
+      <button className="p-2 hover:bg-white/10 rounded transition-colors">
         <List className="w-4 h-4 text-gray-300" />
       </button>
-      <button className="p-2 hover:bg-gray-600 rounded transition-colors">
+      <button className="p-2 hover:bg-white/10 rounded transition-colors">
         <Image className="w-4 h-4 text-gray-300" />
       </button>
     </div>
@@ -106,7 +106,7 @@ const ArticleForm = () => {
                 value={formData.title}
                 onChange={(e) => handleInputChange('title', e.target.value)}
                 placeholder="Enter your article title..."
-                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl focus:border-cyan-400 focus:outline-none text-white placeholder-gray-400"
+                className="w-full px-4 py-3 bg-white/5 border border-white/5 rounded-xl focus:border-cyan-400 focus:outline-none text-white placeholder-gray-400"
               />
             </div>
 
@@ -119,7 +119,7 @@ const ArticleForm = () => {
                 onChange={(e) => handleInputChange('excerpt', e.target.value)}
                 placeholder="Brief description of your article..."
                 rows={3}
-                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl focus:border-cyan-400 focus:outline-none text-white placeholder-gray-400 resize-none"
+                className="w-full px-4 py-3 bg-white/5 border border-white/5 rounded-xl focus:border-cyan-400 focus:outline-none text-white placeholder-gray-400 resize-none"
               />
             </div>
 
@@ -131,7 +131,7 @@ const ArticleForm = () => {
                 <select
                   value={formData.category}
                   onChange={(e) => handleInputChange('category', e.target.value)}
-                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl focus:border-cyan-400 focus:outline-none text-white"
+                  className="w-full px-4 py-3 bg-white/5 border border-white/5 rounded-xl focus:border-cyan-400 focus:outline-none text-white"
                 >
                   <option value="">Select category</option>
                   {categories.map((cat) => (
@@ -149,7 +149,7 @@ const ArticleForm = () => {
                   value={formData.authorName}
                   onChange={(e) => handleInputChange('authorName', e.target.value)}
                   placeholder="Your name"
-                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl focus:border-cyan-400 focus:outline-none text-white placeholder-gray-400"
+                  className="w-full px-4 py-3 bg-white/5 border border-white/5 rounded-xl focus:border-cyan-400 focus:outline-none text-white placeholder-gray-400"
                 />
               </div>
             </div>
@@ -163,7 +163,7 @@ const ArticleForm = () => {
                 value={formData.tags}
                 onChange={(e) => handleInputChange('tags', e.target.value)}
                 placeholder="React, TypeScript, Tutorial"
-                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl focus:border-cyan-400 focus:outline-none text-white placeholder-gray-400"
+                className="w-full px-4 py-3 bg-white/5 border border-white/5 rounded-xl focus:border-cyan-400 focus:outline-none text-white placeholder-gray-400"
               />
             </div>
           </div>
@@ -176,14 +176,14 @@ const ArticleForm = () => {
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 Article Content *
               </label>
-              <div className="border border-gray-600 rounded-xl overflow-hidden">
+              <div className="border border-white/5 rounded-xl overflow-hidden">
                 <WYSIWYGToolbar />
                 <textarea
                   value={formData.content}
                   onChange={(e) => handleInputChange('content', e.target.value)}
                   placeholder="Write your article content here... You can use Markdown syntax."
                   rows={15}
-                  className="w-full px-4 py-3 bg-gray-800 border-0 focus:outline-none text-white placeholder-gray-400 resize-none"
+                  className="w-full px-4 py-3 bg-white/5 backdrop-blur-xl border-0 focus:outline-none text-white placeholder-gray-400 resize-none"
                 />
               </div>
               <p className="text-sm text-gray-400 mt-2">
@@ -200,8 +200,8 @@ const ArticleForm = () => {
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 Code Snippet Preview
               </label>
-              <div className="border border-gray-600 rounded-xl overflow-hidden">
-                <div className="flex items-center justify-between p-3 bg-gray-700 border-b border-gray-600">
+              <div className="border border-white/5 rounded-xl overflow-hidden">
+                <div className="flex items-center justify-between p-3 bg-white/5 border-b border-white/5">
                   <div className="flex items-center space-x-2">
                     <Code className="w-4 h-4 text-green-400" />
                     <span className="text-green-400 font-medium text-sm">Code Preview</span>
@@ -218,7 +218,7 @@ const ArticleForm = () => {
                   onChange={(e) => handleInputChange('codeSnippet', e.target.value)}
                   placeholder="// Your code snippet here..."
                   rows={8}
-                  className="w-full px-4 py-3 bg-gray-900 border-0 focus:outline-none text-gray-300 placeholder-gray-500 resize-none font-mono text-sm"
+                  className="w-full px-4 py-3 bg-black/20 border-0 focus:outline-none text-gray-300 placeholder-gray-500 resize-none font-mono text-sm"
                 />
               </div>
             </div>
@@ -227,7 +227,7 @@ const ArticleForm = () => {
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 Featured Image
               </label>
-              <div className="border-2 border-dashed border-gray-600 hover:border-gray-500 rounded-xl p-8 text-center transition-colors cursor-pointer">
+              <div className="border-2 border-dashed border-white/5 hover:border-gray-500 rounded-xl p-8 text-center transition-colors cursor-pointer">
                 <Upload className="w-8 h-8 text-gray-400 mx-auto mb-3" />
                 <p className="text-gray-400 mb-2">Drag and drop an image, or click to browse</p>
                 <p className="text-sm text-gray-500">PNG, JPG up to 2MB</p>
@@ -243,7 +243,7 @@ const ArticleForm = () => {
                 value={formData.estimatedReadTime}
                 onChange={(e) => handleInputChange('estimatedReadTime', e.target.value)}
                 placeholder="e.g., 5 min read"
-                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl focus:border-cyan-400 focus:outline-none text-white placeholder-gray-400"
+                className="w-full px-4 py-3 bg-white/5 border border-white/5 rounded-xl focus:border-cyan-400 focus:outline-none text-white placeholder-gray-400"
               />
             </div>
           </div>
@@ -252,7 +252,7 @@ const ArticleForm = () => {
       case 4:
         return (
           <div className="space-y-6">
-            <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+            <div className="bg-white/5 backdrop-blur-xl rounded-xl p-6 border border-white/10">
               <h3 className="text-lg font-semibold text-white mb-4">Article Preview</h3>
               
               <div className="space-y-4">
@@ -282,7 +282,7 @@ const ArticleForm = () => {
                     {formData.tags.split(',').map((tag, index) => (
                       <span
                         key={index}
-                        className="px-2 py-1 bg-gray-700 text-gray-300 rounded text-xs"
+                        className="px-2 py-1 bg-white/5 text-gray-300 rounded text-xs"
                       >
                         #{tag.trim()}
                       </span>
@@ -310,7 +310,7 @@ const ArticleForm = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-black/20">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -322,7 +322,7 @@ const ArticleForm = () => {
             <div className="flex items-center space-x-4">
               <button
                 onClick={() => navigate('/blog')}
-                className="p-2 hover:bg-gray-800 rounded-xl transition-colors"
+                className="p-2 hover:bg-white/5 backdrop-blur-xl rounded-xl transition-colors"
               >
                 <ArrowLeft className="w-6 h-6 text-gray-400" />
               </button>
@@ -333,11 +333,11 @@ const ArticleForm = () => {
             </div>
             
             <div className="flex items-center space-x-3">
-              <button className="flex items-center space-x-2 px-4 py-2 border border-gray-600 text-gray-300 rounded-xl hover:bg-gray-800 transition-colors">
+              <button className="flex items-center space-x-2 px-4 py-2 border border-white/5 text-gray-300 rounded-xl hover:bg-white/5 backdrop-blur-xl transition-colors">
                 <Eye className="w-4 h-4" />
                 <span>Preview</span>
               </button>
-              <button className="flex items-center space-x-2 px-4 py-2 bg-gray-700 text-gray-300 rounded-xl hover:bg-gray-600 transition-colors">
+              <button className="flex items-center space-x-2 px-4 py-2 bg-white/5 text-gray-300 rounded-xl hover:bg-white/10 transition-colors">
                 <Save className="w-4 h-4" />
                 <span>Save Draft</span>
               </button>
@@ -354,7 +354,7 @@ const ArticleForm = () => {
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${
                     currentStep >= step.id
                       ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white'
-                      : 'bg-gray-700 text-gray-400'
+                      : 'bg-white/5 text-gray-400'
                   }`}>
                     {currentStep > step.id ? (
                       <CheckCircle className="w-6 h-6" />
@@ -369,7 +369,7 @@ const ArticleForm = () => {
                 </div>
                 {index !== steps.length - 1 && (
                   <div className={`flex-1 h-px mx-4 ${
-                    currentStep > step.id ? 'bg-cyan-500' : 'bg-gray-700'
+                    currentStep > step.id ? 'bg-cyan-500' : 'bg-white/5'
                   }`} />
                 )}
               </div>
@@ -377,7 +377,7 @@ const ArticleForm = () => {
           </div>
 
           {/* Form Content */}
-          <div className="bg-gray-800 rounded-2xl p-8 border border-gray-700">
+          <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-8 border border-white/10">
             {renderStepContent()}
           </div>
 
@@ -386,7 +386,7 @@ const ArticleForm = () => {
             <button
               onClick={handlePrevious}
               disabled={currentStep === 1}
-              className="px-6 py-3 border border-gray-600 text-gray-300 rounded-xl hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-3 border border-white/5 text-gray-300 rounded-xl hover:bg-white/5 backdrop-blur-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Previous
             </button>

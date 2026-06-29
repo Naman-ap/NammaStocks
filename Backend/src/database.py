@@ -8,6 +8,8 @@ from src.config import settings
 from src.items.models import Item  # noqa
 from src.dashboard.models import DashboardMetric  # noqa
 from src.external.models import ExternalAPIData, ExternalAPILog  # noqa
+from src.auth.models import User  # noqa
+from src.user_management.models import UserProfile  # noqa
 
 engine = create_async_engine(settings.DATABASE_URL, echo=True, future=True)
 

@@ -19,13 +19,14 @@ async function apiCall<T>(
   options: RequestInit = {}
 ): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`;
+  const { headers, ...restOptions } = options;
   
   const response = await fetch(url, {
+    ...restOptions,
     headers: {
       'Content-Type': 'application/json',
-      ...options.headers,
+      ...headers,
     },
-    ...options,
   });
 
   // Handle error responses
@@ -50,33 +51,37 @@ async function apiCall<T>(
 }
 
 // GET request
-export async function get<T>(endpoint: string): Promise<T> {
-  return apiCall<T>(endpoint, { method: 'GET' });
+export async function get<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+  return apiCall<T>(endpoint, { method: 'GET', ...options });
 }
 
 // POST request
 export async function post<T>(
   endpoint: string,
-  body?: unknown
+  body?: unknown,
+  options: RequestInit = {}
 ): Promise<T> {
   return apiCall<T>(endpoint, {
     method: 'POST',
     body: body ? JSON.stringify(body) : undefined,
+    ...options
   });
 }
 
 // PUT request
 export async function put<T>(
   endpoint: string,
-  body?: unknown
+  body?: unknown,
+  options: RequestInit = {}
 ): Promise<T> {
   return apiCall<T>(endpoint, {
     method: 'PUT',
     body: body ? JSON.stringify(body) : undefined,
+    ...options
   });
 }
 
 // DELETE request
-export async function del<T>(endpoint: string): Promise<T> {
-  return apiCall<T>(endpoint, { method: 'DELETE' });
+export async function del<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+  return apiCall<T>(endpoint, { method: 'DELETE', ...options });
 }

@@ -1,329 +1,272 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Mail, Lock, User, TrendingUp } from 'lucide-react';
-import toast from 'react-hot-toast';
-import { authService } from '../services/authService';
+import React from 'react';
+import { SignIn, SignUp } from '@clerk/clerk-react';
+import { Bot, Newspaper, Scale, MessageSquare, Sparkles, TrendingUp } from 'lucide-react';
+import { motion } from 'framer-motion';
 
-type AuthMode = 'login' | 'register';
+interface AuthProps {
+  /** 'sign-in' renders the Clerk SignIn widget; 'sign-up' renders SignUp */
+  mode: 'sign-in' | 'sign-up';
+}
 
-const Auth: React.FC = () => {
-  const navigate = useNavigate();
-  const [mode, setMode] = useState<AuthMode>('login');
-  const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-  });
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+const Auth: React.FC<AuthProps> = ({ mode }) => {
+  const clerkAppearance = {
+    variables: {
+      colorPrimary: '#3B82F6',
+      colorBackground: '#FFFFFF',
+      colorInputBackground: '#F8FAFC',
+      colorInputText: '#0F172A',
+      colorText: '#0F172A',
+      colorTextSecondary: '#64748B',
+      colorNeutral: '#E2E8F0',
+      borderRadius: '1rem',
+      fontFamily: 'inherit',
+    },
+    elements: {
+      card: 'bg-theme-surface shadow-2xl shadow-blue-900/5 border border-theme-border rounded-[1.5rem]',
+      headerTitle: 'text-content-primary text-3xl font-black tracking-tight',
+      headerSubtitle: 'text-content-secondary font-medium mt-1',
+      socialButtonsBlockButton:
+        'bg-theme-surface border border-theme-border text-content-primary hover:bg-theme-canvas hover:border-gray-300 transition-all shadow-sm rounded-xl',
+      socialButtonsBlockButtonText: 'text-content-primary font-bold',
+      dividerLine: 'bg-theme-border',
+      dividerText: 'text-content-secondary font-medium',
+      formFieldLabel: 'text-content-primary font-bold text-sm mb-1.5',
+      formFieldInput:
+        'bg-theme-canvas border-theme-border text-content-primary placeholder-gray-400 focus:ring-2 focus:ring-trade-action/20 focus:border-trade-action rounded-xl transition-all shadow-sm',
+      formButtonPrimary:
+        'bg-trade-action hover:bg-blue-600 text-white font-bold transition-all shadow-md shadow-blue-500/20 py-2.5 rounded-xl',
+      footerActionLink: 'text-trade-action hover:text-blue-700 font-bold transition-colors',
+      identityPreviewText: 'text-content-primary font-medium',
+      identityPreviewEditButtonIcon: 'text-content-secondary hover:text-content-primary',
+      footerActionText: 'text-content-secondary font-medium',
+    },
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
-    try {
-      if (mode === 'login') {
-        await authService.login({
-          email: formData.email,
-          password: formData.password,
-        });
-        toast.success('Login successful!');
-      } else {
-        if (formData.password !== formData.confirmPassword) {
-          toast.error('Passwords do not match');
-          setLoading(false);
-          return;
-        }
-        await authService.register({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-          confirmPassword: formData.confirmPassword,
-        });
-        toast.success('Registration successful!');
-      }
-      navigate('/dashboard');
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Authentication failed');
-    } finally {
-      setLoading(false);
-    }
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1, delayChildren: 0.2 },
+    },
   };
 
-  const handleSSOLogin = async (provider: 'google' | 'github' | 'apple') => {
-    setLoading(true);
-    try {
-      const url = await authService.getSSOLoginUrl(provider);
-      window.location.href = url;
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'SSO login failed');
-      setLoading(false);
-    }
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
+  };
+
+  const floatAnimation1 = {
+    y: [0, -15, 0],
+    rotate: [0, 2, 0],
+    transition: { duration: 6, repeat: Infinity, ease: 'easeInOut' }
+  };
+
+  const floatAnimation2 = {
+    y: [0, 20, 0],
+    rotate: [0, -3, 0],
+    transition: { duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 1 }
+  };
+
+  const floatAnimation3 = {
+    y: [0, -10, 0],
+    rotate: [0, 1, 0],
+    transition: { duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 2 }
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 flex">
-      {/* Left Side - Branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 p-12 flex-col justify-between">
-        <div>
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-white/10 rounded-lg">
-              <TrendingUp className="w-8 h-8 text-white" />
-            </div>
-            <span className="text-2xl font-bold text-white">NammaStocks</span>
-          </div>
-        </div>
+    <div className="min-h-screen bg-theme-canvas flex font-sans text-content-primary selection:bg-trade-action/20 overflow-hidden">
+      {/* ------------------------------------------------------------------ */}
+      {/* Left Side — Highly Animated Branding Panel                           */}
+      {/* ------------------------------------------------------------------ */}
+      <div className="hidden lg:flex lg:w-[50%] bg-theme-surface relative flex-col justify-between p-12 border-r border-theme-border overflow-hidden">
         
-        <div className="space-y-6">
-          <h1 className="text-4xl font-bold text-white leading-tight">
-            Track, Analyze & <br />
-            Invest Smarter
-          </h1>
-          <p className="text-blue-100 text-lg max-w-md">
-            Get real-time market insights and  advanced analytics to make informed investment decisions.
-          </p>
-          
-          {/* <div className="flex gap-8 pt-4">
-            <div>
-              <div className="text-3xl font-bold text-white">50K+</div>
-              <div className="text-blue-200 text-sm">Active Users</div>
+        {/* Dynamic Background Gradients */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_var(--tw-gradient-stops))] from-blue-50/80 via-white to-white pointer-events-none" />
+        
+        <motion.div 
+          animate={{ scale: [1, 1.1, 1], opacity: [0.4, 0.6, 0.4] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute -top-[20%] -left-[10%] w-[60%] h-[60%] bg-blue-400/10 blur-[100px] rounded-full pointer-events-none" 
+        />
+        
+        <motion.div 
+          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+          className="absolute -bottom-[20%] -right-[10%] w-[70%] h-[70%] bg-purple-500/10 blur-[120px] rounded-full pointer-events-none" 
+        />
+
+        {/* Floating Decorative Elements representing AI Capabilities */}
+        <motion.div 
+          animate={floatAnimation1}
+          className="absolute top-[20%] right-[5%] z-0 bg-white/80 backdrop-blur-xl border border-white/60 shadow-xl shadow-purple-900/5 p-4 rounded-2xl w-56"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
+              <MessageSquare className="w-5 h-5 text-purple-600" />
             </div>
             <div>
-              <div className="text-3xl font-bold text-white">1000+</div>
-              <div className="text-blue-200 text-sm">Stocks Tracked</div>
+              <p className="text-xs font-bold text-content-secondary">AI Chatbot</p>
+              <p className="text-sm font-black text-content-primary">"How is Reliance doing?"</p>
+            </div>
+          </div>
+        </motion.div>
+
+        <motion.div 
+          animate={floatAnimation2}
+          className="absolute bottom-[35%] right-[20%] z-0 bg-white/80 backdrop-blur-xl border border-white/60 shadow-xl shadow-blue-900/5 p-4 rounded-2xl w-60"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+              <Scale className="w-5 h-5 text-trade-action" />
             </div>
             <div>
-              <div className="text-3xl font-bold text-white">99.9%</div>
-              <div className="text-blue-200 text-sm">Uptime</div>
+              <p className="text-xs font-bold text-content-secondary">AI Comparison</p>
+              <p className="text-sm font-black text-content-primary">TCS vs Infosys analysis...</p>
             </div>
-          </div> */}
+          </div>
+        </motion.div>
+
+        <motion.div 
+          animate={floatAnimation3}
+          className="absolute top-[50%] left-[80%] z-0 bg-white/80 backdrop-blur-xl border border-white/60 shadow-xl shadow-green-900/5 p-4 rounded-2xl w-48"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+              <TrendingUp className="w-5 h-5 text-trade-gain" />
+            </div>
+            <div>
+              <p className="text-xs font-bold text-content-secondary">NIFTY 50</p>
+              <p className="text-sm font-black text-trade-gain">+1.45%</p>
+            </div>
+          </div>
+        </motion.div>
+
+
+        <div className="relative z-10">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, ease: 'easeOut' }}
+            className="flex items-center gap-3"
+          >
+            {/* Removed drop shadow and added mix-blend-multiply to completely drop the white background */}
+            <img 
+              src="/NammaStockLogo.png" 
+              alt="NammaStocks Logo" 
+              className="w-16 h-16 object-contain mix-blend-multiply contrast-125" 
+            />
+            <span className="text-3xl font-black tracking-tight text-content-primary">
+              NammaStocks
+            </span>
+          </motion.div>
         </div>
 
-        <div className="text-blue-200 text-sm">
-          © 2026 NammaStocks. All rights reserved.
-        </div>
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="relative z-10 space-y-10 mt-12 max-w-lg"
+        >
+          <motion.div variants={itemVariants} className="space-y-4">
+            <h1 className="text-[3.75rem] font-black leading-[1.05] tracking-tight text-content-primary">
+              Supercharge your <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-trade-action via-blue-600 to-purple-600">
+                trading with AI.
+              </span>
+            </h1>
+            <p className="text-content-secondary text-xl leading-relaxed font-medium">
+              Experience the future of investing. Our advanced AI agents analyze, compare, and screen the market for you in real-time.
+            </p>
+          </motion.div>
+
+          <motion.div variants={itemVariants} className="space-y-6 pt-6">
+            <motion.div whileHover={{ x: 10 }} className="flex items-center gap-5 cursor-default group transition-transform">
+              <div className="p-3 rounded-2xl bg-blue-50 text-trade-action group-hover:bg-trade-action group-hover:text-white transition-colors duration-300 shadow-sm">
+                <Scale className="w-6 h-6" />
+              </div>
+              <div>
+                <p className="font-bold text-lg text-content-primary">Smart AI Comparison</p>
+                <p className="text-sm text-content-secondary font-medium">Instantly compare financials and metrics.</p>
+              </div>
+            </motion.div>
+
+            <motion.div whileHover={{ x: 10 }} className="flex items-center gap-5 cursor-default group transition-transform">
+              <div className="p-3 rounded-2xl bg-purple-50 text-purple-600 group-hover:bg-purple-600 group-hover:text-white transition-colors duration-300 shadow-sm">
+                <Bot className="w-6 h-6" />
+              </div>
+              <div>
+                <p className="font-bold text-lg text-content-primary">Intelligent Chatbot</p>
+                <p className="text-sm text-content-secondary font-medium">Your 24/7 personal financial assistant.</p>
+              </div>
+            </motion.div>
+
+            <motion.div whileHover={{ x: 10 }} className="flex items-center gap-5 cursor-default group transition-transform">
+              <div className="p-3 rounded-2xl bg-green-50 text-trade-gain group-hover:bg-trade-gain group-hover:text-white transition-colors duration-300 shadow-sm">
+                <Newspaper className="w-6 h-6" />
+              </div>
+              <div>
+                <p className="font-bold text-lg text-content-primary">AI Screener &amp; News</p>
+                <p className="text-sm text-content-secondary font-medium">Real-time sentiment and news analysis.</p>
+              </div>
+            </motion.div>
+          </motion.div>
+        </motion.div>
+
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1, duration: 1 }}
+          className="relative z-10 flex items-center gap-4 text-content-secondary text-sm font-semibold"
+        >
+          © {new Date().getFullYear()} NammaStocks. Empowered by AI.
+        </motion.div>
       </div>
 
-      {/* Right Side - Auth Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
-        <div className="w-full max-w-md space-y-8">
-          {/* Mobile Logo */}
-          <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
-            <div className="p-2 bg-blue-600 rounded-lg">
-              <TrendingUp className="w-6 h-6 text-white" />
-            </div>
-            <span className="text-xl font-bold text-white">NammaStocks</span>
-          </div>
+      {/* ------------------------------------------------------------------ */}
+      {/* Right Side — Clerk hosted widget                                    */}
+      {/* ------------------------------------------------------------------ */}
+      <div className="w-full lg:w-[50%] flex flex-col relative items-center justify-center p-6 sm:p-12">
+        {/* Subtle background blob for right side */}
+        <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-purple-50/50 via-transparent to-transparent pointer-events-none" />
 
-          {/* Header */}
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-white">
-              {mode === 'login' ? 'Welcome back' : 'Create account'}
-            </h2>
-            <p className="mt-2 text-gray-400">
-              {mode === 'login' 
-                ? 'Enter your credentials to access your account' 
-                : 'Start your journey with us today'}
-            </p>
-          </div>
-
-          {/* SSO Buttons */}
-          <div className="space-y-3">
-            <button
-              onClick={() => handleSSOLogin('google')}
-              className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg text-white font-medium transition-colors"
-            >
-              <svg className="w-5 h-5" viewBox="0 0 24 24">
-                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-              </svg>
-              Continue with Google
-            </button>
-
-            <button
-              onClick={() => handleSSOLogin('github')}
-              className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg text-white font-medium transition-colors"
-            >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.604-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
-              </svg>
-              Continue with GitHub
-            </button>
-
-            <button
-              onClick={() => handleSSOLogin('apple')}
-              className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg text-white font-medium transition-colors"
-            >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-              </svg>
-              Continue with Apple
-            </button>
-          </div>
-
-          {/* Divider */}
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-700"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-gray-900 text-gray-400">or continue with email</span>
-            </div>
-          </div>
-
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {mode === 'register' && (
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
-                  Full Name
-                </label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    placeholder="John Doe"
-                    className="w-full pl-10 pr-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                  />
-                </div>
-              </div>
-            )}
-
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-                Email Address
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  placeholder="you@example.com"
-                  className="w-full pl-10 pr-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
-                Password
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  id="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  placeholder="••••••••"
-                  className="w-full pl-10 pr-12 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300"
-                >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                </button>
-              </div>
-            </div>
-
-            {mode === 'register' && (
-              <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-300 mb-2">
-                  Confirm Password
-                </label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleInputChange}
-                    placeholder="••••••••"
-                    className="w-full pl-10 pr-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                  />
-                </div>
-              </div>
-            )}
-
-            {mode === 'login' && (
-              <div className="flex items-center justify-between">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    className="w-4 h-4 rounded border-gray-600 bg-gray-800 text-blue-600 focus:ring-blue-500 focus:ring-offset-gray-900"
-                  />
-                  <span className="text-sm text-gray-400">Remember me</span>
-                </label>
-                <button
-                  type="button"
-                  className="text-sm text-blue-500 hover:text-blue-400 font-medium"
-                  onClick={() => navigate('/dashboard')}
-                >
-                  Forgot password?
-                </button>
-              </div>
-            )}
-
-            {mode === 'register' && (
-              <label className="flex items-start gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="w-4 h-4 mt-0.5 rounded border-gray-600 bg-gray-800 text-blue-600 focus:ring-blue-500 focus:ring-offset-gray-900"
-                />
-                <span className="text-sm text-gray-400">
-                  I agree to the{' '}
-                  <button type="button" className="text-blue-500 hover:text-blue-400">
-                    Terms of Service
-                  </button>{' '}
-                  and{' '}
-                  <button type="button" className="text-blue-500 hover:text-blue-400">
-                    Privacy Policy
-                  </button>
-                </span>
-              </label>
-            )}
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900"
-            >
-              {loading ? 'Please wait...' : mode === 'login' ? 'Sign In' : 'Create Account'}
-            </button>
-          </form>
-
-          {/* Toggle Mode */}
-          <p className="text-center text-gray-400">
-            {mode === 'login' ? "Don't have an account?" : 'Already have an account?'}{' '}
-            <button
-              onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
-              className="text-blue-500 hover:text-blue-400 font-medium"
-            >
-              {mode === 'login' ? 'Sign up' : 'Sign in'}
-            </button>
-          </p>
+        {/* Mobile Header */}
+        <div className="absolute top-8 left-1/2 -translate-x-1/2 lg:hidden flex flex-col items-center gap-1 z-10">
+          <img 
+            src="/NammaStockLogo.png" 
+            alt="NammaStocks Logo" 
+            className="w-14 h-14 object-contain mix-blend-multiply contrast-125" 
+          />
+          <span className="text-2xl font-black text-content-primary tracking-tight">NammaStocks</span>
         </div>
+
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.7, type: 'spring', bounce: 0.4 }}
+          className="w-full max-w-[440px] mt-20 lg:mt-0 relative z-10"
+        >
+          {mode === 'sign-in' ? (
+            <SignIn
+              routing="path"
+              path="/sign-in"
+              signUpUrl="/sign-up"
+              afterSignInUrl="/dashboard"
+              appearance={clerkAppearance}
+            />
+          ) : (
+            <SignUp
+              routing="path"
+              path="/sign-up"
+              signInUrl="/sign-in"
+              afterSignUpUrl="/dashboard"
+              appearance={clerkAppearance}
+            />
+          )}
+        </motion.div>
       </div>
     </div>
   );
 };
 
 export default Auth;
+

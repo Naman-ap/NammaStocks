@@ -23,7 +23,9 @@ import {
   Factory,
   Zap,
   Waves,
-  Brain
+  Brain,
+  Construction,
+  Sparkles
 } from 'lucide-react';
 
 const CommoditiesInsights = () => {
@@ -269,9 +271,9 @@ const CommoditiesInsights = () => {
   };
 
   const getDirectionColor = (direction: string) => {
-    if (direction === 'Upward' || direction === 'Upward Pressure') return 'text-green-400';
-    if (direction === 'Downward' || direction === 'Downward Pressure') return 'text-red-400';
-    return 'text-gray-400';
+    if (direction === 'Upward' || direction === 'Upward Pressure') return 'text-trade-gain';
+    if (direction === 'Downward' || direction === 'Downward Pressure') return 'text-trade-loss';
+    return 'text-content-secondary';
   };
 
   const formatTimestamp = (timestamp: string) => {
@@ -296,14 +298,14 @@ const CommoditiesInsights = () => {
         className="space-y-6"
       >
         {/* Risk & Market Context */}
-        <div className="bg-gradient-to-br from-gray-800 to-gray-700 rounded-2xl p-8 border border-gray-600">
+        <div className="bg-theme-surface rounded-2xl p-8 border border-theme-border shadow-surface">
           <div className="flex items-start justify-between mb-6">
             <div>
-              <h2 className="text-2xl font-bold text-white mb-2 flex items-center space-x-3">
-                <Shield className="w-7 h-7 text-cyan-400" />
+              <h2 className="text-2xl font-bold text-content-primary mb-2 flex items-center space-x-3">
+                <Shield className="w-7 h-7 text-trade-action" />
                 <span>Risk & Market Context</span>
               </h2>
-              <p className="text-gray-300">
+              <p className="text-content-secondary">
                 How uncertain or fragile is the market right now?
               </p>
             </div>
@@ -311,52 +313,52 @@ const CommoditiesInsights = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
             {/* Overall Risk Level */}
-            <div className="bg-gray-700/50 rounded-xl p-6 border border-gray-600">
+            <div className="bg-theme-canvas rounded-xl p-6 border border-theme-border">
               <div className="flex items-center space-x-3 mb-3">
                 <AlertTriangle className={`w-6 h-6 text-${getRiskLevelColor(riskAssessment.level)}-400`} />
-                <h3 className="text-sm font-medium text-gray-400">Overall Risk Level</h3>
+                <h3 className="text-sm font-medium text-content-secondary">Overall Risk Level</h3>
               </div>
               <p className={`text-3xl font-bold text-${getRiskLevelColor(riskAssessment.level)}-400 mb-2`}>
                 {riskAssessment.level}
               </p>
-              <p className="text-xs text-gray-400">
+              <p className="text-xs text-content-secondary">
                 Based on current market conditions and uncertainty factors
               </p>
             </div>
 
             {/* Volatility Outlook */}
-            <div className="bg-gray-700/50 rounded-xl p-6 border border-gray-600">
+            <div className="bg-theme-canvas rounded-xl p-6 border border-theme-border">
               <div className="flex items-center space-x-3 mb-3">
                 <Activity className="w-6 h-6 text-purple-400" />
-                <h3 className="text-sm font-medium text-gray-400">Volatility Outlook</h3>
+                <h3 className="text-sm font-medium text-content-secondary">Volatility Outlook</h3>
               </div>
               <p className="text-3xl font-bold text-purple-400 mb-2">
                 {riskAssessment.volatilityOutlook}
               </p>
-              <p className="text-xs text-gray-400">
+              <p className="text-xs text-content-secondary">
                 Price movements may exceed typical historical ranges
               </p>
             </div>
 
             {/* Confidence Level */}
-            <div className="bg-gray-700/50 rounded-xl p-6 border border-gray-600">
+            <div className="bg-theme-canvas rounded-xl p-6 border border-theme-border">
               <div className="flex items-center space-x-3 mb-3">
                 <CheckCircle className="w-6 h-6 text-blue-400" />
-                <h3 className="text-sm font-medium text-gray-400">Assessment Confidence</h3>
+                <h3 className="text-sm font-medium text-content-secondary">Assessment Confidence</h3>
               </div>
               <p className="text-3xl font-bold text-blue-400 mb-2">
                 {riskAssessment.confidence}
               </p>
-              <p className="text-xs text-gray-400">
+              <p className="text-xs text-content-secondary">
                 Reflects clarity of signals in current market environment
               </p>
             </div>
           </div>
 
-          <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4">
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
             <div className="flex items-start space-x-3">
-              <Info className="w-5 h-5 text-blue-400 mt-0.5 flex-shrink-0" />
-              <p className="text-gray-300 text-sm leading-relaxed">
+              <Info className="w-5 h-5 text-trade-action mt-0.5 flex-shrink-0" />
+              <p className="text-content-secondary text-sm leading-relaxed">
                 {riskAssessment.summary}
               </p>
             </div>
@@ -364,27 +366,27 @@ const CommoditiesInsights = () => {
         </div>
 
         {/* Market Regime */}
-        <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700">
-          <h2 className="text-2xl font-bold text-white mb-4 flex items-center space-x-3">
-            <Waves className="w-6 h-6 text-indigo-400" />
+        <div className="bg-theme-surface rounded-2xl p-6 border border-theme-border shadow-surface">
+          <h2 className="text-2xl font-bold text-content-primary mb-4 flex items-center space-x-3">
+            <Waves className="w-6 h-6 text-indigo-500" />
             <span>Current Market Regime</span>
           </h2>
           
-          <div className="bg-gradient-to-r from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 rounded-xl p-6">
+          <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-6">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="px-4 py-2 bg-indigo-500 rounded-full">
+              <div className="px-4 py-2 bg-indigo-600 rounded-full">
                 <span className="text-white font-bold text-lg">{marketRegime.primary}</span>
               </div>
             </div>
             
             <div className="space-y-3">
               <div>
-                <h4 className="text-sm font-semibold text-indigo-400 mb-1">What defines this regime</h4>
-                <p className="text-gray-300">{marketRegime.description}</p>
+                <h4 className="text-sm font-semibold text-indigo-600 mb-1">What defines this regime</h4>
+                <p className="text-content-secondary">{marketRegime.description}</p>
               </div>
               <div>
-                <h4 className="text-sm font-semibold text-purple-400 mb-1">Typical impact on {selectedCommodity}</h4>
-                <p className="text-gray-300">{marketRegime.typicalImpact}</p>
+                <h4 className="text-sm font-semibold text-purple-600 mb-1">Typical impact on {selectedCommodity}</h4>
+                <p className="text-content-secondary">{marketRegime.typicalImpact}</p>
               </div>
             </div>
           </div>
@@ -403,14 +405,14 @@ const CommoditiesInsights = () => {
         className="space-y-6"
       >
         {/* Analysis Tabs */}
-        <div className="bg-gray-800 rounded-2xl p-2 border border-gray-700">
+        <div className="bg-theme-surface rounded-2xl p-2 border border-theme-border shadow-surface">
           <div className="grid grid-cols-3 gap-2">
             <button
               onClick={() => setActiveAnalysisTab('drivers')}
               className={`px-6 py-4 rounded-xl font-semibold transition-all ${
                 activeAnalysisTab === 'drivers'
-                  ? 'bg-yellow-500/20 text-yellow-400 border-2 border-yellow-500'
-                  : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
+                  ? 'bg-yellow-50 text-yellow-700 border-2 border-yellow-400'
+                  : 'bg-theme-canvas text-content-secondary hover:bg-blue-50 hover:text-content-primary border-2 border-transparent'
               }`}
             >
               <Lightbulb className="w-5 h-5 mx-auto mb-2" />
@@ -420,8 +422,8 @@ const CommoditiesInsights = () => {
               onClick={() => setActiveAnalysisTab('factors')}
               className={`px-6 py-4 rounded-xl font-semibold transition-all ${
                 activeAnalysisTab === 'factors'
-                  ? 'bg-green-500/20 text-green-400 border-2 border-green-500'
-                  : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
+                  ? 'bg-green-50 text-trade-gain border-2 border-trade-gain'
+                  : 'bg-theme-canvas text-content-secondary hover:bg-blue-50 hover:text-content-primary border-2 border-transparent'
               }`}
             >
               <BarChart3 className="w-5 h-5 mx-auto mb-2" />
@@ -431,8 +433,8 @@ const CommoditiesInsights = () => {
               onClick={() => setActiveAnalysisTab('scenarios')}
               className={`px-6 py-4 rounded-xl font-semibold transition-all ${
                 activeAnalysisTab === 'scenarios'
-                  ? 'bg-orange-500/20 text-orange-400 border-2 border-orange-500'
-                  : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
+                  ? 'bg-orange-50 text-orange-600 border-2 border-orange-400'
+                  : 'bg-theme-canvas text-content-secondary hover:bg-blue-50 hover:text-content-primary border-2 border-transparent'
               }`}
             >
               <Zap className="w-5 h-5 mx-auto mb-2" />
@@ -445,11 +447,11 @@ const CommoditiesInsights = () => {
         {activeAnalysisTab === 'drivers' && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-white flex items-center space-x-3">
-                <Lightbulb className="w-6 h-6 text-yellow-400" />
+              <h2 className="text-2xl font-bold text-content-primary flex items-center space-x-3">
+                <Lightbulb className="w-6 h-6 text-yellow-500" />
                 <span>Top Market Drivers</span>
               </h2>
-              <span className="text-sm text-gray-400">
+              <span className="text-sm text-content-secondary">
                 Ranked by current relevance
               </span>
             </div>
@@ -461,28 +463,28 @@ const CommoditiesInsights = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  className="bg-gray-800 rounded-2xl border border-gray-700 hover:border-gray-600 transition-all overflow-hidden"
+                  className="bg-theme-surface border border-theme-border rounded-2xl hover:border-trade-action/30 hover:shadow-surface transition-all overflow-hidden"
                 >
                   <div className="p-6">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex-1">
                         <div className="flex items-center space-x-3 mb-2">
-                          <span className="text-2xl font-bold text-gray-600">#{index + 1}</span>
-                          <span className="px-3 py-1 bg-gray-700 rounded-full text-xs font-medium text-gray-300">
+                          <span className="text-2xl font-bold text-theme-border">#{index + 1}</span>
+                          <span className="px-3 py-1 bg-theme-canvas border border-theme-border rounded-full text-xs font-medium text-content-secondary">
                             {driver.category}
                           </span>
-                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                            driver.impact === 'Upward Pressure' ? 'bg-green-500/20 text-green-400' :
-                            driver.impact === 'Downward Pressure' ? 'bg-red-500/20 text-red-400' :
-                            'bg-gray-500/20 text-gray-400'
+                          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                            driver.impact === 'Upward Pressure' ? 'bg-trade-gain/10 text-trade-gain' :
+                            driver.impact === 'Downward Pressure' ? 'bg-trade-loss/10 text-trade-loss' :
+                            'bg-theme-canvas text-content-secondary border border-theme-border'
                           }`}>
                             {driver.impact}
                           </span>
                         </div>
-                        <h3 className="text-lg font-semibold text-white mb-2">
+                        <h3 className="text-lg font-semibold text-content-primary mb-2">
                           {driver.headline}
                         </h3>
-                        <div className="flex items-center space-x-4 text-sm text-gray-400">
+                        <div className="flex items-center space-x-4 text-sm text-content-secondary">
                           <span>{driver.source}</span>
                           <span>•</span>
                           <span>{driver.date}</span>
@@ -490,9 +492,9 @@ const CommoditiesInsights = () => {
                       </div>
                     </div>
 
-                    <div className="bg-gray-700/50 rounded-xl p-4 border border-gray-600">
-                      <h4 className="text-sm font-semibold text-cyan-400 mb-2">Why it matters</h4>
-                      <p className="text-gray-300 text-sm leading-relaxed">
+                    <div className="bg-theme-canvas rounded-xl p-4 border border-theme-border">
+                      <h4 className="text-sm font-semibold text-trade-action mb-2">Why it matters</h4>
+                      <p className="text-content-secondary text-sm leading-relaxed">
                         {driver.whyItMatters}
                       </p>
                     </div>
@@ -505,11 +507,11 @@ const CommoditiesInsights = () => {
 
         {activeAnalysisTab === 'factors' && (
           <div className="space-y-4">
-            <h2 className="text-2xl font-bold text-white flex items-center space-x-3">
-              <BarChart3 className="w-6 h-6 text-green-400" />
+            <h2 className="text-2xl font-bold text-content-primary flex items-center space-x-3">
+              <BarChart3 className="w-6 h-6 text-trade-gain" />
               <span>Factor Impact Analysis</span>
             </h2>
-            <p className="text-gray-400">
+            <p className="text-content-secondary">
               How different factors are influencing {selectedCommodity} right now
             </p>
 
@@ -520,12 +522,12 @@ const CommoditiesInsights = () => {
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: index * 0.05 }}
-                  className="bg-gray-800 rounded-2xl p-6 border border-gray-700 hover:border-gray-600 transition-all"
+                  className="bg-theme-surface border border-theme-border rounded-2xl p-6 hover:border-trade-action/30 hover:shadow-surface transition-all"
                 >
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center space-x-3">
-                      <factor.icon className="w-6 h-6 text-cyan-400" />
-                      <h3 className="font-semibold text-white">{factor.category}</h3>
+                      <factor.icon className="w-6 h-6 text-trade-action" />
+                      <h3 className="font-semibold text-content-primary">{factor.category}</h3>
                     </div>
                     {React.createElement(getDirectionIcon(factor.direction), { 
                       className: `w-5 h-5 ${getDirectionColor(factor.direction)}` 
@@ -534,19 +536,19 @@ const CommoditiesInsights = () => {
 
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-400">Direction</span>
+                      <span className="text-sm text-content-secondary">Direction</span>
                       <span className={`text-sm font-semibold ${getDirectionColor(factor.direction)}`}>
                         {factor.direction}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-400">Strength</span>
-                      <span className="text-sm font-semibold text-white">{factor.strength}</span>
+                      <span className="text-sm text-content-secondary">Strength</span>
+                      <span className="text-sm font-semibold text-content-primary">{factor.strength}</span>
                     </div>
                   </div>
 
-                  <div className="mt-4 pt-4 border-t border-gray-700">
-                    <p className="text-sm text-gray-300 leading-relaxed">
+                  <div className="mt-4 pt-4 border-t border-theme-border">
+                    <p className="text-sm text-content-secondary leading-relaxed">
                       {factor.explanation}
                     </p>
                   </div>
@@ -559,20 +561,20 @@ const CommoditiesInsights = () => {
         {activeAnalysisTab === 'scenarios' && (
           <div className="space-y-4">
             <div>
-              <h2 className="text-2xl font-bold text-white flex items-center space-x-3 mb-2">
-                <Zap className="w-6 h-6 text-yellow-400" />
+              <h2 className="text-2xl font-bold text-content-primary flex items-center space-x-3 mb-2">
+                <Zap className="w-6 h-6 text-yellow-500" />
                 <span>Scenario Analysis</span>
               </h2>
-              <p className="text-gray-400">
+              <p className="text-content-secondary">
                 Conditional "If-Then" scenarios — not forecasts or guarantees
               </p>
             </div>
 
-            <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 mb-4">
+            <div className="bg-yellow-50 border border-yellow-300 rounded-xl p-4 mb-4">
               <div className="flex items-start space-x-3">
-                <Info className="w-5 h-5 text-yellow-400 mt-0.5 flex-shrink-0" />
-                <p className="text-gray-300 text-sm">
-                  <strong>Important:</strong> These are analytical scenarios showing possible relationships between events and outcomes. They are not predictions, price targets, or investment recommendations.
+                <Info className="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0" />
+                <p className="text-content-secondary text-sm">
+                  <strong className="text-content-primary">Important:</strong> These are analytical scenarios showing possible relationships between events and outcomes. They are not predictions, price targets, or investment recommendations.
                 </p>
               </div>
             </div>
@@ -584,32 +586,32 @@ const CommoditiesInsights = () => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  className="bg-gray-800 rounded-2xl p-6 border border-gray-700"
+                  className="bg-white border border-slate-200 rounded-2xl p-6 hover:border-blue-400/30 hover:shadow-md transition-all"
                 >
                   <div className="mb-4">
                     <div className="flex items-start space-x-2 mb-3">
-                      <span className="text-cyan-400 font-bold text-sm">IF:</span>
-                      <p className="text-gray-300 text-sm flex-1">
+                      <span className="text-blue-600 font-bold text-sm">IF:</span>
+                      <p className="text-slate-600 text-sm flex-1">
                         {scenario.condition}
                       </p>
                     </div>
                     
                     <div className="flex items-start space-x-2 pl-6">
-                      <span className="text-green-400 font-bold text-sm">THEN:</span>
-                      <p className="text-gray-300 text-sm flex-1">
+                      <span className="text-emerald-600 font-bold text-sm">THEN:</span>
+                      <p className="text-slate-600 text-sm flex-1">
                         {scenario.likelyOutcome}
                       </p>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3 pt-4 border-t border-gray-700">
+                  <div className="grid grid-cols-2 gap-3 pt-4 border-t border-slate-100">
                     <div>
-                      <p className="text-xs text-gray-400 mb-1">Probability</p>
-                      <p className="text-sm text-white font-semibold">{scenario.probability}</p>
+                      <p className="text-xs text-slate-500 mb-1">Probability</p>
+                      <p className="text-sm text-slate-900 font-semibold">{scenario.probability}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-400 mb-1">Timeframe</p>
-                      <p className="text-sm text-white font-semibold">{scenario.timeframe}</p>
+                      <p className="text-xs text-slate-500 mb-1">Timeframe</p>
+                      <p className="text-sm text-slate-900 font-semibold">{scenario.timeframe}</p>
                     </div>
                   </div>
                 </motion.div>
@@ -630,16 +632,16 @@ const CommoditiesInsights = () => {
         exit={{ opacity: 0, y: -20 }}
         className="space-y-6"
       >
-        <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700">
-          <h2 className="text-2xl font-bold text-white mb-4 flex items-center space-x-3">
-            <Users className="w-6 h-6 text-purple-400" />
+        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+          <h2 className="text-2xl font-bold text-slate-900 mb-4 flex items-center space-x-3">
+            <Users className="w-6 h-6 text-purple-500" />
             <span>Community Sentiment</span>
           </h2>
 
-          <div className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-4 mb-6">
+          <div className="bg-purple-50 border border-purple-100 rounded-xl p-4 mb-6">
             <div className="flex items-start space-x-3">
-              <Info className="w-5 h-5 text-purple-400 mt-0.5 flex-shrink-0" />
-              <p className="text-gray-300 text-sm">
+              <Info className="w-5 h-5 text-purple-600 mt-0.5 flex-shrink-0" />
+              <p className="text-slate-600 text-sm">
                 {pollData.disclaimer}
               </p>
             </div>
@@ -648,7 +650,7 @@ const CommoditiesInsights = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Poll Results */}
             <div>
-              <h3 className="text-lg font-semibold text-white mb-4">{pollData.question}</h3>
+              <h3 className="text-lg font-semibold text-slate-900 mb-4">{pollData.question}</h3>
               
               <div className="space-y-4 mb-4">
                 {pollData.options.map((option, index) => (
@@ -657,51 +659,51 @@ const CommoditiesInsights = () => {
                     onClick={() => setUserPoll(option.label)}
                     className={`w-full text-left p-4 rounded-xl border transition-all ${
                       userPoll === option.label
-                        ? 'bg-purple-500/20 border-purple-500'
-                        : 'bg-gray-700 border-gray-600 hover:border-gray-500'
+                        ? 'bg-purple-50 border-purple-300'
+                        : 'bg-slate-50 border-slate-200 hover:border-purple-200'
                     }`}
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-white font-medium">{option.label}</span>
-                      <span className="text-purple-400 font-bold">{option.percentage}%</span>
+                      <span className="text-slate-900 font-semibold">{option.label}</span>
+                      <span className="text-purple-600 font-bold">{option.percentage}%</span>
                     </div>
-                    <div className="w-full bg-gray-600 rounded-full h-2">
+                    <div className="w-full bg-slate-200 rounded-full h-2">
                       <div 
                         className="bg-purple-500 h-2 rounded-full transition-all"
                         style={{ width: `${option.percentage}%` }}
                       />
                     </div>
-                    <p className="text-sm text-gray-400 mt-1">{option.votes} votes</p>
+                    <p className="text-sm text-slate-500 mt-1">{option.votes} votes</p>
                   </button>
                 ))}
               </div>
 
-              <p className="text-sm text-gray-400 text-center">
+              <p className="text-sm text-slate-500 text-center">
                 Total votes: {pollData.totalVotes.toLocaleString()}
               </p>
             </div>
 
             {/* Common Themes */}
             <div>
-              <h3 className="text-lg font-semibold text-white mb-4 flex items-center space-x-2">
-                <MessageSquare className="w-5 h-5" />
+              <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center space-x-2">
+                <MessageSquare className="w-5 h-5 text-slate-500" />
                 <span>Common Themes from Community</span>
               </h3>
 
               <div className="space-y-3">
                 {communityInsights.map((insight, index) => (
-                  <div key={index} className="bg-gray-700 rounded-xl p-4">
+                  <div key={index} className="bg-slate-50 border border-slate-200 rounded-xl p-4">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="font-semibold text-white">{insight.theme}</span>
-                      <span className="text-sm text-purple-400">{insight.count} mentions</span>
+                      <span className="font-semibold text-slate-900">{insight.theme}</span>
+                      <span className="text-sm text-purple-600 font-semibold">{insight.count} mentions</span>
                     </div>
-                    <p className="text-sm text-gray-300">{insight.summary}</p>
+                    <p className="text-sm text-slate-600">{insight.summary}</p>
                   </div>
                 ))}
               </div>
 
-              <div className="mt-4 p-3 bg-gray-700/50 rounded-xl border border-gray-600">
-                <p className="text-xs text-gray-400 italic">
+              <div className="mt-4 p-3 bg-slate-50 rounded-xl border border-slate-200">
+                <p className="text-xs text-slate-500 italic">
                   These themes reflect recurring topics in user commentary. They do not constitute consensus predictions or recommendations.
                 </p>
               </div>
@@ -721,29 +723,29 @@ const CommoditiesInsights = () => {
         exit={{ opacity: 0, y: -20 }}
         className="space-y-6"
       >
-        <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700">
+        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
           <div className="flex items-center space-x-3 mb-6">
-            <BookOpen className="w-6 h-6 text-indigo-400" />
-            <h2 className="text-2xl font-bold text-white">Evidence & Methodology</h2>
+            <BookOpen className="w-6 h-6 text-indigo-500" />
+            <h2 className="text-2xl font-bold text-slate-900">Evidence & Methodology</h2>
           </div>
 
           <div className="space-y-6">
             {/* Volatility Comparison */}
             <div>
-              <h3 className="text-lg font-semibold text-white mb-3">Volatility vs Historical Baseline</h3>
-              <div className="bg-gray-700 rounded-xl p-4">
+              <h3 className="text-lg font-semibold text-slate-900 mb-3">Volatility vs Historical Baseline</h3>
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
                 <div className="grid grid-cols-3 gap-4 text-center">
                   <div>
-                    <p className="text-sm text-gray-400 mb-1">Current 30-Day Vol</p>
-                    <p className="text-2xl font-bold text-white">23.5%</p>
+                    <p className="text-sm text-slate-500 mb-1">Current 30-Day Vol</p>
+                    <p className="text-2xl font-bold text-slate-900">23.5%</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-400 mb-1">12-Month Average</p>
-                    <p className="text-2xl font-bold text-gray-400">18.2%</p>
+                    <p className="text-sm text-slate-500 mb-1">12-Month Average</p>
+                    <p className="text-2xl font-bold text-slate-500">18.2%</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-400 mb-1">Deviation</p>
-                    <p className="text-2xl font-bold text-orange-400">+29%</p>
+                    <p className="text-sm text-slate-500 mb-1">Deviation</p>
+                    <p className="text-2xl font-bold text-orange-500">+29%</p>
                   </div>
                 </div>
               </div>
@@ -751,29 +753,29 @@ const CommoditiesInsights = () => {
 
             {/* Sources */}
             <div>
-              <h3 className="text-lg font-semibold text-white mb-3">Primary Sources</h3>
+              <h3 className="text-lg font-semibold text-slate-900 mb-3">Primary Sources</h3>
               <div className="space-y-2">
-                <div className="flex items-center space-x-3 p-3 bg-gray-700 rounded-lg">
-                  <ExternalLink className="w-4 h-4 text-cyan-400" />
-                  <span className="text-gray-300 text-sm">
+                <div className="flex items-center space-x-3 p-3 bg-slate-50 border border-slate-100 rounded-lg">
+                  <ExternalLink className="w-4 h-4 text-blue-500" />
+                  <span className="text-slate-600 text-sm">
                     Bloomberg Commodity Index Data (Real-time pricing and volatility metrics)
                   </span>
                 </div>
-                <div className="flex items-center space-x-3 p-3 bg-gray-700 rounded-lg">
-                  <ExternalLink className="w-4 h-4 text-cyan-400" />
-                  <span className="text-gray-300 text-sm">
+                <div className="flex items-center space-x-3 p-3 bg-slate-50 border border-slate-100 rounded-lg">
+                  <ExternalLink className="w-4 h-4 text-blue-500" />
+                  <span className="text-slate-600 text-sm">
                     Reuters News API (Aggregated news sentiment and event tracking)
                   </span>
                 </div>
-                <div className="flex items-center space-x-3 p-3 bg-gray-700 rounded-lg">
-                  <ExternalLink className="w-4 h-4 text-cyan-400" />
-                  <span className="text-gray-300 text-sm">
+                <div className="flex items-center space-x-3 p-3 bg-slate-50 border border-slate-100 rounded-lg">
+                  <ExternalLink className="w-4 h-4 text-blue-500" />
+                  <span className="text-slate-600 text-sm">
                     Central Bank Policy Statements (FOMC, ECB, BoJ official communications)
                   </span>
                 </div>
-                <div className="flex items-center space-x-3 p-3 bg-gray-700 rounded-lg">
-                  <ExternalLink className="w-4 h-4 text-cyan-400" />
-                  <span className="text-gray-300 text-sm">
+                <div className="flex items-center space-x-3 p-3 bg-slate-50 border border-slate-100 rounded-lg">
+                  <ExternalLink className="w-4 h-4 text-blue-500" />
+                  <span className="text-slate-600 text-sm">
                     IEA Energy Reports (Supply and demand projections for energy commodities)
                   </span>
                 </div>
@@ -782,46 +784,46 @@ const CommoditiesInsights = () => {
 
             {/* Methodology */}
             <div>
-              <h3 className="text-lg font-semibold text-white mb-3">Methodology Notes</h3>
-              <div className="bg-gray-700 rounded-xl p-4 space-y-3 text-sm text-gray-300">
+              <h3 className="text-lg font-semibold text-slate-900 mb-3">Methodology Notes</h3>
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3 text-sm text-slate-600">
                 <p>
-                  <strong className="text-white">Risk Assessment:</strong> Based on combination of implied volatility, news sentiment analysis, and historical pattern deviation.
+                  <strong className="text-slate-900">Risk Assessment:</strong> Based on combination of implied volatility, news sentiment analysis, and historical pattern deviation.
                 </p>
                 <p>
-                  <strong className="text-white">Market Regime:</strong> Determined by analyzing correlation patterns across asset classes and dominant thematic drivers in news flow.
+                  <strong className="text-slate-900">Market Regime:</strong> Determined by analyzing correlation patterns across asset classes and dominant thematic drivers in news flow.
                 </p>
                 <p>
-                  <strong className="text-white">Driver Ranking:</strong> News articles scored by recency, source credibility, and estimated market impact based on historical price reactions.
+                  <strong className="text-slate-900">Driver Ranking:</strong> News articles scored by recency, source credibility, and estimated market impact based on historical price reactions.
                 </p>
                 <p>
-                  <strong className="text-white">Factor Analysis:</strong> Each factor evaluated for directional bias and strength using multi-source data triangulation.
+                  <strong className="text-slate-900">Factor Analysis:</strong> Each factor evaluated for directional bias and strength using multi-source data triangulation.
                 </p>
               </div>
             </div>
 
             {/* Limitations */}
             <div>
-              <h3 className="text-lg font-semibold text-white mb-3">Known Limitations</h3>
-              <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4">
-                <ul className="space-y-2 text-sm text-gray-300">
+              <h3 className="text-lg font-semibold text-slate-900 mb-3">Known Limitations</h3>
+              <div className="bg-red-50 border border-red-100 rounded-xl p-4">
+                <ul className="space-y-2 text-sm text-slate-600">
                   <li className="flex items-start space-x-2">
-                    <span className="text-red-400 mt-1">•</span>
+                    <span className="text-red-500 mt-1">•</span>
                     <span>Analysis reflects conditions at time of data snapshot; markets evolve continuously</span>
                   </li>
                   <li className="flex items-start space-x-2">
-                    <span className="text-red-400 mt-1">•</span>
+                    <span className="text-red-500 mt-1">•</span>
                     <span>Sentiment analysis may not capture all nuances of human interpretation</span>
                   </li>
                   <li className="flex items-start space-x-2">
-                    <span className="text-red-400 mt-1">•</span>
+                    <span className="text-red-500 mt-1">•</span>
                     <span>Historical patterns used for context but do not guarantee future replication</span>
                   </li>
                   <li className="flex items-start space-x-2">
-                    <span className="text-red-400 mt-1">•</span>
+                    <span className="text-red-500 mt-1">•</span>
                     <span>Unforeseen events (black swans) can override all analyzed factors</span>
                   </li>
                   <li className="flex items-start space-x-2">
-                    <span className="text-red-400 mt-1">•</span>
+                    <span className="text-red-500 mt-1">•</span>
                     <span>Community polls reflect opinion, not statistical probability or professional consensus</span>
                   </li>
                 </ul>
@@ -834,7 +836,7 @@ const CommoditiesInsights = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-slate-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -844,62 +846,91 @@ const CommoditiesInsights = () => {
           {/* Header / Context Selector */}
           <div className="space-y-6">
             <div>
-              <h1 className="text-4xl font-bold text-white mb-2">
+              <h1 className="text-4xl font-bold text-slate-900 mb-2">
                 Commodity Insights
               </h1>
-              <p className="text-gray-400 text-lg">
+              <p className="text-slate-600 text-lg">
                 Structured analysis to help you understand market conditions — not trading advice
               </p>
             </div>
 
-            <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700">
+            {/* 🚧 Work In Progress Banner */}
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="relative overflow-hidden rounded-2xl border border-amber-400/60 bg-gradient-to-r from-amber-950/80 via-yellow-900/70 to-orange-950/80 shadow-lg shadow-amber-500/10"
+            >
+              {/* Animated shimmer stripe */}
+              <div className="absolute inset-0 bg-[repeating-linear-gradient(135deg,transparent,transparent_20px,rgba(251,191,36,0.05)_20px,rgba(251,191,36,0.05)_40px)]" />
+              <div className="relative flex items-center gap-4 px-6 py-4">
+                <div className="flex-shrink-0 flex items-center justify-center w-11 h-11 rounded-xl bg-amber-500/20 border border-amber-400/40">
+                  <Construction className="w-6 h-6 text-amber-400" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className="text-amber-300 font-bold text-sm tracking-wide uppercase">Work in Progress</span>
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-semibold">
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                      Coming Soon
+                    </span>
+                  </div>
+                  <p className="text-amber-200/80 text-sm leading-relaxed">
+                    This page is still being built. Live market data, real-time signals, and deeper insights are on the way. Stay tuned — something great is coming!
+                  </p>
+                </div>
+                <Sparkles className="flex-shrink-0 w-5 h-5 text-amber-400/60" />
+              </div>
+            </motion.div>
+
+            <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Commodity Selector */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-2">
+                  <label className="block text-sm font-medium text-slate-500 mb-2">
                     Select Commodity
                   </label>
                   <div className="relative">
                     <select
                       value={selectedCommodity}
                       onChange={(e) => setSelectedCommodity(e.target.value)}
-                      className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white appearance-none cursor-pointer focus:border-cyan-400 focus:outline-none"
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 appearance-none cursor-pointer focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
                     >
                       {commodities.map(commodity => (
                         <option key={commodity} value={commodity}>{commodity}</option>
                       ))}
                     </select>
-                    <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+                    <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
                   </div>
                 </div>
 
                 {/* Time Horizon Selector */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-2">
+                  <label className="block text-sm font-medium text-slate-500 mb-2">
                     Time Horizon
                   </label>
                   <div className="relative">
                     <select
                       value={timeHorizon}
                       onChange={(e) => setTimeHorizon(e.target.value)}
-                      className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white appearance-none cursor-pointer focus:border-cyan-400 focus:outline-none"
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 appearance-none cursor-pointer focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
                     >
                       {timeHorizons.map(horizon => (
                         <option key={horizon.value} value={horizon.value}>{horizon.label}</option>
                       ))}
                     </select>
-                    <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+                    <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
                   </div>
                 </div>
 
                 {/* Last Updated */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-2">
+                  <label className="block text-sm font-medium text-slate-500 mb-2">
                     Last Updated
                   </label>
-                  <div className="flex items-center space-x-2 px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl">
-                    <Clock className="w-5 h-5 text-cyan-400" />
-                    <span className="text-white text-sm">
+                  <div className="flex items-center space-x-2 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl">
+                    <Clock className="w-5 h-5 text-blue-600" />
+                    <span className="text-slate-900 text-sm">
                       {formatTimestamp(riskAssessment.lastUpdated)}
                     </span>
                   </div>
@@ -918,19 +949,19 @@ const CommoditiesInsights = () => {
                 whileTap={{ scale: 0.98 }}
                 className={`p-6 rounded-2xl border-2 transition-all ${
                   activeMode === mode.id
-                    ? `bg-${mode.color}-500/20 border-${mode.color}-500`
-                    : 'bg-gray-800 border-gray-700 hover:border-gray-600'
+                    ? 'bg-trade-action/5 border-trade-action shadow-sm'
+                    : 'bg-theme-surface border-theme-border hover:border-trade-action/30 hover:shadow-surface'
                 }`}
               >
                 <mode.icon className={`w-8 h-8 mb-3 ${
-                  activeMode === mode.id ? `text-${mode.color}-400` : 'text-gray-400'
+                  activeMode === mode.id ? 'text-trade-action' : 'text-content-secondary'
                 }`} />
                 <h3 className={`text-lg font-bold mb-2 ${
-                  activeMode === mode.id ? 'text-white' : 'text-gray-300'
+                  activeMode === mode.id ? 'text-trade-action' : 'text-content-primary'
                 }`}>
                   {mode.label}
                 </h3>
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-content-secondary">
                   {mode.description}
                 </p>
               </motion.button>
@@ -946,12 +977,12 @@ const CommoditiesInsights = () => {
           </div>
 
           {/* Disclaimer Footer */}
-          <div className="bg-gradient-to-r from-gray-800 to-gray-700 rounded-2xl p-6 border border-gray-600">
+          <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-6">
             <div className="flex items-start space-x-4">
-              <AlertTriangle className="w-6 h-6 text-yellow-400 flex-shrink-0 mt-1" />
+              <AlertTriangle className="w-6 h-6 text-yellow-600 flex-shrink-0 mt-1" />
               <div className="space-y-2">
-                <h3 className="text-lg font-semibold text-white">Important Disclaimer</h3>
-                <p className="text-gray-300 text-sm leading-relaxed">
+                <h3 className="text-lg font-semibold text-content-primary">Important Disclaimer</h3>
+                <p className="text-content-secondary text-sm leading-relaxed">
                   This page provides educational analysis to help you understand market conditions and factors. It does not predict future prices, provide trading signals, or constitute investment advice. Markets are inherently uncertain, and past patterns do not guarantee future outcomes. Always conduct your own research and consult with qualified financial professionals before making investment decisions.
                 </p>
               </div>

@@ -8,10 +8,15 @@ from src.dashboard.schemas import (
     DashboardMetricUpdate,
     DashboardMetricRead,
     DashboardOverview,
-    NewsSentimentResponse
+    NewsSentimentResponse,
+    YFinanceTickerInfoResponse,
+    YFinanceHistoryResponse,
+    NseHistoryResponse,
+    MfSchemeInfoResponse,
+    MfSchemeHistoryResponse
 )
-from src.dashboard.service import DashboardService
-from src.dashboard.dependencies import get_dashboard_service
+from src.dashboard.service import DashboardService, YFinanceService, NseService, MfService
+from src.dashboard.dependencies import get_dashboard_service, get_yfinance_service, get_nse_service, get_mf_service
 from src.config import settings
 from src.dashboard.config import ALPHA_VANTAGE_API_KEY, ALPHA_VANTAGE_BASE_URL
 from typing import Optional
@@ -59,3 +64,89 @@ async def get_news_sentiment(
     """Get news sentiment for a specific stock ticker."""
     return await service.get_news_sentiment(topics)
 
+
+@router.get("/yfinance/info/{symbol}", response_model=YFinanceTickerInfoResponse)
+def get_yfinance_ticker_info(
+    symbol: str,
+    service: YFinanceService = Depends(get_yfinance_service)
+):
+    """Get ticker info using yfinance for experimentation."""
+    info = service.get_ticker_info(symbol)
+    return YFinanceTickerInfoResponse(symbol=symbol, info=info)
+
+
+@router.get("/yfinance/history/{symbol}", response_model=YFinanceHistoryResponse)
+def get_yfinance_ticker_history(
+    symbol: str,
+    period: str = Query("1mo", description="Time period, e.g., 1d, 5d, 1mo, 3mo, 6mo, 1y, 2y, 5y, 10y, ytd, max"),
+    service: YFinanceService = Depends(get_yfinance_service)
+):
+    """Get historical data using yfinance for experimentation."""
+    history = service.get_ticker_history(symbol, period)
+    return YFinanceHistoryResponse(symbol=symbol, history=history)
+
+
+@router.get("/yfinance/market-summary")
+def get_yfinance_market_summary(
+    symbols: str = Query(..., description="Comma separated symbols, e.g., AAPL,MSFT"),
+    service: YFinanceService = Depends(get_yfinance_service)
+):
+    """Get market summary for multiple symbols."""
+    symbol_list = [s.strip() for s in symbols.split(",") if s.strip()]
+    return service.get_market_summary(symbol_list)
+
+
+@router.get("/yfinance/top-gainers-losers")
+def get_nse_top_gainers_losers(
+    service: YFinanceService = Depends(get_yfinance_service)
+):
+    """Get NSE top gainers and losers via nselib."""
+    return service.get_top_gainers_losers()
+
+
+
+@router.get("/yfinance/global-markets")
+def get_yfinance_global_markets(
+    service: YFinanceService = Depends(get_yfinance_service)
+):
+    """Get global markets data."""
+    return service.get_global_markets()
+
+
+@router.get("/yfinance/sector-heatmap")
+def get_yfinance_sector_heatmap(
+    service: YFinanceService = Depends(get_yfinance_service)
+):
+    """Get sector heatmap data."""
+    return service.get_sector_heatmap()
+
+
+@router.get("/nse/history/{symbol}", response_model=NseHistoryResponse)
+def get_nse_ticker_history(
+    symbol: str,
+    period: str = Query("1M", description="Time period, e.g., 1W, 1M, 3M, 6M, 1Y"),
+    service: NseService = Depends(get_nse_service)
+):
+    """Get historical data using nselib for experimentation."""
+    history = service.get_price_volume_data(symbol, period)
+    return NseHistoryResponse(symbol=symbol, history=history)
+
+
+@router.get("/mf/info/{code}", response_model=MfSchemeInfoResponse)
+def get_mf_scheme_info(
+    code: str,
+    service: MfService = Depends(get_mf_service)
+):
+    """Get scheme quote using mftool for experimentation."""
+    info = service.get_scheme_info(code)
+    return MfSchemeInfoResponse(code=code, info=info)
+
+
+@router.get("/mf/history/{code}", response_model=MfSchemeHistoryResponse)
+def get_mf_scheme_history(
+    code: str,
+    service: MfService = Depends(get_mf_service)
+):
+    """Get historical NAV using mftool for experimentation."""
+    history = service.get_scheme_history(code)
+    return MfSchemeHistoryResponse(code=code, history=history)

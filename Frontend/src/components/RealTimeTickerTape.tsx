@@ -1,25 +1,69 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { stocksApi } from '../api/Stocks';
+
+const NIFTY_50_SYMBOLS = [
+  'RELIANCE.NS', 'TCS.NS', 'HDFCBANK.NS', 'INFY.NS', 
+  'ICICIBANK.NS', 'BAJFINANCE.NS', 'HCLTECH.NS', 'WIPRO.NS',
+  'SBIN.NS', 'BHARTIARTL.NS', 'ITC.NS', 'LT.NS'
+];
+
+interface TickerStock {
+  symbol: string;
+  price: string;
+  change: string;
+  positive: boolean;
+}
 
 const RealTimeTickerTape = () => {
-  const stocks = [
-    { symbol: 'RELIANCE', price: '2,847.65', change: '+2.45%', positive: true },
-    { symbol: 'TCS', price: '3,456.80', change: '+1.23%', positive: true },
-    { symbol: 'HDFC', price: '1,678.90', change: '-0.89%', positive: false },
-    { symbol: 'INFY', price: '1,432.15', change: '+0.67%', positive: true },
-    { symbol: 'ICICIBANK', price: '945.25', change: '+1.45%', positive: true },
-    { symbol: 'BAJFINANCE', price: '6,789.30', change: '-1.23%', positive: false },
-    { symbol: 'HCLTECH', price: '1,156.75', change: '+2.11%', positive: true },
-    { symbol: 'WIPRO', price: '445.60', change: '+0.34%', positive: true },
-  ];
+  const [stocks, setStocks] = useState<TickerStock[]>([]);
 
-  const duplicatedStocks = [...stocks, ...stocks, ...stocks];
+  useEffect(() => {
+    const fetchTickerData = async () => {
+      try {
+        const summaryMap = await stocksApi.getMarketSummary(NIFTY_50_SYMBOLS);
+        const tickerData = NIFTY_50_SYMBOLS.map(sym => {
+          const data = summaryMap[sym];
+          if (data) {
+            return {
+              symbol: data.symbol.replace('.NS', ''),
+              price: data.price.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+              change: `${data.change > 0 ? '+' : ''}${data.changePercent.toFixed(2)}%`,
+              positive: data.change >= 0
+            };
+          }
+          return null;
+        }).filter(Boolean) as TickerStock[];
+        
+        if (tickerData.length > 0) {
+          setStocks(tickerData);
+        }
+      } catch (error) {
+        console.error("Failed to fetch ticker data", error);
+      }
+    };
+
+    fetchTickerData();
+    const intervalId = setInterval(fetchTickerData, 60000);
+    return () => clearInterval(intervalId);
+  }, []);
+
+  // Use a fixed height so there's no layout shift while loading
+  if (stocks.length === 0) {
+    return (
+      <div className="bg-theme-surface border-b border-theme-border h-[41px] flex items-center justify-center">
+      </div>
+    );
+  }
+
+  // Duplicate the list so it can scroll infinitely without gaps
+  const duplicatedStocks = [...stocks, ...stocks];
 
   return (
-    <div className="bg-gray-800 border-b border-gray-700 overflow-hidden">
+    <div className="bg-theme-surface border-b border-theme-border overflow-hidden shadow-sm flex h-[41px]">
       <motion.div
-        className="flex space-x-8 py-3"
-        animate={{ x: [-1000, 0] }}
+        className="flex space-x-8 py-2.5 min-w-max pr-8"
+        animate={{ x: ["0%", "-50%"] }}
         transition={{
           x: {
             repeat: Infinity,
@@ -34,11 +78,12 @@ const RealTimeTickerTape = () => {
             key={`${stock.symbol}-${index}`}
             className="flex items-center space-x-2 whitespace-nowrap"
           >
-            <span className="text-white font-medium">{stock.symbol}</span>
-            <span className="text-gray-300">₹{stock.price}</span>
-            <span className={`font-medium ${stock.positive ? 'text-green-400' : 'text-red-400'}`}>
+            <span className="text-content-primary font-semibold text-sm">{stock.symbol}</span>
+            <span className="text-content-secondary text-sm">₹{stock.price}</span>
+            <span className={`text-sm font-semibold ${stock.positive ? 'text-trade-gain' : 'text-trade-loss'}`}>
               {stock.change}
             </span>
+            <span className="text-theme-border text-xs">·</span>
           </div>
         ))}
       </motion.div>
